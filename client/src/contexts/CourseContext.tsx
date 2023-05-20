@@ -1,13 +1,19 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useEffect, useState } from "react";
 import {
   CourseInterface,
   CourseDataInterface,
   CourseSearchParamsInterface,
   ClassScheduleInterface,
 } from "../models/course.interface";
-import { addCourseData, getCoursesData } from "../services/httpClient";
+import {
+  addCourseData,
+  deleteCourseOfUser,
+  getCourseOfUser,
+  getCoursesData,
+} from "../services/httpClient";
+import { useAuth } from "../hooks";
 
-interface CourseContextValue {
+interface CourseContextType {
   courses: CourseInterface;
   loading: boolean;
   error: string | null;
@@ -20,7 +26,7 @@ interface CourseContextValue {
   showAlert: boolean;
 }
 
-const CourseContext = createContext<CourseContextValue>({
+const CourseContext = createContext<CourseContextType>({
   courses: { year: "", courseData: [] },
   loading: false,
   error: null,
@@ -46,17 +52,13 @@ interface CourseProviderProps {
 }
 
 const CourseProvider = ({ children }: CourseProviderProps) => {
+  const { payload, accessToken } = useAuth();
   const [courses, setCourses] = useState<CourseInterface>({
     year: "",
     courseData: [],
   });
   // const [classSchedule, setClassSchedule] = useState<CourseDataInterface[]>([]);
-  const [classSchedule, setClassSchedule] = useState<CourseDataInterface[]>(
-    () => {
-      const savedSchedule = localStorage.getItem("classSchedule");
-      return savedSchedule ? JSON.parse(savedSchedule) : [];
-    }
-  );
+  const [classSchedule, setClassSchedule] = useState<CourseDataInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [addCourseError, setAddCourseError] = useState(false);
@@ -152,7 +154,7 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
     return sameTime;
   };
 
-  const addCourseToSchedule = (course: CourseDataInterface) => {
+  const addCourseToSchedule = async (course: CourseDataInterface) => {
     setAddCourseError(false);
     const isSameSchedule: boolean = classSchedule.some((c) => {
       const checkCourseCode = c.courseCode === course.courseCode;
@@ -168,43 +170,48 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
       // alert("Cannot add the course");
       setShowAlert(true);
       setAddCourseError(true);
-      const timer = setTimeout(() => setShowAlert(false), 2000);
-
-      return () => clearTimeout(timer);
+      setTimeout(() => setShowAlert(false), 2000);
+    } else {
+      const userId = payload.id;
+      await addCourseData(userId, course, accessToken);
+      setClassSchedule((prev) => {
+        return [...prev, course];
+      });
     }
 
     setShowAlert(true);
-    setClassSchedule((prev) => {
-      return [...prev, course];
-    });
-
     // test api add course to user
-    const userId = "646540e994f9f87b7c8f259d";
-    const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQ2NTQwZTk5NGY5Zjg3YjdjOGYyNTlkIiwidXNlcm5hbWUiOiJvbWcifSwiaWF0IjoxNjg0MzU3MzY2LCJleHAiOjE2ODQzNjgxNjZ9.khl7t--NG3GIr9DPY4uuqyCvHmmCJIS7yZtMZ6oMF7Y";
-    addCourseData(userId, course, token);
-
-    const timer = setTimeout(() => setShowAlert(false), 1500);
-    return () => clearTimeout(timer);
+    setTimeout(() => setShowAlert(false), 1500);
   };
 
-  const removeCourse = (id: string) => {
+  const removeCourse = async (courseId: string) => {
     setShowAlert(true);
 
     // Remove the course from the class schedule state
     setClassSchedule((prevSchedule) =>
-      prevSchedule.filter((course) => course.id !== id)
+      prevSchedule.filter((course) => course.id !== courseId)
     );
+
+    const res = await deleteCourseOfUser(payload.id, courseId, accessToken);
+    console.log("removeCourse", res);
+
     // window.location.href = "/schedule";
     // navigate("/schedule");
 
     setTimeout(() => setShowAlert(false), 1500);
-    // return () => clearTimeout(timer);
   };
 
+  const getCourse = useCallback(async () => {
+    if (accessToken) {
+      const res = await getCourseOfUser(payload.id, accessToken);
+      res && setClassSchedule(res);
+    }
+  }, [payload.id, accessToken]);
+
   useEffect(() => {
-    localStorage.setItem("classSchedule", JSON.stringify(classSchedule));
-  }, [classSchedule]);
+    // localStorage.setItem("classSchedule", JSON.stringify(classSchedule));
+    getCourse();
+  }, [payload.id, accessToken, getCourse]);
 
   return (
     <CourseContext.Provider
@@ -227,4 +234,4 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
 };
 
 export { CourseProvider, CourseContext };
-export type { CourseContextValue };
+export type { CourseContextType };

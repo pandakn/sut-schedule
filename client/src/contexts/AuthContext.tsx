@@ -1,61 +1,126 @@
 import React, { createContext, useEffect, useState } from "react";
-import { login } from "../services/httpClient";
+import { login, register } from "../services/httpClient";
+
+interface AuthMsg {
+  message: string;
+  error: boolean;
+}
 
 interface AccessTokenPayload {
   id: string;
+  name: string;
   username: string;
 }
 
 type AuthContextType = {
-  handleSubmit: (
-    event: React.FormEvent,
+  handleRegister: (
+    name: string,
     username: string,
     password: string
   ) => Promise<void>;
+  handleLogin: (username: string, password: string) => Promise<void>;
   accessToken: string | null;
   payload: AccessTokenPayload;
-  // logout: () => void;
+  loggedIn: AuthMsg;
+  registered: AuthMsg;
+  showAlert: boolean;
 };
 
 const initialAuthContext: AuthContextType = {
-  handleSubmit: () => {
-    throw new Error("handleSubmit is not implemented");
+  handleRegister: () => {
+    throw new Error("handleRegister is not implemented");
+  },
+  handleLogin: () => {
+    throw new Error("handleLogin is not implemented");
   },
   accessToken: localStorage.getItem("accessToken"),
-  payload: { id: "", username: "" },
+  payload: { id: "", name: "", username: "" },
+  loggedIn: { message: "", error: false },
+  registered: { message: "", error: false },
+  showAlert: false,
 };
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-export const AuthContext = createContext<AuthContextType>(initialAuthContext);
+const AuthContext = createContext<AuthContextType>(initialAuthContext);
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+const AuthProvider = ({ children }: AuthProviderProps) => {
   const [payload, setPayload] = useState<AccessTokenPayload>({
     id: "",
+    name: "",
     username: "",
   });
 
   const [accessToken, setAccessToken] = useState(
     localStorage.getItem("accessToken")
   );
+  const [loggedIn, setLoggedIn] = useState<AuthMsg>({
+    message: "",
+    error: false,
+  });
+  const [registered, setRegistered] = useState<AuthMsg>({
+    message: "",
+    error: false,
+  });
+  const [showAlert, setShowAlert] = useState(false);
 
-  const handleSubmit = async (
-    event: React.FormEvent,
+  const handleRegister = async (
+    name: string,
     username: string,
     password: string
   ) => {
-    event.preventDefault();
-    const res = await login(username, password);
+    const res = await register(name, username, password);
 
-    const { accessToken, accessPayload } = res;
-    if (res) {
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("payload", JSON.stringify(accessPayload));
-      setAccessToken(accessToken);
-      setPayload(accessPayload);
+    const data = res?.data;
+    const err = res?.error;
+
+    if (err) {
+      setRegistered({ message: data.message, error: err });
+    } else {
+      setRegistered({ message: data.message, error: false });
     }
+
+    setShowAlert(true);
+
+    setTimeout(() => {
+      setShowAlert(false);
+      setRegistered({ message: "", error: false });
+    }, 1500);
+  };
+
+  const handleLogin = async (
+    // event: React.FormEvent,
+    username: string,
+    password: string
+  ) => {
+    // event.preventDefault();
+    const res = await login(username, password);
+    const data = res?.data;
+    const err = res?.error;
+
+    console.log("login", data.message);
+
+    const { accessToken, accessPayload } = data.result;
+    if (err) {
+      setLoggedIn({ message: data.message, error: err });
+    } else {
+      setLoggedIn({ message: data.message, error: false });
+      setTimeout(() => {
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("payload", JSON.stringify(accessPayload));
+        setAccessToken(accessToken);
+        setPayload(accessPayload);
+      }, 1500);
+    }
+
+    setShowAlert(true);
+
+    setTimeout(() => {
+      setShowAlert(false);
+      setLoggedIn({ message: "", error: false });
+    }, 1500);
   };
 
   useEffect(() => {
@@ -69,9 +134,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [accessToken]);
 
   const authContextValue: AuthContextType = {
-    handleSubmit,
+    handleRegister,
+    handleLogin,
     accessToken,
     payload,
+    loggedIn,
+    registered,
+    showAlert,
   };
 
   return (
@@ -80,3 +149,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     </AuthContext.Provider>
   );
 };
+
+export { AuthContext, AuthProvider };
+
+export type { AuthContextType };

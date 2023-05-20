@@ -59,16 +59,7 @@ const CourseTable = () => {
     const res = groupedCourses();
     const groupedCoursesArray = Object.values(res);
     groupedCoursesArray && setGroupCoursesData(groupedCoursesArray);
-    // console.log("groupedCoursesArray", groupedCoursesArray);
   }, [courses, groupedCourses]);
-
-  // if (error) {
-  //   return (
-  //     <div className="container mx-auto my-10 text-center">
-  //       <p className="text-3xl">{error}</p>
-  //     </div>
-  //   );
-  // }
 
   return (
     <>

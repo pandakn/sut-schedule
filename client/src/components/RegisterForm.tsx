@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { IRegisterForm } from "../models/auth.interface";
 import { Link } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import { ILoginForm } from "../models/auth.interface";
 import Alert from "./Alert";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { VscError } from "react-icons/vsc";
 
-const LoginForm = () => {
-  const [inputForm, setInputForm] = useState<ILoginForm>({
+const RegisterForm = () => {
+  const [inputForm, setInputForm] = useState<IRegisterForm>({
+    name: "",
     username: "",
     password: "",
   });
-  const { handleLogin, loggedIn, showAlert } = useAuth();
+
+  const { handleRegister, registered, showAlert } = useContext(AuthContext);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputForm({
@@ -22,36 +24,55 @@ const LoginForm = () => {
 
   const login = (event: React.FormEvent) => {
     event.preventDefault();
-    handleLogin(inputForm.username, inputForm.password);
+    handleRegister(inputForm.name, inputForm.username, inputForm.password);
+    // window.location.href = "/login";
   };
 
   return (
     <>
       {/* Alert */}
-      {!loggedIn.error && showAlert && (
+      {!registered.error && showAlert && (
         <Alert
           textColor="#166534"
           bgColor="#f0fdf4"
           icon={<AiOutlineCheckCircle className="text-xl" />}
         >
-          {loggedIn.message}
+          {registered.message}
         </Alert>
       )}
 
-      {loggedIn.error && showAlert && (
+      {registered.error && showAlert && (
         <Alert
           textColor="#991b1b"
           bgColor="#fef2f2"
           icon={<VscError className="text-xl" />}
         >
-          {loggedIn.message}
+          {registered.message}
         </Alert>
       )}
 
       <div className="fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center bg-black bg-opacity-50">
         <div className="w-1/3 p-8 bg-white rounded-lg shadow-lg">
-          <h2 className="mb-4 text-2xl font-bold">Login</h2>
+          <h2 className="mb-4 text-2xl font-bold">Register</h2>
           <form className="space-y-6" onSubmit={login}>
+            <div>
+              <label
+                htmlFor="name"
+                className="block mb-2 font-bold text-gray-800"
+              >
+                Name
+              </label>
+              <input
+                required
+                type="text"
+                id="name"
+                name="name"
+                onChange={handleInputChange}
+                value={inputForm.name}
+                className="w-full p-2 border border-gray-300 rounded-lg"
+                placeholder="Enter your name"
+              />
+            </div>
             <div>
               <label
                 htmlFor="username"
@@ -97,12 +118,12 @@ const LoginForm = () => {
                 Login
               </button>
               <p className="mt-4 text-center">
-                Don't have an account?{" "}
+                Already have an account?
                 <Link
-                  to="/register"
+                  to="/login"
                   className="pl-1 text-blue-600 hover:underline"
                 >
-                  Register
+                  Login
                 </Link>
               </p>
             </div>
@@ -113,4 +134,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;

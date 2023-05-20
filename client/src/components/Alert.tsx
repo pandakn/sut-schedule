@@ -5,7 +5,7 @@ type Props = {
   children: React.ReactNode;
   textColor: string;
   bgColor: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
 };
 
 const Alert = ({ children, textColor, bgColor, icon }: Props) => {

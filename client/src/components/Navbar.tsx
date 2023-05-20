@@ -1,9 +1,8 @@
+import { useAuth } from "../hooks/useAuth";
 import { Link, Outlet } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
-import { useContext } from "react";
 
 const Navbar = () => {
-  const { accessToken, payload } = useContext(AuthContext);
+  const { accessToken, payload } = useAuth();
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
@@ -30,7 +29,7 @@ const Navbar = () => {
                 onClick={handleLogout}
                 className="cursor-pointer hover:text-gray-800"
               >
-                {payload.username}
+                {payload.name}
               </h1>
             ) : (
               <Link className="hover:text-gray-800" to="login">

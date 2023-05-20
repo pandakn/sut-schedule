@@ -1,4 +1,4 @@
 import { useContext } from "react";
-import { CourseContextValue, CourseContext } from "../contexts/CourseContext";
+import { CourseContextType, CourseContext } from "../contexts/CourseContext";
 
-export const useCourse = (): CourseContextValue => useContext(CourseContext);
+export const useCourse = (): CourseContextType => useContext(CourseContext);

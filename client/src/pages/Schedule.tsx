@@ -1,10 +1,13 @@
+import { useCallback, useEffect, useState } from "react";
+import { useCourse, useAuth } from "../hooks";
+
 import StudyPlan from "../components/StudyPlan";
 // import TableSchedule from "../components/TableSchedule";
 import HorizontalCard from "../components/HorizontalCard";
-import { useCallback, useEffect, useState } from "react";
 import { ICourseInSchedule } from "../models/course.interface";
-import { useCourse } from "../hooks/useCourse";
 import { IColor, getRandomColor } from "../utils/colors";
+
+import { getCourseOfUser } from "../services/httpClient";
 
 const timesOfDay = [
   "Day/Time",
@@ -32,8 +35,16 @@ const Schedule = () => {
   const [courseInSchedule, setCourseInSchedule] = useState<{
     [key: string]: ICourseInSchedule[];
   }>({});
+
   const [bgColor, setBgColor] = useState<IBgColor>({});
   const { classSchedule } = useCourse();
+  const { accessToken, payload } = useAuth();
+
+  const fetchCourseOfUser = useCallback(async () => {
+    if (accessToken) {
+      await getCourseOfUser(payload.id, accessToken);
+    }
+  }, [accessToken, payload.id]);
 
   const timeToCol = (timeString: string): number => {
     const [hours, minutes] = timeString.split(":").map(Number);
@@ -103,9 +114,10 @@ const Schedule = () => {
   }, [classSchedule]);
 
   useEffect(() => {
+    fetchCourseOfUser();
     const res = mappedCourses();
     setCourseInSchedule(res);
-  }, [classSchedule, mappedCourses]);
+  }, [classSchedule, mappedCourses, fetchCourseOfUser]);
 
   return (
     <>

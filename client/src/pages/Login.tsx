@@ -1,10 +1,9 @@
-import { useContext } from "react";
+import { useAuth } from "../hooks/useAuth";
 import LoginForm from "../components/LoginForm";
-import { AuthContext } from "../contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 
 const Login = () => {
-  const { accessToken } = useContext(AuthContext);
+  const { accessToken } = useAuth();
 
   return <>{!accessToken ? <LoginForm /> : <Navigate to="/" />}</>;
 };
