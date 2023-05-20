@@ -1,33 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
 import { useCourse } from "../hooks/useCourse";
 
 // components
 import Alert from "./Alert";
-import GroupCourseTable from "./GroupCourseTable";
 import { Loading } from "react-loading-dot";
 
 // icon
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { VscError } from "react-icons/vsc";
-
-// interfaces
-import { CourseDataInterface } from "../models/course.interface";
-
-interface GroupedCourse {
-  courseCode: string;
-  version: string;
-  courseNameEN: string;
-  courseNameTH: string;
-  credit: string;
-  degree: string;
-  department: string;
-  faculty: string;
-  courseStatus: string;
-  courseCondition: string[] | null;
-  continueCourse: string[] | null;
-  equivalentCourse: string[] | null;
-  sections: CourseDataInterface[];
-}
 
 const headerOfTable: string[] = [
   "Course Code",
@@ -48,53 +27,6 @@ const TableOfClass = () => {
     showAlert,
     addCourseToSchedule,
   } = useCourse();
-  const [groupCoursesData, setGroupCoursesData] = useState<GroupedCourse[]>([]);
-
-  // Group courses by course code and version
-  const groupedCourses = useCallback(() => {
-    return courses.courseData.reduce((acc, course) => {
-      const key = `${course.courseCode}-${course.version}`;
-      const { courseNameEN, courseNameTH, degree, department, faculty } =
-        course;
-
-      if (!acc[key]) {
-        acc[key] = {
-          courseCode: course.courseCode,
-          version: course.version,
-          courseNameEN,
-          courseNameTH,
-          credit: course.credit,
-          degree,
-          department,
-          faculty,
-          courseStatus: course.details.courseStatus,
-          courseCondition: course.details.courseCondition,
-          continueCourse: course.details.continueCourse,
-          equivalentCourse: course.details.equivalentCourse,
-          sections: [],
-        };
-      }
-
-      // Check if the current section has already been added
-      const sectionExists = acc[key].sections.some(
-        (existingSection) => existingSection.section === course.section
-      );
-
-      // If the section does not exist yet, add it
-      if (!sectionExists) {
-        acc[key].sections.push(course);
-      }
-
-      return acc;
-    }, {} as { [key: string]: GroupedCourse });
-  }, [courses]);
-
-  useEffect(() => {
-    const res = groupedCourses();
-    const groupedCoursesArray = Object.values(res);
-    groupedCoursesArray && setGroupCoursesData(groupedCoursesArray);
-    // console.log("groupedCoursesArray", groupedCoursesArray);
-  }, [courses, groupedCourses]);
 
   if (error) {
     return (
@@ -199,7 +131,6 @@ const TableOfClass = () => {
       ) : (
         <Loading background="#6C9BCF" duration="0.6s" />
       )}
-      <GroupCourseTable data={groupCoursesData} />
     </div>
   );
 };

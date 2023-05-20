@@ -60,7 +60,7 @@ const StudyPlan = ({ courseInSchedule }: Props) => {
                 timesOfDay.length * 2
               }, minmax(0, 1fr))`,
             }}
-            className="grid border min-h-16 md:min-h-24"
+            className="grid border border-gray-100 min-h-16 md:min-h-24"
           >
             <div
               style={{ backgroundColor: `${colorOfDays[day].bgColor}` }}

@@ -32,22 +32,24 @@ const HorizontalCard = ({ color }: Props) => {
             className="container grid gap-4 mx-auto my-10 "
           >
             <div className="relative grid justify-between grid-cols-1 mx-5 border rounded-md sm:grid-cols-10">
+              {/* color */}
               <div
                 className="col-span-1 bg-blue-100 border"
                 style={{
                   backgroundColor: `${color[cs.courseCode]}`,
                 }}
               ></div>
-              <div className="col-span-1 p-4 leading-normal sm:col-span-7">
-                <h5 className="mb-2 text-sm font-medium text-gray-800 tracking- sm:text-base md:text-2xl">
+
+              <div className="col-span-1 p-4 px-6 leading-normal sm:col-span-7">
+                <h5 className="mb-2 text-sm font-semibold text-gray-800 tracking- sm:text-base md:text-xl">
                   {cs.courseCode}-{cs.version} : {cs.courseNameEN}
                 </h5>
 
                 <section className="flex gap-2 mb-2 md:gap-1 md:flex-col">
-                  <p className="text-sm font-light text-gray-400 md:text-xl">
+                  <p className="text-sm font-light text-gray-400 md:text-lg">
                     credit: {cs.credit}
                   </p>
-                  <p className="text-sm font-light text-gray-400 ext-sm md:text-xl">
+                  <p className="text-sm font-light text-gray-400 ext-sm md:text-lg">
                     Sec. {cs.section}
                   </p>
                 </section>
@@ -65,13 +67,28 @@ const HorizontalCard = ({ color }: Props) => {
                     </div>
                   );
                 })}
+                {/* exam */}
+                <section className="flex flex-col gap-2 mt-2 text-gray-600">
+                  <p className="text-base font-semibold">
+                    Mid:
+                    <span className="pl-3 font-light">
+                      {cs.details.midExam || "-"}
+                    </span>
+                  </p>
+                  <p className="text-base font-semibold">
+                    Final:
+                    <span className="pl-2 font-light">
+                      {cs.details.finalExam || "-"}
+                    </span>
+                  </p>
+                </section>
               </div>
               <div className="absolute col-span-1 right-2 md:right-5 top-4 sm:col-span-1">
                 <button
                   hidden={!cs.classSchedule && true}
                   onClick={() => removeCourse(cs.id)}
                 >
-                  <MdDelete className="text-red-500 h-7 w-7" />
+                  <MdDelete className="w-8 h-8 text-red-500" />
                 </button>
               </div>
             </div>

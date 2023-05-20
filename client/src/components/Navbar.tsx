@@ -1,6 +1,16 @@
 import { Link, Outlet } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
+import { useContext } from "react";
 
 const Navbar = () => {
+  const { accessToken, payload } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("payload");
+    window.location.reload();
+  };
+
   return (
     <>
       <nav className="container flex items-center justify-center mx-auto my-4">
@@ -15,6 +25,18 @@ const Navbar = () => {
             <Link className="hover:text-gray-800" to="search-course">
               Search Course
             </Link>
+            {accessToken ? (
+              <h1
+                onClick={handleLogout}
+                className="cursor-pointer hover:text-gray-800"
+              >
+                {payload.username}
+              </h1>
+            ) : (
+              <Link className="hover:text-gray-800" to="login">
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </nav>

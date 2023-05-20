@@ -49,6 +49,7 @@ export const pastelColor = [
   { textColor: "#4BAEA0", bgColor: "#CAF7E3" }, // Pastel mint
   { textColor: "#555555", bgColor: "#ffffff" }, // Pastel white
   { textColor: "#fb7185", bgColor: "#fff1f2" }, // Pastel rose
+  { textColor: "#867070", bgColor: "#f0dbcc" }, // Pastel brown
 ];
 
 export const getRandomColor = () => {

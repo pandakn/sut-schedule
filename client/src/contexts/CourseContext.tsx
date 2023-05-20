@@ -5,7 +5,7 @@ import {
   CourseSearchParamsInterface,
   ClassScheduleInterface,
 } from "../models/course.interface";
-import { getCoursesData } from "../services/httpClient";
+import { addCourseData, getCoursesData } from "../services/httpClient";
 
 interface CourseContextValue {
   courses: CourseInterface;
@@ -177,6 +177,12 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
     setClassSchedule((prev) => {
       return [...prev, course];
     });
+
+    // test api add course to user
+    const userId = "646540e994f9f87b7c8f259d";
+    const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQ2NTQwZTk5NGY5Zjg3YjdjOGYyNTlkIiwidXNlcm5hbWUiOiJvbWcifSwiaWF0IjoxNjg0MzU3MzY2LCJleHAiOjE2ODQzNjgxNjZ9.khl7t--NG3GIr9DPY4uuqyCvHmmCJIS7yZtMZ6oMF7Y";
+    addCourseData(userId, course, token);
 
     const timer = setTimeout(() => setShowAlert(false), 1500);
     return () => clearTimeout(timer);

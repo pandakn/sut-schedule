@@ -52,6 +52,22 @@ export interface CourseInterface {
   courseData: CourseDataInterface[];
 }
 
+export interface IGroupedCourse {
+  courseCode: string;
+  version: string;
+  courseNameEN: string;
+  courseNameTH: string;
+  credit: string;
+  degree: string;
+  department: string;
+  faculty: string;
+  courseStatus: string;
+  courseCondition: string[] | null;
+  continueCourse: string[] | null;
+  equivalentCourse: string[] | null;
+  sections: CourseDataInterface[];
+}
+
 export interface ICourseInSchedule {
   id: string;
   day: string;
