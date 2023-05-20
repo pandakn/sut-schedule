@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 interface TokenPayload {
   user: {
     id: string;
+    name: string;
     username: string;
   };
 }
@@ -11,6 +12,7 @@ interface TokenPayload {
 interface AuthenticatedRequest extends Request {
   user?: {
     id: string;
+    name: string;
     username: string;
   };
 }

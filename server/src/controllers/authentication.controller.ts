@@ -7,15 +7,19 @@ import { IUser } from "interfaces/user.interface";
 
 interface UserPayload {
   id: string;
+  name: string;
   username: string;
 }
 
 export const register = async (req: Request, res: Response): Promise<void> => {
-  const { username, password } = req.body;
+  const { name, username, password } = req.body;
 
   try {
     // Check if user already exists
-    const existingUser: IUser | null = await User.findOne({ username });
+    const existingUser: IUser | null = await User.findOne({
+      $or: [{ name }, { username }],
+    });
+
     if (existingUser) {
       res.status(400).json({ message: "User already exists" });
       return;
@@ -28,16 +32,19 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     // Create a new user
     const newUser: IUser = new User({
+      name,
       username,
       password: hashedPassword,
     });
 
     await newUser.save();
 
-    res.status(201).json({ result: newUser });
+    res
+      .status(201)
+      .json({ message: "Registered successfully ", result: newUser });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", error });
   }
 };
 
@@ -48,7 +55,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     // Check if user exists
     const user: IUser | null = await User.findOne({ username });
     if (!user) {
-      res.status(400).json({ message: "Invalid Username" });
+      res.status(400).json({ message: "Invalid Username or Password" });
       return;
     }
 
@@ -59,21 +66,23 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     );
 
     if (!isPasswordValid) {
-      res.status(400).json({ message: "Password Invalid!" });
+      res.status(400).json({ message: "Invalid Username or Password" });
       return;
     }
 
     const accessPayload: UserPayload = {
       id: user._id,
+      name: user.name,
       username: user.username,
     };
 
     const accessToken = jwt.sign(accessPayload, process.env.JWT_SECRET!, {
-      expiresIn: "1m",
+      expiresIn: "3h",
     });
 
     const refreshPayload: UserPayload = {
       id: user._id,
+      name: user.name,
       username: user.username,
     };
 
@@ -94,8 +103,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     res.status(200).json({
       message: "Logged in successfully",
-      accessToken,
-      accessPayload,
+      result: {
+        accessToken,
+        accessPayload,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -108,8 +119,6 @@ export const jwtRefreshToken = async (
   res: Response
 ): Promise<void> => {
   const refreshToken = req.cookies.refreshToken;
-
-  console.log("refreshToken", refreshToken);
 
   if (!refreshToken) {
     res.status(401).json({ message: "Refresh token not found" });
@@ -127,7 +136,7 @@ export const jwtRefreshToken = async (
       { id: decoded.id, username: decoded.username },
       process.env.JWT_SECRET!,
       {
-        expiresIn: "1m",
+        expiresIn: "3h",
       }
     );
 
