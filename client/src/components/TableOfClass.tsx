@@ -1,4 +1,4 @@
-import { useCourse } from "../hooks/useCourse";
+import { useCourse } from "../hooks";
 
 // components
 import Alert from "./Alert";

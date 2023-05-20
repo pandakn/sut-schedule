@@ -1,4 +1,4 @@
-import { useCourse } from "../hooks/useCourse";
+import { useCourse } from "../hooks";
 import Alert from "./Alert";
 import { MdDelete } from "react-icons/md";
 import { AiOutlineDelete } from "react-icons/ai";

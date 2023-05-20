@@ -1,5 +1,5 @@
 import { Loading } from "react-loading-dot";
-import { useCourse } from "../hooks/useCourse";
+import { useCourse } from "../hooks";
 
 // interfaces
 import { CourseDataInterface } from "../models/course.interface";

@@ -1,6 +1,6 @@
 // hooks
 import { useCallback, useEffect, useState } from "react";
-import { useCourse } from "../hooks/useCourse";
+import { useCourse } from "../hooks";
 
 // components
 import SearchBox from "../components/SearchBox";

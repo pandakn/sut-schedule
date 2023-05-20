@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useCourse } from "../hooks/useCourse";
+import { useCourse } from "../hooks";
 
 // acadyear
 const currentYear = new Date().getFullYear() + 543;
