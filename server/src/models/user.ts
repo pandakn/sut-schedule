@@ -1,5 +1,7 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 import { IUser } from "interfaces/user.interface";
+
+export interface IUserModel extends IUser {}
 
 const userSchema: Schema = new mongoose.Schema(
   {
@@ -14,10 +16,11 @@ const userSchema: Schema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    courses: [],
   },
   { timestamps: true }
 );
 
-const User = mongoose.model<IUser>("User", userSchema);
+const User = mongoose.model<IUserModel>("User", userSchema);
 
 export default User;

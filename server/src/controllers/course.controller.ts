@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import connectRedis from "../utils/connect-redis";
 import { scrapeCourseData } from "../scraping/scraper";
+import User, { IUserModel } from "../models/user";
+// import
 
 const redisClient = connectRedis();
 
-const getCourseData = async (req: Request, res: Response) => {
+export const getCourseData = async (req: Request, res: Response) => {
   const { maxrow, acadyear, semester, coursecode, coursename } =
     req.query as Record<string, string>;
 
@@ -39,4 +41,28 @@ const getCourseData = async (req: Request, res: Response) => {
   res.json(jsonData);
 };
 
-export { getCourseData };
+export const addCourse = async (req: Request, res: Response): Promise<void> => {
+  const { userId, course } = req.body;
+
+  try {
+    // Find the user by ID
+    const user: IUserModel | null = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    // Add the course to the user's courses array
+    user.courses.push(course);
+
+    // Save the updated user document
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: "Course added to user successfully", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

@@ -5,6 +5,11 @@ import jwt from "jsonwebtoken";
 import User from "../models/user";
 import { IUser } from "interfaces/user.interface";
 
+interface UserPayload {
+  id: string;
+  username: string;
+}
+
 export const register = async (req: Request, res: Response): Promise<void> => {
   const { username, password } = req.body;
 
@@ -43,7 +48,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     // Check if user exists
     const user: IUser | null = await User.findOne({ username });
     if (!user) {
-      res.status(400).json({ message: "Invalid credentials" });
+      res.status(400).json({ message: "Invalid Username" });
       return;
     }
 
@@ -58,21 +63,77 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const payload = {
-      user: {
-        id: user._id,
-        username: user.username,
-      },
+    const accessPayload: UserPayload = {
+      id: user._id,
+      username: user.username,
     };
 
-    // Create and sign a token
-    const token = jwt.sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: "3h",
+    const accessToken = jwt.sign(accessPayload, process.env.JWT_SECRET!, {
+      expiresIn: "1m",
     });
 
-    res.status(200).json({ message: "Logged in successfully", token, payload });
+    const refreshPayload: UserPayload = {
+      id: user._id,
+      username: user.username,
+    };
+
+    const refreshToken = jwt.sign(
+      refreshPayload,
+      process.env.JWT_REFRESH_SECRET!,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    // Set the refresh token as an HTTP-only cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+      secure: true, // Enable this if using HTTPS
+    });
+
+    res.status(200).json({
+      message: "Logged in successfully",
+      accessToken,
+      accessPayload,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", error });
+  }
+};
+
+export const jwtRefreshToken = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const refreshToken = req.cookies.refreshToken;
+
+  console.log("refreshToken", refreshToken);
+
+  if (!refreshToken) {
+    res.status(401).json({ message: "Refresh token not found" });
+    return;
+  }
+
+  try {
+    const decoded: UserPayload | null = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET!
+    ) as UserPayload;
+
+    // Generate a new access token
+    const newAccessToken = jwt.sign(
+      { id: decoded.id, username: decoded.username },
+      process.env.JWT_SECRET!,
+      {
+        expiresIn: "1m",
+      }
+    );
+
+    res.status(200).json({ accessToken: newAccessToken });
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({ message: "Invalid refresh token" });
   }
 };

@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import User from "../models/user";
-
-import { IUser } from "interfaces/user.interface";
+import User, { IUserModel } from "../models/user";
 
 // Get all users
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -37,7 +35,7 @@ export const editUser = async (req: Request, res: Response): Promise<void> => {
   const { username, password } = req.body;
 
   try {
-    const user: IUser | null = await User.findById(userId);
+    const user: IUserModel | null = await User.findById(userId);
     if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
