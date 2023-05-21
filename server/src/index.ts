@@ -13,9 +13,20 @@ const PORT = process.env.PORT || 3000;
 connectToDatabase();
 
 const app = express();
-app.use(cookieParser());
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      process.env.origin,
+    ],
+  })
+);
+
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.use("/api", router());
 

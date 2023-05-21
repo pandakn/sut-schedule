@@ -8,6 +8,8 @@ import {
   ICourseDetails,
   IClassSchedule,
   ISeat,
+  IGroupedCourse,
+  ISection,
 } from "../interfaces/course.interface";
 
 const statusObj: { [key: string]: string } = {
@@ -17,6 +19,66 @@ const statusObj: { [key: string]: string } = {
   N: "เปิดลงปกติ ทำการโดยเจ้าหน้าที่เท่านั้น",
   W: "เปิดลงปกติ สามารถลงทะเบียนผ่าน WEB ได้",
   X: "เปลี่ยนกลุ่มผ่าน WEB ได้เท่านั้น",
+};
+
+// Group courses by course code and version
+const groupedCourses = (courses: ICourse[]): IGroupedCourse[] => {
+  const groupedCoursesMap = courses.reduce((acc, course) => {
+    const key = `${course.courseCode}-${course.version}`;
+    const { courseNameEN, courseNameTH, degree, department, faculty } = course;
+
+    // acc stand for accumulator
+    if (!acc[key]) {
+      acc[key] = {
+        courseCode: course.courseCode,
+        version: course.version,
+        courseNames: { en: courseNameEN, th: courseNameTH },
+        credit: course.credit,
+        degree,
+        department,
+        faculty,
+        courseStatus: course.details.courseStatus,
+        courseCondition: course.details.courseCondition,
+        continueCourse: course.details.continueCourse,
+        equivalentCourse: course.details.equivalentCourse,
+        sectionsCount: 0,
+        sections: [],
+      };
+    }
+
+    // Check if the current section has already been added
+    const sectionExists = acc[key].sections.some(
+      (existingSection) => existingSection.section === course.section
+    );
+
+    // If the section does not exist yet, add it
+    if (!sectionExists) {
+      const section: ISection = {
+        id: course.id,
+        url: course.url,
+        section: course.section,
+        status: course.statusSection,
+        note: course.note,
+        professors: course.professors,
+        language: course.language,
+        seat: course.seat,
+        classSchedule: course.classSchedule,
+        exams: {
+          midterm: course.details.midExam,
+          final: course.details.finalExam,
+        },
+      };
+
+      acc[key].sections.push(section);
+    }
+
+    // Update the totalSections property
+    acc[key].sectionsCount = acc[key].sections.length;
+
+    return acc;
+  }, {} as { [key: string]: IGroupedCourse });
+
+  return Object.values(groupedCoursesMap);
 };
 
 // extract time and day
@@ -37,7 +99,9 @@ const parseSchedule = (schedule: string): IClassSchedule[] => {
   return [];
 };
 
-const scrapeCourseData = async (url: string): Promise<ICourse[] | null> => {
+const scrapeCourseDataTest = async (
+  url: string
+): Promise<IGroupedCourse[] | null> => {
   try {
     const response = await axios({
       url,
@@ -142,11 +206,15 @@ const scrapeCourseData = async (url: string): Promise<ICourse[] | null> => {
       if (courseCode) {
         const uniqueId = uuidv4();
 
+        // Check if the course details have already been scraped for the given course key
+
         const urlCourseDetails = `http://reg.sut.ac.th/registrar/${courseCodeUrl}`;
         const res = await scrapeCourseDetails(
           urlCourseDetails,
           Number(section)
         );
+
+        // console.log(courseDetails);
 
         const {
           courseNameTH,
@@ -193,11 +261,14 @@ const scrapeCourseData = async (url: string): Promise<ICourse[] | null> => {
         courseData.push(dataObj);
       }
     }
-    return courseData;
+
+    const result = groupedCourses(courseData);
+
+    return result;
   } catch (error) {
     console.error(error);
     return null;
   }
 };
 
-export { scrapeCourseData };
+export { scrapeCourseDataTest };

@@ -77,7 +77,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     };
 
     const accessToken = jwt.sign(accessPayload, process.env.JWT_SECRET!, {
-      expiresIn: "3h",
+      expiresIn: "15m",
     });
 
     const refreshPayload: UserPayload = {
@@ -99,6 +99,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
       secure: true, // Enable this if using HTTPS
+      sameSite: "none",
     });
 
     res.status(200).json({
@@ -136,7 +137,7 @@ export const jwtRefreshToken = async (
       { id: decoded.id, username: decoded.username },
       process.env.JWT_SECRET!,
       {
-        expiresIn: "3h",
+        expiresIn: "15",
       }
     );
 

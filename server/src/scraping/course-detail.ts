@@ -57,13 +57,13 @@ const scrapeCourseDetails = async (courseCodeUrl: string, sec: number) => {
     const selector =
       "td:nth-child(3) > table:nth-child(2) > tbody > tr > td:nth-child(2) > table > tbody >";
 
-    const courseNameEN = courseInfoRows
+    const courseNameEN: string | null = courseInfoRows
       .find(`${selector}tr:nth-child(1) > td:nth-child(2) > b > font`)
       .text()
       .replace(/\s+/g, " ")
       .trim();
 
-    const courseNameTH = courseInfoRows
+    const courseNameTH: string | null = courseInfoRows
       .find(`${selector}tr:nth-child(2) > td:nth-child(2) > font`)
       .text()
       .replace(/\s+/g, " ")
