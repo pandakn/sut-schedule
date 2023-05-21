@@ -100,12 +100,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const data = res?.data;
     const err = res?.error;
 
-    console.log("login", data.message);
+    // console.log("login", data.message, err);
 
-    const { accessToken, accessPayload } = data.result;
     if (err) {
       setLoggedIn({ message: data.message, error: err });
     } else {
+      const { accessToken, accessPayload } = data.result;
       setLoggedIn({ message: data.message, error: false });
       setTimeout(() => {
         localStorage.setItem("accessToken", accessToken);
@@ -119,7 +119,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
     setTimeout(() => {
       setShowAlert(false);
-      setLoggedIn({ message: "", error: false });
+      // setLoggedIn({ message: "", error: false });
     }, 1500);
   };
 

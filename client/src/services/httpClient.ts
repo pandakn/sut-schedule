@@ -41,6 +41,7 @@ export const login = async (username: string, password: string) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ username, password }),
+      credentials: "include", // Include cookies in the request
     });
 
     if (response.ok) {

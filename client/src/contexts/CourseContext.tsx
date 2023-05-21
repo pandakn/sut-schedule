@@ -39,7 +39,7 @@ const CourseContext = createContext<CourseContextType>({
     throw new Error("setClassSchedule is not implemented");
   },
   addCourseToSchedule: () => {
-    throw new Error("removeCourse is not implemented");
+    throw new Error("addCourseToSchedule is not implemented");
   },
   removeCourse: () => {
     throw new Error("removeCourse is not implemented");
@@ -144,12 +144,9 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
           newCourseStartTime < coursesInScheduleEndTime &&
           newCourseEndTime > coursesInScheduleStartTime;
 
-        console.log("overlaps", overlaps);
-
         return overlaps;
       });
     });
-    console.log("sameTime", sameTime);
 
     return sameTime;
   };
@@ -192,8 +189,7 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
       prevSchedule.filter((course) => course.id !== courseId)
     );
 
-    const res = await deleteCourseOfUser(payload.id, courseId, accessToken);
-    console.log("removeCourse", res);
+    await deleteCourseOfUser(payload.id, courseId, accessToken);
 
     // window.location.href = "/schedule";
     // navigate("/schedule");

@@ -40,6 +40,8 @@ const Schedule = () => {
   const { classSchedule } = useCourse();
   const { accessToken, payload } = useAuth();
 
+  console.log("classSchedule", classSchedule);
+
   const fetchCourseOfUser = useCallback(async () => {
     if (accessToken) {
       await getCourseOfUser(payload.id, accessToken);

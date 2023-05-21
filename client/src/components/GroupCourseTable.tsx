@@ -2,7 +2,7 @@ import { Loading } from "react-loading-dot";
 import { useCourse } from "../hooks";
 
 // interfaces
-import { CourseDataInterface } from "../models/course.interface";
+import { IGroupedCourse } from "../models/course.interface";
 import Alert from "./Alert";
 
 // icons
@@ -13,28 +13,12 @@ import {
 } from "react-icons/ai";
 import { VscError } from "react-icons/vsc";
 
-interface GroupedCourse {
-  courseCode: string;
-  version: string;
-  courseNameEN: string;
-  courseNameTH: string;
-  credit: string;
-  degree: string;
-  department: string;
-  faculty: string;
-  courseStatus: string;
-  courseCondition: string[] | null;
-  continueCourse: string[] | null;
-  equivalentCourse: string[] | null;
-  sections: CourseDataInterface[];
-}
-
 type Props = {
-  data: GroupedCourse[];
+  data: IGroupedCourse[];
 };
 
 type DetailsProp = {
-  course: GroupedCourse;
+  course: IGroupedCourse;
 };
 
 const RenderDetails = ({ course }: DetailsProp) => {

@@ -70,6 +70,10 @@ const LoginForm = () => {
                 placeholder="Enter your username"
               />
             </div>
+            {/* show msg error */}
+            {loggedIn.error && (
+              <span className="text-sm text-red-500">{loggedIn.message}</span>
+            )}
             <div>
               <label
                 htmlFor="password"
@@ -88,6 +92,11 @@ const LoginForm = () => {
                 placeholder="Enter your password"
               />
             </div>
+            {/* show msg error */}
+            {loggedIn.error && (
+              <span className="text-sm text-red-500">{loggedIn.message}</span>
+            )}
+
             <div>
               <button
                 type="submit"
