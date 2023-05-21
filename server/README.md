@@ -27,11 +27,11 @@ This project scrapes course data from Reg SUT.
 ## Usage/Examples JSON
 
 ```json
-"data": {
+"result": {
     "year": "3/2565",
     "courseData": [
         {
-            "id": 1,
+            "id": "306e9824-d8b8-4ff4-85ad-2abab487ef4b",
             "url": "http://reg.sut.ac.th/registrar/class_info_2.asp?backto=home&option=0&courseid=1011782&coursecode=IST301105&acadyear=2565&semester=3&avs434084436=1",
             "courseCode": "IST30 1105",
             "version": "1",
