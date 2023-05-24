@@ -57,7 +57,6 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
     year: "",
     courseData: [],
   });
-  // const [classSchedule, setClassSchedule] = useState<CourseDataInterface[]>([]);
   const [classSchedule, setClassSchedule] = useState<CourseDataInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,10 +77,10 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
         params.coursename
       );
 
-      if (res.status) {
+      if (res?.status) {
         setCourses({ year: res.data.year, courseData: res.data.courseData });
       } else {
-        setError(res.data);
+        setError(res?.data);
       }
       setLoading(false);
     } catch (err) {
@@ -99,38 +98,14 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
 
     const sameTime = coursesInSchedule?.some((elem) => {
       return newCourse.some((nc) => {
-        const newCourseTime = nc.times.split("-");
-
-        // JS Date it defaults to January 1st, 1970 at 00:00:00 UTC.
-        const newCourseStartTime = new Date(
-          `1970-01-01T${newCourseTime?.[0]}:00`
-        );
-        const newCourseEndTime = new Date(
-          `1970-01-01T${newCourseTime?.[1]}:00`
-        );
+        const [newCourseStartTime, newCourseEndTime] = nc.times.split("-");
 
         if (elem.day !== nc.day) {
-          // console.log("inside if elem", elem.day, elem.times);
-          // console.log("inside if new course", nc.day, nc.times);
           return false;
         }
 
-        // console.log("outside elem", elem.day, elem.times);
-        // console.log("outside new course", nc.day, nc.times);
-
-        const coursesInScheduleTime = elem.times.split("-");
-        const coursesInScheduleStartTime = new Date(
-          `1970-01-01T${coursesInScheduleTime[0]}:00`
-        );
-        const coursesInScheduleEndTime = new Date(
-          `1970-01-01T${coursesInScheduleTime[1]}:00`
-        );
-
-        // console.log("newCourseStartTime", newCourseStartTime);
-        // console.log("newCourseEndTime", newCourseEndTime);
-
-        // console.log("coursesInScheduleStartTime", coursesInScheduleStartTime);
-        // console.log("coursesInScheduleEndTime", coursesInScheduleEndTime);
+        const [coursesInScheduleStartTime, coursesInScheduleEndTime] =
+          elem.times.split("-");
 
         // example check time range
         // a, b = new course   c, d = course in schedule
@@ -164,7 +139,6 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
     });
 
     if (isSameSchedule) {
-      // alert("Cannot add the course");
       setShowAlert(true);
       setAddCourseError(true);
       setTimeout(() => setShowAlert(false), 2000);
@@ -177,7 +151,6 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
     }
 
     setShowAlert(true);
-    // test api add course to user
     setTimeout(() => setShowAlert(false), 1500);
   };
 
@@ -191,9 +164,6 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
 
     await deleteCourseOfUser(payload.id, courseId, accessToken);
 
-    // window.location.href = "/schedule";
-    // navigate("/schedule");
-
     setTimeout(() => setShowAlert(false), 1500);
   };
 
@@ -205,7 +175,6 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
   }, [payload.id, accessToken]);
 
   useEffect(() => {
-    // localStorage.setItem("classSchedule", JSON.stringify(classSchedule));
     getCourse();
   }, [payload.id, accessToken, getCourse]);
 

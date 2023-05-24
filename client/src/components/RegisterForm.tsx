@@ -22,10 +22,9 @@ const RegisterForm = () => {
     });
   };
 
-  const login = (event: React.FormEvent) => {
+  const register = (event: React.FormEvent) => {
     event.preventDefault();
     handleRegister(inputForm.name, inputForm.username, inputForm.password);
-    // window.location.href = "/login";
   };
 
   return (
@@ -52,9 +51,9 @@ const RegisterForm = () => {
       )}
 
       <div className="fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="w-1/3 p-8 bg-white rounded-lg shadow-lg">
+        <div className="p-8 bg-white rounded-lg shadow-lg max-w-1/2">
           <h2 className="mb-4 text-2xl font-bold">Register</h2>
-          <form className="space-y-6" onSubmit={login}>
+          <form className="space-y-6" onSubmit={register}>
             <div>
               <label
                 htmlFor="name"
@@ -112,10 +111,10 @@ const RegisterForm = () => {
             <div>
               <button
                 type="submit"
-                onSubmit={login}
+                onSubmit={register}
                 className="w-full px-6 py-2 text-xl font-medium text-white uppercase bg-black rounded-3xl"
               >
-                Login
+                Register
               </button>
               <p className="mt-4 text-center">
                 Already have an account?

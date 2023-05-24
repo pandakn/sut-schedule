@@ -1,64 +1,7 @@
+import api from "./axiosInterceptors";
 import { CourseDataInterface } from "../models/course.interface";
 
 const MAX_ROW = "50";
-const apiUrl = import.meta.env.VITE_API_URL;
-
-export const register = async (
-  name: string,
-  username: string,
-  password: string
-) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, username, password }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      // Handle the success response
-      return { data, error: false };
-    } else {
-      // Handle the error response
-      const data = await response.json();
-      // console.error("error msg", dst);
-      return { data, error: true };
-    }
-  } catch (error) {
-    // Handle any network or server errors
-    console.error(error);
-  }
-};
-
-export const login = async (username: string, password: string) => {
-  try {
-    const response = await fetch(`${apiUrl}/api/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-      credentials: "include", // Include cookies in the request
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      // Handle the success response
-      return { data, error: false };
-    } else {
-      // Handle the error response
-      const data = await response.json();
-      // console.error("error msg", data);
-      return { data, error: true };
-    }
-  } catch (error) {
-    // Handle any network or server errors
-    console.error(error);
-  }
-};
 
 export const getCoursesData = async (
   acadyear: string,
@@ -66,22 +9,23 @@ export const getCoursesData = async (
   coursecode: string,
   coursename: string
 ) => {
-  const url = `${apiUrl}/api/courses?acadyear=${acadyear}&semester=${semester}&coursecode=${coursecode}&coursename=${coursename}&maxrow=${MAX_ROW}`;
+  const url = `/api/courses?acadyear=${acadyear}&semester=${semester}&coursecode=${coursecode}&coursename=${coursename}&maxrow=${MAX_ROW}`;
   const token = localStorage.getItem("accessToken");
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const data = await response.json();
+  try {
+    const response = await api.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  if (data.result) {
-    return { status: true, data: data.result };
-  } else {
-    return { status: false, data: data.error };
+    if (response.status === 200 && response.data.result) {
+      return { status: true, data: response.data.result };
+    } else {
+      return { status: false, data: response.data.error };
+    }
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -91,26 +35,25 @@ export const addCourseData = async (
   token: string | null
 ) => {
   try {
-    const response = await fetch(`${apiUrl}/api/courses`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+    const response = await api.post(
+      `/api/courses`,
+      {
+        userId,
+        course,
       },
-      body: JSON.stringify({ userId, course }),
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-    if (response.ok) {
-      const data = await response.json();
-      // Handle the success response
-      return data;
+    if (response.status === 200) {
+      return response.data;
     } else {
-      // Handle the error response
-      const errorData = await response.json();
-      console.error(errorData);
+      console.error(response.data);
     }
   } catch (error) {
-    // Handle any network or server errors
     console.error(error);
   }
 };
@@ -121,51 +64,37 @@ export const deleteCourseOfUser = async (
   token: string | null
 ) => {
   try {
-    const response = await fetch(`${apiUrl}/api/course/${courseId}`, {
-      method: "DELETE",
+    const response = await api.delete(`/api/course/${courseId}`, {
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ userId }),
+      data: { userId },
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      // Handle the success response
-      return data.message;
+    if (response.status === 200) {
+      return response.data.message;
     } else {
-      // Handle the error response
-      const errorData = await response.json();
-      console.error(errorData);
+      console.error(response.data);
     }
   } catch (error) {
-    // Handle any network or server errors
     console.error(error);
   }
 };
 
 export const getCourseOfUser = async (userId: string, token: string) => {
   try {
-    const response = await fetch(`${apiUrl}/api/user/${userId}`, {
-      method: "GET",
+    const response = await api.get(`/api/user/${userId}`, {
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      // Handle the success response
-      return data.result.courses;
+    if (response.status === 200) {
+      return response.data.result.courses;
     } else {
-      // Handle the error response
-      const errorData = await response.json();
-      console.error(errorData);
+      console.error(response.data);
     }
   } catch (error) {
-    // Handle any network or server errors
     console.error(error);
   }
 };

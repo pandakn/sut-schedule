@@ -49,7 +49,7 @@ const LoginForm = () => {
       )}
 
       <div className="fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="w-1/3 p-8 bg-white rounded-lg shadow-lg">
+        <div className="p-8 bg-white rounded-lg shadow-lg max-w-1/3">
           <h2 className="mb-4 text-2xl font-bold">Login</h2>
           <form className="space-y-6" onSubmit={login}>
             <div>

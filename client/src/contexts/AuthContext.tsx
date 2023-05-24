@@ -1,9 +1,10 @@
 import React, { createContext, useEffect, useState } from "react";
-import { login, register } from "../services/httpClient";
+import { useNavigate } from "react-router-dom";
+import { login, logout, register } from "../services/authHttpClient";
 
 interface AuthMsg {
-  message: string;
-  error: boolean;
+  message: string | undefined;
+  error: boolean | undefined;
 }
 
 interface AccessTokenPayload {
@@ -19,6 +20,7 @@ type AuthContextType = {
     password: string
   ) => Promise<void>;
   handleLogin: (username: string, password: string) => Promise<void>;
+  handleLogout: () => Promise<void>;
   accessToken: string | null;
   payload: AccessTokenPayload;
   loggedIn: AuthMsg;
@@ -32,6 +34,9 @@ const initialAuthContext: AuthContextType = {
   },
   handleLogin: () => {
     throw new Error("handleLogin is not implemented");
+  },
+  handleLogout: () => {
+    throw new Error("handleLogout is not implemented");
   },
   accessToken: localStorage.getItem("accessToken"),
   payload: { id: "", name: "", username: "" },
@@ -65,6 +70,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     error: false,
   });
   const [showAlert, setShowAlert] = useState(false);
+  const navigate = useNavigate();
 
   const handleRegister = async (
     name: string,
@@ -87,40 +93,47 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setTimeout(() => {
       setShowAlert(false);
       setRegistered({ message: "", error: false });
+      navigate("/login");
     }, 1500);
   };
 
-  const handleLogin = async (
-    // event: React.FormEvent,
-    username: string,
-    password: string
-  ) => {
-    // event.preventDefault();
+  const handleLogin = async (username: string, password: string) => {
     const res = await login(username, password);
+    // const res = await login(username, password);
     const data = res?.data;
     const err = res?.error;
 
-    // console.log("login", data.message, err);
-
     if (err) {
-      setLoggedIn({ message: data.message, error: err });
+      setLoggedIn({ message: data?.message, error: err });
     } else {
-      const { accessToken, accessPayload } = data.result;
-      setLoggedIn({ message: data.message, error: false });
-      setTimeout(() => {
+      const result = data?.result;
+
+      if (result && result.accessToken && result.accessPayload) {
+        const { accessToken, accessPayload } = result;
+        setLoggedIn({ message: data?.message, error: false });
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("payload", JSON.stringify(accessPayload));
-        setAccessToken(accessToken);
-        setPayload(accessPayload);
-      }, 1500);
+        setTimeout(() => {
+          setAccessToken(accessToken);
+          setPayload(accessPayload);
+        }, 1500);
+      }
     }
 
     setShowAlert(true);
 
     setTimeout(() => {
       setShowAlert(false);
-      // setLoggedIn({ message: "", error: false });
     }, 1500);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("payload");
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   useEffect(() => {
@@ -136,6 +149,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const authContextValue: AuthContextType = {
     handleRegister,
     handleLogin,
+    handleLogout,
     accessToken,
     payload,
     loggedIn,

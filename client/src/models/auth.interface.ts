@@ -8,3 +8,17 @@ export interface ILoginForm {
   username: string;
   password: string;
 }
+
+interface IAccessPayload {
+  id: string;
+  name: string;
+  username: string;
+}
+
+export interface ILoginResponse {
+  message: string;
+  result?: {
+    accessToken: string;
+    accessPayload: IAccessPayload;
+  };
+}

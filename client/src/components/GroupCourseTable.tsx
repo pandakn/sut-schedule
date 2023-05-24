@@ -144,6 +144,15 @@ const GroupCourseTable = ({ data }: Props) => {
                             <p>remain : {sec.seat.remain}</p>
                           </div>
                           <p>section : {sec.section}</p>
+                          {sec.classSchedule?.map((cs) => {
+                            return (
+                              <div className="flex gap-2">
+                                <p>{cs.day}</p>
+                                <p>{cs.times}</p>
+                                <u>{cs.room}</u>
+                              </div>
+                            );
+                          })}
                           <p>language: {sec.language}</p>
                           <p className="tracking-wide">
                             note :
