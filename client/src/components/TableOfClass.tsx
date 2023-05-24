@@ -5,22 +5,30 @@ import Alert from "./Alert";
 import { Loading } from "react-loading-dot";
 
 // icon
-import { AiOutlineCheckCircle } from "react-icons/ai";
+import {
+  AiOutlineCheckCircle,
+  AiOutlineInfoCircle,
+  AiOutlinePlusCircle,
+} from "react-icons/ai";
 import { VscError } from "react-icons/vsc";
+import { CourseDataInterface } from "../models/course.interface";
+
+type Prop = {
+  courseSection: CourseDataInterface[];
+};
 
 const headerOfTable: string[] = [
-  "Course Code",
-  "Course Name",
   "Sec.",
   "Class Schedule",
+  "Seat",
   "Midterm",
   "Final",
   "",
 ];
 
-const TableOfClass = () => {
+const TableOfClass = ({ courseSection }: Prop) => {
   const {
-    courses,
+    // courses,
     loading,
     error,
     addCourseError,
@@ -75,21 +83,12 @@ const TableOfClass = () => {
             </thead>
             <tbody>
               {/* map course */}
-              {courses.courseData.map((course) => {
+              {courseSection.map((course) => {
                 return (
                   <tr
                     key={`${course.courseCode}-${course.version}:${course.courseNameEN}/${course.section}`}
                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-6 py-4 font-bold">
-                      {course.courseCode} - {course.version}
-                    </td>
-                    <td className="px-6 py-4 font-medium">
-                      <div className="leading-relaxed">
-                        <p className="font-semibold">{course.courseNameEN}</p>
-                        <p className="opacity-60">credit : {course.credit}</p>
-                      </div>
-                    </td>
                     <td className="px-6 py-4">{course.section}</td>
                     <td className="px-6 py-4">
                       {course.classSchedule?.map(
@@ -107,6 +106,7 @@ const TableOfClass = () => {
                         }
                       ) || "-"}
                     </td>
+                    <td></td>
                     <td className="px-6 py-4">
                       {course.details.midExam?.slice(0, 35) || "-"}
                     </td>
@@ -114,13 +114,24 @@ const TableOfClass = () => {
                       {course.details.finalExam?.slice(0, 35) || "-"}
                     </td>
                     <td className="px-6 py-4">
-                      <button
-                        hidden={!course.classSchedule && true}
-                        onClick={() => addCourseToSchedule(course)}
-                        className="px-2 py-1 text-white bg-green-500 rounded-sm"
-                      >
-                        +
-                      </button>
+                      <div className="flex ">
+                        <button
+                          name="btnAdd"
+                          hidden={!course.classSchedule && true}
+                          onClick={() => addCourseToSchedule(course)}
+                          className="bg-green-400 btn-logo"
+                        >
+                          <AiOutlinePlusCircle className="logo-center " />
+                        </button>
+                        <button
+                          name="btnInfo"
+                          hidden={!course.classSchedule && true}
+                          onClick={() => window.open(`${course.url}`, "_blank")}
+                          className="bg-blue-400 btn-logo "
+                        >
+                          <AiOutlineInfoCircle className="logo-center" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

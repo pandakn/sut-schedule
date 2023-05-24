@@ -60,23 +60,23 @@ export const getRandomColor = () => {
   return color;
 };
 
-export const colorsType = {
-  normal: "#CCC8B9",
-  fire: "#FFB27A",
-  water: "#9AD6F0",
-  electric: "#FFFACD",
-  grass: "#AEDAAF",
-  ice: "#C1EFEF",
-  fighting: "#EF9590",
-  poison: "#D7A6D9",
-  ground: "#E6D9A6",
-  flying: "#D9D6F3",
-  psychic: "#F3C2D3",
-  bug: "#D6E3A6",
-  rock: "#D8D2AB",
-  ghost: "#B8A8C7",
-  dragon: "#B4A1F9",
-  dark: "#AFA8A5",
-  steel: "#D6D6DF",
-  fairy: "#F3C7D6",
-};
+// export const colorsType = {
+//   normal: "#CCC8B9",
+//   fire: "#FFB27A",
+//   water: "#9AD6F0",
+//   electric: "#FFFACD",
+//   grass: "#AEDAAF",
+//   ice: "#C1EFEF",
+//   fighting: "#EF9590",
+//   poison: "#D7A6D9",
+//   ground: "#E6D9A6",
+//   flying: "#D9D6F3",
+//   psychic: "#F3C2D3",
+//   bug: "#D6E3A6",
+//   rock: "#D8D2AB",
+//   ghost: "#B8A8C7",
+//   dragon: "#B4A1F9",
+//   dark: "#AFA8A5",
+//   steel: "#D6D6DF",
+//   fairy: "#F3C7D6",
+// };

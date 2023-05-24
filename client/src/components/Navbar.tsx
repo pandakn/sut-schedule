@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Link, Outlet } from "react-router-dom";
 import { MdLogout } from "react-icons/md";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
+import { motion } from "framer-motion";
 
 const Navbar = () => {
   const { accessToken, payload, handleLogout } = useAuth();
@@ -14,35 +15,42 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="bg-white shadow-lg">
+      <nav className="bg-white shadow-lg sticky-navbar">
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center justify-between w-full">
+            <div className="flex items-center justify-between w-full ">
               <div className="flex-shrink-0">
                 <Link to="/" className="text-xl uppercase">
-                  <span className="text-orange-400">Sut</span> Schedule
+                  <span className="text-orange-500">Sut</span> Schedule
                 </Link>
               </div>
               <div className="hidden md:block">
-                <div className="flex items-center space-x-4">
-                  <Link className="hover:text-gray-800" to="schedule">
+                <div className="flex items-center gap-6">
+                  <Link
+                    className="text-gray-600 uppercase hover:text-gray-800"
+                    to="schedule"
+                  >
                     Schedule
                   </Link>
-                  <Link className="hover:text-gray-800" to="search-course">
-                    Course
+                  <Link
+                    className="text-gray-600 uppercase hover:text-gray-800"
+                    to="search-course"
+                  >
+                    Search
                   </Link>
                   {accessToken ? (
                     <>
-                      <h1 className="cursor-pointer hover:text-gray-800">
-                        {payload.name}
-                      </h1>
+                      |<h3 className="">{payload.name}</h3>
                       <MdLogout
                         onClick={handleLogout}
                         className="text-red-400 w-7 h-7 hover:text-red-600 hover:cursor-pointer"
                       />
                     </>
                   ) : (
-                    <Link className="hover:text-gray-800" to="login">
+                    <Link
+                      className="text-gray-600 uppercase hover:text-gray-800"
+                      to="login"
+                    >
                       Login
                     </Link>
                   )}
@@ -70,19 +78,26 @@ const Navbar = () => {
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden" id="mobile-menu">
-            <div className="flex flex-col px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              <Link className="hover:text-gray-800" to="schedule">
+          <motion.div
+            initial={{ y: -20 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden"
+            id="mobile-menu"
+          >
+            <div className="flex flex-col px-2 pt-2 pb-3 gap-y-1 sm:px-3">
+              <Link className="uppercase hover:text-gray-800" to="schedule">
                 Schedule
               </Link>
-              <Link className="hover:text-gray-800" to="search-course">
+              <Link
+                className="uppercase hover:text-gray-800"
+                to="search-course"
+              >
                 Course
               </Link>
               {accessToken ? (
                 <>
-                  <h1 className="cursor-pointer hover:text-gray-800">
-                    {payload.name}
-                  </h1>
+                  <h3 className="text-lg cursor-pointer ">{payload.name}</h3>
                   <MdLogout
                     onClick={handleLogout}
                     className="text-red-400 w-7 h-7 hover:text-red-600 hover:cursor-pointer"
@@ -94,7 +109,7 @@ const Navbar = () => {
                 </Link>
               )}
             </div>
-          </div>
+          </motion.div>
         )}
       </nav>
       <Outlet />

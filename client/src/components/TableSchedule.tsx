@@ -79,6 +79,7 @@
 //                   <td className="px-6 py-4">
 //                     {/* remove course */}
 //                     <button
+//                       name="btnDelete"
 //                       hidden={!course.classSchedule && true}
 //                       onClick={() => removeCourse(course.id)}
 //                     >

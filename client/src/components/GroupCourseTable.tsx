@@ -5,6 +5,8 @@ import { useCourse } from "../hooks";
 import { IGroupedCourse } from "../models/course.interface";
 import Alert from "./Alert";
 
+import { colorOfDays } from "../utils/colors";
+
 // icons
 import {
   AiOutlineCheckCircle,
@@ -25,14 +27,14 @@ const RenderDetails = ({ course }: DetailsProp) => {
   return (
     <div>
       <p>status: {course.courseStatus}</p>
-      <section className="flex items-center gap-2">
+      <section className="flex items-center gap-2 my-2">
         <p>condition:</p>
         <div className="flex gap-2">
           {course.courseCondition?.map((condition, i) => {
             return (
               <p
                 key={`${course.courseCode}-${course.version}-${condition + i}`}
-                className="px-2 py-1 rounded-md bg-blue-50"
+                className="px-2 py-1 bg-green-200 rounded-md"
               >
                 {condition || "-"}
               </p>
@@ -41,14 +43,14 @@ const RenderDetails = ({ course }: DetailsProp) => {
         </div>
       </section>
 
-      <section className="flex items-center gap-2">
+      <section className="flex items-center gap-2 mb-2">
         <p>continue:</p>
         <div className="flex gap-2">
           {course.continueCourse?.map((con, i) => {
             return (
               <p
                 key={`${course.courseCode}-${course.version}-${con + i}`}
-                className="px-2 py-1 rounded-md bg-blue-50"
+                className="px-2 py-1 bg-orange-200 rounded-md"
               >
                 {con}
               </p>
@@ -113,12 +115,15 @@ const GroupCourseTable = ({ data }: Props) => {
             return (
               <div
                 key={`${course.courseCode}-${course.version}`}
-                className="mx-5 mb-5 border rounded-lg"
+                className="mx-5 mb-5 border rounded-lg shadow-md"
               >
-                <div className="p-5 mb-3 bg-blue-50">
-                  <h3 className="mb-2 text-xl tracking-wide">
-                    {course.courseCode}-{course.version} : {course.courseNameEN}
-                  </h3>
+                <div className="flex flex-col p-5 mb-3 gap-y-2">
+                  <div className="mb-4 text-lg tracking-wide text-center md:text-2xl lg:text-3xl">
+                    <h3 className="font-bold">
+                      {course.courseCode}-{course.version}
+                    </h3>
+                    <p className="mt-1">{course.courseNameEN}</p>
+                  </div>
                   <p>credit: {course.credit}</p>
                   <p>degree: {course.degree}</p>
                   <p>
@@ -129,32 +134,45 @@ const GroupCourseTable = ({ data }: Props) => {
                     course={course}
                   />
                 </div>
+
                 {/* details each section */}
-                <div className="flex flex-col gap-4 p-5">
+                <div className="flex flex-col gap-4">
                   {course.sections.map((sec) => {
                     return (
                       <div
                         key={sec.id}
-                        className="flex flex-col justify-between bg-white border md:flex-row"
+                        className="flex flex-col justify-between border bg-neutral-50 text-clip md:flex-row"
                       >
-                        <div>
-                          <div className="flex gap-2">
-                            <p>total : {sec.seat.totalSeat}</p>
-                            <p>registered : {sec.seat.registered}</p>
-                            <p>remain : {sec.seat.remain}</p>
-                          </div>
-                          <p>section : {sec.section}</p>
+                        <div className="pl-5 leading-relaxed">
+                          <p className="mt-4 text-xl text-gray-500">
+                            section: {sec.section}
+                          </p>
+
                           {sec.classSchedule?.map((cs) => {
                             return (
-                              <div className="flex gap-2">
-                                <p>{cs.day}</p>
+                              <div className="flex gap-2 text-lg">
+                                <p
+                                  style={{
+                                    color: `${
+                                      colorOfDays[cs.day.toLowerCase()]
+                                        .textColor
+                                    }`,
+                                  }}
+                                >
+                                  {cs.day}
+                                </p>
                                 <p>{cs.times}</p>
                                 <u>{cs.room}</u>
                               </div>
                             );
                           })}
+                          <div className="flex gap-2">
+                            <p>total : {sec.seat.totalSeat}</p>
+                            <p>registered : {sec.seat.registered}</p>
+                            <p>remain : {sec.seat.remain}</p>
+                          </div>
                           <p>language: {sec.language}</p>
-                          <p className="tracking-wide">
+                          <p className="mb-4 tracking-wide">
                             note :
                             <span className="pl-2 text-red-500">
                               {sec.note || "-"}
@@ -162,8 +180,9 @@ const GroupCourseTable = ({ data }: Props) => {
                           </p>
                         </div>
                         {/* button */}
-                        <div className="flex ">
+                        <div className="flex">
                           <button
+                            name="btnAdd"
                             hidden={!sec.classSchedule && true}
                             onClick={() => addCourseToSchedule(sec)}
                             className="bg-green-400 btn-logo"
@@ -171,6 +190,7 @@ const GroupCourseTable = ({ data }: Props) => {
                             <AiOutlinePlusCircle className="logo-center " />
                           </button>
                           <button
+                            name="btnInfo"
                             hidden={!sec.classSchedule && true}
                             onClick={() => window.open(`${sec.url}`, "_blank")}
                             className="bg-blue-400 btn-logo "

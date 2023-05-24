@@ -85,6 +85,7 @@ const HorizontalCard = ({ color }: Props) => {
               </div>
               <div className="absolute col-span-1 right-2 md:right-5 top-4 sm:col-span-1">
                 <button
+                  name="btnDelete"
                   hidden={!cs.classSchedule && true}
                   onClick={() => removeCourse(cs.id)}
                 >
