@@ -40,7 +40,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     await newUser.save();
 
     res
-      .status(201)
+      .status(200)
       .json({ message: "Registered successfully ", result: newUser });
   } catch (error) {
     console.error(error);
@@ -137,7 +137,7 @@ export const jwtRefreshToken = async (
       { id: decoded.id, username: decoded.username },
       process.env.JWT_SECRET!,
       {
-        expiresIn: "15",
+        expiresIn: "15m",
       }
     );
 
@@ -146,4 +146,14 @@ export const jwtRefreshToken = async (
     console.error(error);
     res.status(401).json({ message: "Invalid refresh token" });
   }
+};
+
+export const logout = (req: Request, res: Response) => {
+  res.cookie("refreshToken", "", {
+    httpOnly: true,
+    expires: new Date(0),
+    secure: true, // Enable this if using HTTPS
+    sameSite: "none",
+  });
+  res.status(200).json({ message: "Logged out successfully" });
 };

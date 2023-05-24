@@ -3,7 +3,6 @@ import connectRedis from "../utils/connect-redis";
 import { scrapeCourseData } from "../scraping/scraper";
 import { scrapeCourseDataTest } from "../scraping/scrapeTest";
 import User, { IUserModel } from "../models/user";
-// import
 
 const redisClient = connectRedis();
 
@@ -73,7 +72,7 @@ export const getCourseData = async (req: Request, res: Response) => {
     },
   };
 
-  // expire 1 hr.
+  // expire 3 hr.
   await redisClient.set(cacheKey, JSON.stringify(jsonData), { EX: 3600 * 3 });
   res.json(jsonData);
 };

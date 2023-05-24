@@ -24,9 +24,7 @@ export const authenticateToken = (
 ): void => {
   const authHeader = req.headers.authorization;
   const cookie = req.cookies.refreshToken;
-  const token: string | undefined = authHeader?.split(" ")[1] || cookie;
-
-  // console.log("authHeader", authHeader);
+  const token: string = authHeader?.split(" ")[1] || cookie;
 
   if (!token) {
     res.status(401).json({ message: "Missing token, authorization denied" });
