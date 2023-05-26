@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { ILoginForm } from "../models/auth.interface";
+
+// components
 import Alert from "./Alert";
+import FormContainer from "./FormContainer";
+
+// interface
+import { ILoginForm } from "../models/auth.interface";
+
+// icons
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { VscError } from "react-icons/vsc";
 
@@ -48,76 +55,72 @@ const LoginForm = () => {
         </Alert>
       )}
 
-      <div className="fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="p-8 bg-white rounded-lg shadow-lg max-w-1/3">
-          <h2 className="mb-4 text-2xl font-bold">Login</h2>
-          <form className="space-y-6" onSubmit={login}>
-            <div>
-              <label
-                htmlFor="username"
-                className="block mb-2 font-bold text-gray-800"
+      <FormContainer header="login">
+        <form className="space-y-6" onSubmit={login}>
+          <div>
+            <label
+              htmlFor="username"
+              className="block mb-2 font-bold text-gray-800"
+            >
+              Username
+            </label>
+            <input
+              required
+              type="text"
+              id="username"
+              name="username"
+              onChange={handleInputChange}
+              value={inputForm.username}
+              className="w-full p-2 border border-gray-300 rounded-lg"
+              placeholder="Enter your username"
+            />
+          </div>
+          {/* show msg error */}
+          {loggedIn.error && (
+            <span className="text-sm text-red-500">{loggedIn.message}</span>
+          )}
+          <div>
+            <label
+              htmlFor="password"
+              className="block mb-2 font-bold text-gray-800"
+            >
+              Password
+            </label>
+            <input
+              required
+              type="password"
+              id="password"
+              name="password"
+              onChange={handleInputChange}
+              value={inputForm.password}
+              className="w-full p-2 border border-gray-300 rounded-lg"
+              placeholder="Enter your password"
+            />
+          </div>
+          {/* show msg error */}
+          {loggedIn.error && (
+            <span className="text-sm text-red-500">{loggedIn.message}</span>
+          )}
+          <div>
+            <button
+              type="submit"
+              onSubmit={login}
+              className="w-full px-6 py-2 text-xl font-medium text-white uppercase bg-black rounded-3xl"
+            >
+              Login
+            </button>
+            <p className="mt-4 text-center">
+              Don't have an account?{" "}
+              <Link
+                to="/register"
+                className="pl-1 text-blue-600 hover:underline"
               >
-                Username
-              </label>
-              <input
-                required
-                type="text"
-                id="username"
-                name="username"
-                onChange={handleInputChange}
-                value={inputForm.username}
-                className="w-full p-2 border border-gray-300 rounded-lg"
-                placeholder="Enter your username"
-              />
-            </div>
-            {/* show msg error */}
-            {loggedIn.error && (
-              <span className="text-sm text-red-500">{loggedIn.message}</span>
-            )}
-            <div>
-              <label
-                htmlFor="password"
-                className="block mb-2 font-bold text-gray-800"
-              >
-                Password
-              </label>
-              <input
-                required
-                type="password"
-                id="password"
-                name="password"
-                onChange={handleInputChange}
-                value={inputForm.password}
-                className="w-full p-2 border border-gray-300 rounded-lg"
-                placeholder="Enter your password"
-              />
-            </div>
-            {/* show msg error */}
-            {loggedIn.error && (
-              <span className="text-sm text-red-500">{loggedIn.message}</span>
-            )}
-
-            <div>
-              <button
-                type="submit"
-                onSubmit={login}
-                className="w-full px-6 py-2 text-xl font-medium text-white uppercase bg-black rounded-3xl"
-              >
-                Login
-              </button>
-              <p className="mt-4 text-center">
-                Don't have an account?{" "}
-                <Link
-                  to="/register"
-                  className="pl-1 text-blue-600 hover:underline"
-                >
-                  Register
-                </Link>
-              </p>
-            </div>
-          </form>
-        </div>
-      </div>
+                Register
+              </Link>
+            </p>
+          </div>
+        </form>
+      </FormContainer>
     </>
   );
 };

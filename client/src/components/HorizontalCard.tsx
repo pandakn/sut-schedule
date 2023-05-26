@@ -29,7 +29,7 @@ const HorizontalCard = ({ color }: Props) => {
         return (
           <div
             key={cs.courseCode}
-            className="container grid gap-4 mx-auto my-10 "
+            className="container grid gap-4 mx-auto mt-5 mb-10"
           >
             <div className="relative grid justify-between grid-cols-1 mx-5 border rounded-md sm:grid-cols-10">
               {/* color */}

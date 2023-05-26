@@ -17,7 +17,7 @@ const Navbar = () => {
     <>
       <nav className="bg-white shadow-lg sticky-navbar">
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-20">
             <div className="flex items-center justify-between w-full ">
               <div className="flex-shrink-0">
                 <Link to="/" className="text-xl uppercase">

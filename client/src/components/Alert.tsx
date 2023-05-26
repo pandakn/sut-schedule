@@ -14,7 +14,7 @@ const Alert = ({ children, textColor, bgColor, icon }: Props) => {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed left-0 z-10 flex justify-center w-full top-6"
+      className="fixed left-0 z-50 flex justify-center w-full top-6"
       role="alert"
     >
       <div

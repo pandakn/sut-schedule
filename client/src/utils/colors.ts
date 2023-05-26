@@ -46,37 +46,42 @@ export const pastelColor = [
   { textColor: "#D0B8A8", bgColor: "#faefe8" }, // Pastel beige
   { textColor: "#BA90C6", bgColor: "#F5EEF8" }, // Pastel Lavender
   { textColor: "#FA877F", bgColor: "#fcdcdc" }, // Pastel red
-  { textColor: "#4BAEA0", bgColor: "#CAF7E3" }, // Pastel mint
   { textColor: "#555555", bgColor: "#ffffff" }, // Pastel white
   { textColor: "#fb7185", bgColor: "#fff1f2" }, // Pastel rose
   { textColor: "#867070", bgColor: "#f0dbcc" }, // Pastel brown
+  { textColor: "#F0C38E", bgColor: "#FFF3E0" }, // Pastel Yellow
+  // { textColor: "#A2D5F2", bgColor: "#E1F5FE" }, // Pastel Sky Blue
 ];
 
-export const getRandomColor = () => {
-  const randomIndex = Math.floor(Math.random() * pastelColor.length);
+let remainingColors = [...pastelColor];
 
-  const color = pastelColor[randomIndex];
-  // pastelColor.splice(randomIndex, 1); // Remove the selected color from pastelColor
+export const getRandomColor = () => {
+  if (remainingColors.length === 0) {
+    remainingColors = [...pastelColor];
+  }
+  const randomIndex = Math.floor(Math.random() * remainingColors.length);
+  const color = remainingColors[randomIndex];
+  remainingColors.splice(randomIndex, 1); // Remove the selected color from remainingColors
   return color;
 };
 
-// export const colorsType = {
-//   normal: "#CCC8B9",
-//   fire: "#FFB27A",
-//   water: "#9AD6F0",
-//   electric: "#FFFACD",
-//   grass: "#AEDAAF",
-//   ice: "#C1EFEF",
-//   fighting: "#EF9590",
-//   poison: "#D7A6D9",
-//   ground: "#E6D9A6",
-//   flying: "#D9D6F3",
-//   psychic: "#F3C2D3",
-//   bug: "#D6E3A6",
-//   rock: "#D8D2AB",
-//   ghost: "#B8A8C7",
-//   dragon: "#B4A1F9",
-//   dark: "#AFA8A5",
-//   steel: "#D6D6DF",
-//   fairy: "#F3C7D6",
-// };
+export const colorsType = {
+  normal: "#CCC8B9",
+  fire: "#FFB27A",
+  water: "#9AD6F0",
+  electric: "#FFFACD",
+  grass: "#AEDAAF",
+  ice: "#C1EFEF",
+  fighting: "#EF9590",
+  poison: "#D7A6D9",
+  ground: "#E6D9A6",
+  flying: "#D9D6F3",
+  psychic: "#F3C2D3",
+  bug: "#D6E3A6",
+  rock: "#D8D2AB",
+  ghost: "#B8A8C7",
+  dragon: "#B4A1F9",
+  dark: "#AFA8A5",
+  steel: "#D6D6DF",
+  fairy: "#F3C7D6",
+};

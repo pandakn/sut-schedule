@@ -40,7 +40,7 @@ const CardOfSchedule = ({ courseInSchedule, day }: Props) => {
         return (
           <span
             key={`group-${idx}`}
-            className="flex flex-col justify-between h-auto p-2 text-xs border rounded cursor-pointer md:px-3 md:py-2 md:text-sm"
+            className="flex flex-col justify-between h-auto p-2 text-xs border rounded md:px-3 md:py-2 md:text-sm"
             style={{
               color: `${textColor}`,
               backgroundColor: `${bgColor}`,

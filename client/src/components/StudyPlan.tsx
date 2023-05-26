@@ -4,27 +4,10 @@ import CardOfSchedule from "./CardOfSchedule";
 import { ICourseInSchedule } from "../models/course.interface";
 
 import { colorOfDays } from "../utils/colors";
+import { timesOfDay } from "../utils/timeToColumn";
 
 // const daysOfWeek = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 const daysOfWeek = ["mo", "tu", "we", "th", "fr", "sa", "su"];
-
-const timesOfDay = [
-  "Day/Time",
-  "8:00",
-  "9:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-  "18:00",
-  "19:00",
-  "20:00",
-  "21:00",
-];
 
 type Props = {
   courseInSchedule: { [key: string]: ICourseInSchedule[] };

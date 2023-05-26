@@ -11,5 +11,5 @@
 }
 
 .sticky-navbar {
-  @apply sticky top-0 z-20;
+  @apply sticky top-0 z-10;
 }

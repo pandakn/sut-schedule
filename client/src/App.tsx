@@ -15,13 +15,19 @@ import RegisterForm from "./components/RegisterForm";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navbar />}>
-        <Route index element={<Homepage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<RegisterForm />} />
+    <>
+      <Navbar />
+      <Routes>
         <Route
-          path="schedule"
+          path="/"
+          element={
+            <ProtectedUserRoute>
+              <Homepage />
+            </ProtectedUserRoute>
+          }
+        />
+        <Route
+          path="/schedule"
           element={
             <ProtectedUserRoute>
               <Schedule />
@@ -29,15 +35,17 @@ function App() {
           }
         />
         <Route
-          path="search-course"
+          path="/search-course"
           element={
             <ProtectedUserRoute>
               <SearchCourse />
             </ProtectedUserRoute>
           }
         />
-      </Route>
-    </Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<RegisterForm />} />
+      </Routes>
+    </>
   );
 }
 

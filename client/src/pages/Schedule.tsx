@@ -1,29 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { useCourse } from "../hooks";
 
+// components
 import StudyPlan from "../components/StudyPlan";
-// import TableSchedule from "../components/TableSchedule";
 import HorizontalCard from "../components/HorizontalCard";
-import { ICourseInSchedule } from "../models/course.interface";
-import { IColor, getRandomColor } from "../utils/colors";
 
-const timesOfDay = [
-  "Day/Time",
-  "8:00",
-  "9:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-  "18:00",
-  "19:00",
-  "20:00",
-  "21:00",
-];
+// interface
+import { ICourseInSchedule } from "../models/course.interface";
+
+// utils
+import { IColor, getRandomColor } from "../utils/colors";
+import { timeToCol } from "../utils/timeToColumn";
 
 interface IBgColor {
   [key: string]: string;
@@ -36,15 +23,6 @@ const Schedule = () => {
 
   const [bgColor, setBgColor] = useState<IBgColor>({});
   const { classSchedule } = useCourse();
-
-  const timeToCol = (timeString: string): number => {
-    const [hours, minutes] = timeString.split(":").map(Number);
-    const remainder = minutes / 60;
-    const numberOfColumns = timesOfDay.length;
-    const calculatedCol = (hours + remainder) * 2 - numberOfColumns + 2;
-
-    return calculatedCol;
-  };
 
   const mappedCourses = useCallback(() => {
     if (!Array.isArray(classSchedule)) {
@@ -112,7 +90,23 @@ const Schedule = () => {
   return (
     <>
       <StudyPlan courseInSchedule={courseInSchedule} />
-      {/* <TableSchedule /> */}
+      <div className="container mx-auto px-9 md:px-5 md:text-xl text-end">
+        <p className="tracking-wide">
+          total credit:{" "}
+          <span className="ml-2">
+            {classSchedule.reduce(
+              (sum, cs) => sum + parseInt(cs.credit.split(" ")[0]),
+              0
+            )}
+          </span>{" "}
+          {classSchedule.reduce(
+            (sum, cs) => sum + parseInt(cs.credit.split(" ")[0]),
+            0
+          ) > 1
+            ? "credits"
+            : "credit"}
+        </p>
+      </div>
       <HorizontalCard color={bgColor} />
     </>
   );
