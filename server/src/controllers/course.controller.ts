@@ -41,7 +41,7 @@ export const getCourseDataTest = async (req: Request, res: Response) => {
   res.json(jsonData);
 };
 
-export const getCourseData = async (req: Request, res: Response) => {
+export const getCourseDataFromREG = async (req: Request, res: Response) => {
   const { maxrow, acadyear, semester, coursecode, coursename } =
     req.query as Record<string, string>;
 

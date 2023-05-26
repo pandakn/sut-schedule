@@ -24,6 +24,7 @@ const userSchema: Schema = new mongoose.Schema(
     },
     courses: {
       type: Array,
+      default: null,
     },
   },
   { timestamps: true }
