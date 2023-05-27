@@ -4,6 +4,8 @@ import {
   getUserById,
   deleteUserById,
   editUser,
+  addSubjectToStudyPlan,
+  getStudyPlansOfUser,
 } from "../controllers/user.controller";
 import { authenticateToken } from "../middleware/auth.middleware";
 
@@ -12,4 +14,8 @@ export default (router: express.Router) => {
   router.get("/user/:id", authenticateToken, getUserById);
   router.delete("/user/:id", authenticateToken, deleteUserById);
   router.put("/user/:id", authenticateToken, editUser);
+
+  // study plan
+  router.post("/user/study-plan", authenticateToken, addSubjectToStudyPlan);
+  router.get("/user/study-plan/:id", authenticateToken, getStudyPlansOfUser);
 };

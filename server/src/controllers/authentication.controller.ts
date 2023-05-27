@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 import User from "../models/user";
 import { IUser } from "interfaces/user.interface";
 
+import { createDefaultStudyPlan } from "../utils/defaultStudyPlan";
+
 interface UserPayload {
   id: string;
   name: string;
