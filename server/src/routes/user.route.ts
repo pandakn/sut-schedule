@@ -6,6 +6,7 @@ import {
   editUser,
   addSubjectToStudyPlan,
   getStudyPlansOfUser,
+  deleteCourseOfUser,
 } from "../controllers/user.controller";
 import { authenticateToken } from "../middleware/auth.middleware";
 
@@ -16,6 +17,7 @@ export default (router: express.Router) => {
   router.put("/user/:id", authenticateToken, editUser);
 
   // study plan
-  router.post("/user/study-plan", authenticateToken, addSubjectToStudyPlan);
+  router.post("/user/study-plan/:id", authenticateToken, addSubjectToStudyPlan);
   router.get("/user/study-plan/:id", authenticateToken, getStudyPlansOfUser);
+  router.delete("/user/study-plan/:id", authenticateToken, deleteCourseOfUser);
 };

@@ -41,6 +41,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     await newUser.save();
 
+    await createDefaultStudyPlan(newUser._id);
+
     res
       .status(200)
       .json({ message: "Registered successfully ", result: newUser });

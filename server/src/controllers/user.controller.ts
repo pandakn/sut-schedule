@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import User, { IUserModel } from "../models/user";
 import StudyPlan, { IStudyPlanModel } from "../models/studyPlan";
+import mongoose from "mongoose";
 
 // Get all users
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -76,11 +77,12 @@ export const deleteUserById = async (req: Request, res: Response) => {
 };
 
 export const addSubjectToStudyPlan = async (req: Request, res: Response) => {
-  const { userID, studyPlanID, courseSchedule } = req.body;
+  const { studyPlanID, courseSchedule } = req.body;
+  const { id } = req.params;
 
   try {
     // Find the user by ID
-    const user: IUserModel | null = await User.findById(userID);
+    const user: IUserModel | null = await User.findById(id);
     if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
@@ -115,10 +117,17 @@ export const addSubjectToStudyPlan = async (req: Request, res: Response) => {
 export const getStudyPlansOfUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 
+  // Validate the id parameter
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(400).json({ message: "Invalid id parameter" });
+    return;
+  }
+
+  const idObj = new mongoose.Types.ObjectId(id);
+
   try {
-    // Find the user by ID
     const studyPlans: IUserModel[] | null = await StudyPlan.find({
-      creator: id,
+      creator: idObj,
     }).populate("creator");
     if (!studyPlans) {
       res.status(404).json({ message: "Study plan not found" });
@@ -130,5 +139,32 @@ export const getStudyPlansOfUser = async (req: Request, res: Response) => {
       .json({ countStudyPlan: studyPlans.length, result: studyPlans });
   } catch (error) {
     res.status(500).json({ message: "Failed to retrieve study plans", error });
+  }
+};
+
+export const deleteCourseOfUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+  const { studyPlanID, courseID } = req.body;
+
+  try {
+    // Find the study plan by ID
+    const studyPlan: IStudyPlanModel | null = await StudyPlan.findOneAndUpdate(
+      { _id: studyPlanID, creator: id },
+      { $pull: { courseSchedule: { id: courseID } } },
+      { new: true }
+    );
+
+    if (!studyPlan) {
+      res.status(404).json({ message: "Study plan or course not found" });
+      return;
+    }
+
+    res.status(200).json({ message: "Course deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
