@@ -22,10 +22,6 @@ const userSchema: Schema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    // courses: {
-    //   type: Array,
-    //   default: null,
-    // },
   },
   { timestamps: true }
 );
