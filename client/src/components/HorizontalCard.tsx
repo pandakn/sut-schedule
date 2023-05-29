@@ -2,6 +2,7 @@ import { useCourse } from "../hooks";
 import Alert from "./Alert";
 import { MdDelete } from "react-icons/md";
 import { AiOutlineDelete } from "react-icons/ai";
+import { CourseDataInterface } from "../models/course.interface";
 
 interface Color {
   [key: string]: string;
@@ -9,10 +10,12 @@ interface Color {
 
 type Props = {
   color: Color;
+  // for test
+  courseInPlanner: CourseDataInterface[];
 };
 
-const HorizontalCard = ({ color }: Props) => {
-  const { classSchedule, removeCourse, showAlert } = useCourse();
+const HorizontalCard = ({ color, courseInPlanner }: Props) => {
+  const { removeCourse, showAlert } = useCourse();
 
   return (
     <div className="px-4">
@@ -25,7 +28,7 @@ const HorizontalCard = ({ color }: Props) => {
           Course deleted successfully
         </Alert>
       )}
-      {classSchedule.map((cs) => {
+      {courseInPlanner.map((cs) => {
         return (
           <div
             key={cs.courseCode}

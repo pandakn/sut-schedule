@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { useCourse } from "../hooks";
+import { useStudyPlan } from "../hooks";
 
 // components
 import StudyPlan from "../components/StudyPlan";
 import HorizontalCard from "../components/HorizontalCard";
+import Modal from "../components/Modal";
 
 // interface
 import { ICourseInSchedule } from "../models/course.interface";
@@ -22,16 +23,17 @@ const Schedule = () => {
   }>({});
 
   const [bgColor, setBgColor] = useState<IBgColor>({});
-  const { classSchedule } = useCourse();
+
+  const { courseInPlanner, studyPlan, handleChooseStudyPlan } = useStudyPlan();
 
   const mappedCourses = useCallback(() => {
-    if (!Array.isArray(classSchedule)) {
+    if (!Array.isArray(courseInPlanner)) {
       return {};
     }
 
     const subjectColors: { [key: string]: IColor } = {};
 
-    return classSchedule.reduce<{ [key: string]: ICourseInSchedule[] }>(
+    return courseInPlanner.reduce<{ [key: string]: ICourseInSchedule[] }>(
       (acc, course) => {
         course.classSchedule?.map((c) => {
           const [start, end] = c.times.split("-");
@@ -80,26 +82,27 @@ const Schedule = () => {
       },
       {}
     );
-  }, [classSchedule]);
+  }, [courseInPlanner]);
 
   useEffect(() => {
     const res = mappedCourses();
     setCourseInSchedule(res);
-  }, [classSchedule, mappedCourses]);
+  }, [mappedCourses, courseInPlanner]);
 
   return (
     <>
+      <Modal studyPlan={studyPlan} handleSubmit={handleChooseStudyPlan} />
       <StudyPlan courseInSchedule={courseInSchedule} />
       <div className="container mx-auto px-9 md:px-5 md:text-xl text-end">
         <p className="tracking-wide">
           total credit:{" "}
           <span className="ml-2">
-            {classSchedule.reduce(
+            {courseInPlanner.reduce(
               (sum, cs) => sum + parseInt(cs.credit.split(" ")[0]),
               0
             )}
           </span>{" "}
-          {classSchedule.reduce(
+          {courseInPlanner.reduce(
             (sum, cs) => sum + parseInt(cs.credit.split(" ")[0]),
             0
           ) > 1
@@ -107,7 +110,7 @@ const Schedule = () => {
             : "credit"}
         </p>
       </div>
-      <HorizontalCard color={bgColor} />
+      <HorizontalCard color={bgColor} courseInPlanner={courseInPlanner} />
     </>
   );
 };

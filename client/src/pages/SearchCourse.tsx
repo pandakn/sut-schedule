@@ -64,7 +64,6 @@ const CourseTable = () => {
   return (
     <>
       <SearchBox />
-      {/* <TableOfClass /> */}
       {error ? (
         <div className="container mx-auto my-10 text-center">
           <p className="text-3xl">{error}</p>

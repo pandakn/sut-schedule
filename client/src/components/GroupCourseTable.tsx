@@ -1,5 +1,5 @@
 import { Loading } from "react-loading-dot";
-import { useCourse } from "../hooks";
+import { useCourse, useStudyPlan } from "../hooks";
 
 // interfaces
 import { IGroupedCourse } from "../models/course.interface";
@@ -85,6 +85,8 @@ const RenderDetails = ({ course }: DetailsProp) => {
 const GroupCourseTable = ({ data }: Props) => {
   const { addCourseToSchedule, addCourseError, showAlert, loading } =
     useCourse();
+
+  const { selectedPlan } = useStudyPlan();
 
   return (
     <div className="container mx-auto my-10">
@@ -184,7 +186,12 @@ const GroupCourseTable = ({ data }: Props) => {
                           <button
                             name="btnAdd"
                             hidden={!sec.classSchedule && true}
-                            onClick={() => addCourseToSchedule(sec)}
+                            onClick={() =>
+                              addCourseToSchedule(selectedPlan.id, sec)
+                            }
+                            // onClick={() =>
+                            //   handleAddCourse(selectedPlan.id, sec)
+                            // }
                             className="bg-green-400 btn-logo"
                           >
                             <AiOutlinePlusCircle className="logo-center " />

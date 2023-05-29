@@ -1,17 +1,15 @@
-import React, { createContext, useCallback, useEffect, useState } from "react";
+import React, { createContext, useState } from "react";
 import {
   CourseInterface,
   CourseDataInterface,
   CourseSearchParamsInterface,
-  ClassScheduleInterface,
 } from "../models/course.interface";
 import {
-  addCourseData,
-  deleteCourseOfUser,
-  getCourseOfUser,
+  deleteCourseFromStudyPlan,
   getCoursesData,
 } from "../services/httpClient";
-import { useAuth } from "../hooks";
+import { useAuth, useStudyPlan } from "../hooks";
+import { handleSameSchedule } from "../utils/handleSameSchedule";
 
 interface CourseContextType {
   courses: CourseInterface;
@@ -19,9 +17,12 @@ interface CourseContextType {
   error: string | null;
   addCourseError: boolean;
   fetchCourses: (params: CourseSearchParamsInterface) => Promise<void>;
-  classSchedule: CourseDataInterface[];
-  setClassSchedule: React.Dispatch<React.SetStateAction<CourseDataInterface[]>>;
-  addCourseToSchedule: (course: CourseDataInterface) => void;
+  // classSchedule: CourseDataInterface[];
+  // setClassSchedule: React.Dispatch<React.SetStateAction<CourseDataInterface[]>>;
+  addCourseToSchedule: (
+    studyPlanID: string,
+    course: CourseDataInterface
+  ) => void;
   removeCourse: (id: string) => void;
   showAlert: boolean;
 }
@@ -33,10 +34,6 @@ const CourseContext = createContext<CourseContextType>({
   addCourseError: false,
   fetchCourses: async () => {
     throw new Error("fetchCourses is not implemented");
-  },
-  classSchedule: [],
-  setClassSchedule: () => {
-    throw new Error("setClassSchedule is not implemented");
   },
   addCourseToSchedule: () => {
     throw new Error("addCourseToSchedule is not implemented");
@@ -53,11 +50,17 @@ interface CourseProviderProps {
 
 const CourseProvider = ({ children }: CourseProviderProps) => {
   const { payload, accessToken } = useAuth();
+  const {
+    courseInPlanner,
+    setCourseInPlanner,
+    handleAddCourseToStudyPlan,
+    selectedPlan,
+  } = useStudyPlan();
+
   const [courses, setCourses] = useState<CourseInterface>({
     year: "",
     courseData: [],
   });
-  const [classSchedule, setClassSchedule] = useState<CourseDataInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [addCourseError, setAddCourseError] = useState(false);
@@ -90,45 +93,15 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
     }
   };
 
-  const handleSameSchedule = (
-    newCourse: ClassScheduleInterface[] | null,
-    coursesInSchedule: ClassScheduleInterface[] | null
+  // studyPlanID: string,
+  // courseSchedule: CourseDataInterface
+  const addCourseToSchedule = async (
+    studyPlanID: string,
+    course: CourseDataInterface
   ) => {
-    if (newCourse === null) return;
-
-    const sameTime = coursesInSchedule?.some((elem) => {
-      return newCourse.some((nc) => {
-        const [newCourseStartTime, newCourseEndTime] = nc.times.split("-");
-
-        if (elem.day !== nc.day) {
-          return false;
-        }
-
-        const [coursesInScheduleStartTime, coursesInScheduleEndTime] =
-          elem.times.split("-");
-
-        // example check time range
-        // a, b = new course   c, d = course in schedule
-        //   a          b
-        // 8:00       11:00
-        // |----------|
-        //        c          d
-        //      10:00      12:00
-        //       |----------|
-        const overlaps =
-          newCourseStartTime < coursesInScheduleEndTime &&
-          newCourseEndTime > coursesInScheduleStartTime;
-
-        return overlaps;
-      });
-    });
-
-    return sameTime;
-  };
-
-  const addCourseToSchedule = async (course: CourseDataInterface) => {
     setAddCourseError(false);
-    const isSameSchedule: boolean = classSchedule.some((c) => {
+
+    const isSameSchedule: boolean = courseInPlanner.some((c) => {
       const checkCourseCode = c.courseCode === course.courseCode;
       const sameSchedule = handleSameSchedule(
         course.classSchedule,
@@ -138,16 +111,14 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
       return checkCourseCode || sameSchedule ? true : false;
     });
 
+    // console.log("isSameSchedule", isSameSchedule);
+
     if (isSameSchedule) {
       setShowAlert(true);
       setAddCourseError(true);
       setTimeout(() => setShowAlert(false), 2000);
     } else {
-      const userId = payload.id;
-      await addCourseData(userId, course, accessToken);
-      setClassSchedule((prev) => {
-        return [...prev, course];
-      });
+      handleAddCourseToStudyPlan(studyPlanID, course);
     }
 
     setShowAlert(true);
@@ -158,25 +129,33 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
     setShowAlert(true);
 
     // Remove the course from the class schedule state
-    setClassSchedule((prevSchedule) =>
+    setCourseInPlanner((prevSchedule) =>
       prevSchedule.filter((course) => course.id !== courseId)
     );
 
-    await deleteCourseOfUser(payload.id, courseId, accessToken);
+    // await deleteCourseOfUser(payload.id, courseId, accessToken);
+    await deleteCourseFromStudyPlan(
+      payload.id,
+      selectedPlan.id,
+      courseId,
+      accessToken
+    );
 
     setTimeout(() => setShowAlert(false), 1500);
   };
 
-  const getCourse = useCallback(async () => {
-    if (accessToken) {
-      const res = await getCourseOfUser(payload.id, accessToken);
-      res && setClassSchedule(res);
-    }
-  }, [payload.id, accessToken]);
+  // const getCourse = useCallback(async () => {
+  //   if (accessToken) {
+  //     const res = await getCourseOfUser(payload.id, accessToken);
+  //     res && setClassSchedule(res);
+  //   }
+  // }, [payload.id, accessToken]);
 
-  useEffect(() => {
-    getCourse();
-  }, [payload.id, accessToken, getCourse]);
+  // useEffect(() => {
+  //   getCourse();
+  // }, [payload.id, accessToken, getCourse]);
+
+  console.log(courseInPlanner);
 
   return (
     <CourseContext.Provider
@@ -186,8 +165,8 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
         error,
         addCourseError,
         fetchCourses,
-        classSchedule,
-        setClassSchedule,
+        // classSchedule,
+        // setClassSchedule,
         removeCourse,
         addCourseToSchedule,
         showAlert,

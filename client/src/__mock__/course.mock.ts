@@ -5,47 +5,55 @@
 
 //   const subjectColors: { [key: string]: IColor } = {};
 
-//   const mappedSchedule: { [key: string]: Schedule[] } = {};
+//   return classSchedule.reduce<{ [key: string]: ICourseInSchedule[] }>(
+//     (acc, course) => {
+//       course.classSchedule?.map((c) => {
+//         const [start, end] = c.times.split("-");
+//         const startCol = timeToCol(start);
+//         const endCol = timeToCol(end);
+//         const dayLowerCase = c.day.toLowerCase();
 
-//   classSchedule.forEach((course) => {
-//     course.classSchedule?.forEach((c) => {
-//       const [start, end] = c.times.split("-");
-//       const startCol = timeToCol(start);
-//       const endCol = timeToCol(end);
-//       const dayLowerCase = c.day.toLowerCase();
+//         const subjectCode = course.courseCode;
 
-//       const subjectCode = course.courseCode;
+//         let subjectColor = subjectColors[subjectCode];
+//         if (!subjectColor) {
+//           const { textColor, bgColor } = getRandomColor();
+//           subjectColor = { textColor: textColor, bgColor: bgColor };
+//           subjectColors[subjectCode] = subjectColor;
+//         }
 
-//       let subjectColor = subjectColors[subjectCode];
-//       if (!subjectColor) {
-//         const { textColor, bgColor } = getRandomColor();
-//         subjectColor = { textColor: textColor, bgColor: bgColor };
-//         subjectColors[subjectCode] = subjectColor;
-//       }
+//         const mappedCourse: ICourseInSchedule = {
+//           id: course.id,
+//           code: course.courseCode,
+//           name: course.courseNameEN,
+//           section: course.section,
+//           day: c.day,
+//           startCol,
+//           endCol,
+//           timeFrom: start,
+//           timeTo: end,
+//           textColor: subjectColor.textColor,
+//           bgColor: subjectColor.bgColor,
+//         };
 
-//       const mappedCourse: Schedule = {
-//         id: course.id,
-//         code: course.courseCode,
-//         name: course.courseNameEN,
-//         section: course.section,
-//         day: c.day,
-//         startCol,
-//         endCol,
-//         timeFrom: start,
-//         timeTo: end,
-//         textColor: subjectColor.textColor,
-//         bgColor: subjectColor.bgColor,
-//       };
+//         setBgColor((prev) => {
+//           return {
+//             ...prev,
+//             [mappedCourse.code]: mappedCourse.bgColor,
+//           };
+//         });
 
-//       if (dayLowerCase in mappedSchedule) {
-//         mappedSchedule[dayLowerCase].push(mappedCourse);
-//       } else {
-//         mappedSchedule[dayLowerCase] = [mappedCourse];
-//       }
-//     });
-//   });
+//         if (dayLowerCase in acc) {
+//           acc[dayLowerCase].push(mappedCourse);
+//         } else {
+//           acc[dayLowerCase] = [mappedCourse];
+//         }
+//       });
 
-//   return mappedSchedule;
+//       return acc;
+//     },
+//     {}
+//   );
 // }, [classSchedule]);
 
 // const groupedSchedule = sortedSchedule.reduce<Schedule[][]>(

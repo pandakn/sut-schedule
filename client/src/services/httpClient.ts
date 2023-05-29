@@ -98,3 +98,72 @@ export const getCourseOfUser = async (userId: string, token: string) => {
     console.error(error);
   }
 };
+
+export const getStudyPlanOfUser = async (userId: string, token: string) => {
+  try {
+    const response = await api.get(`/api/user/study-plan/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error(response.data);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const addCourseToStudyPlan = async (
+  userID: string,
+  studyPlanID: string,
+  courseSchedule: CourseDataInterface,
+  token: string | null
+) => {
+  try {
+    const response = await api.post(
+      `/api/user/study-plan/${userID}`,
+      { studyPlanID, courseSchedule },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error(response.data);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteCourseFromStudyPlan = async (
+  userID: string,
+  studyPlanID: string,
+  courseID: string,
+  token: string | null
+) => {
+  try {
+    const response = await api.delete(`/api/user/study-plan/${userID}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: { studyPlanID, courseID },
+    });
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error(response.data);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};

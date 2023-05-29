@@ -129,8 +129,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const handleLogout = async () => {
     await logout();
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("payload");
+    localStorage.clear();
+    // localStorage.removeItem("accessToken");
+    // localStorage.removeItem("payload");
     setTimeout(() => {
       window.location.reload();
     }, 1000);
