@@ -9,7 +9,7 @@ import {
 } from "../services/httpClient";
 import { setDataToLocalStorage } from "../utils/setLocalStorage";
 
-interface IStudyPlan {
+export interface IStudyPlan {
   _id: string;
   creator: {
     name: string;
