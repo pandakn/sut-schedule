@@ -1,4 +1,3 @@
-import { Loading } from "react-loading-dot";
 import { useCourse, useStudyPlan } from "../hooks";
 
 // interfaces
@@ -14,6 +13,7 @@ import {
   AiOutlinePlusCircle,
 } from "react-icons/ai";
 import { VscError } from "react-icons/vsc";
+import SkeletonCourseTable from "./SkeletonCourseTable";
 
 type Props = {
   data: IGroupedCourse[];
@@ -214,7 +214,9 @@ const GroupCourseTable = ({ data }: Props) => {
           })}
         </>
       ) : (
-        <Loading background="#6C9BCF" duration="0.6s" />
+        <>
+          <SkeletonCourseTable count={5} />
+        </>
       )}
     </div>
   );

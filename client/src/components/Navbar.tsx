@@ -93,7 +93,7 @@ const Navbar = () => {
                 className="uppercase hover:text-gray-800"
                 to="search-course"
               >
-                Course
+                Search
               </Link>
               {accessToken ? (
                 <>

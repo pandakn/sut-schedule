@@ -162,7 +162,9 @@ export const deleteCourseOfUser = async (
       return;
     }
 
-    res.status(200).json({ message: "Course deleted successfully" });
+    res
+      .status(200)
+      .json({ message: "Course deleted successfully", result: studyPlan });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });

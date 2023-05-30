@@ -113,6 +113,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         setLoggedIn({ message: data?.message, error: false });
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("payload", JSON.stringify(accessPayload));
+
         setTimeout(() => {
           setAccessToken(accessToken);
           setPayload(accessPayload);

@@ -10,6 +10,8 @@ import {
 } from "../services/httpClient";
 import { useAuth, useStudyPlan } from "../hooks";
 import { handleSameSchedule } from "../utils/handleSameSchedule";
+import { setDataToLocalStorage } from "../utils/setLocalStorage";
+import { IStudyPlan } from "./StudyPlanContext";
 
 interface CourseContextType {
   courses: CourseInterface;
@@ -17,8 +19,6 @@ interface CourseContextType {
   error: string | null;
   addCourseError: boolean;
   fetchCourses: (params: CourseSearchParamsInterface) => Promise<void>;
-  // classSchedule: CourseDataInterface[];
-  // setClassSchedule: React.Dispatch<React.SetStateAction<CourseDataInterface[]>>;
   addCourseToSchedule: (
     studyPlanID: string,
     course: CourseDataInterface
@@ -133,29 +133,19 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
       prevSchedule.filter((course) => course.id !== courseId)
     );
 
-    // await deleteCourseOfUser(payload.id, courseId, accessToken);
-    await deleteCourseFromStudyPlan(
+    const res = await deleteCourseFromStudyPlan(
       payload.id,
       selectedPlan.id,
       courseId,
       accessToken
     );
 
+    const data: IStudyPlan = res.result;
+
+    setDataToLocalStorage(data._id, data.name, data.courseSchedule);
+
     setTimeout(() => setShowAlert(false), 1500);
   };
-
-  // const getCourse = useCallback(async () => {
-  //   if (accessToken) {
-  //     const res = await getCourseOfUser(payload.id, accessToken);
-  //     res && setClassSchedule(res);
-  //   }
-  // }, [payload.id, accessToken]);
-
-  // useEffect(() => {
-  //   getCourse();
-  // }, [payload.id, accessToken, getCourse]);
-
-  console.log(courseInPlanner);
 
   return (
     <CourseContext.Provider
@@ -165,8 +155,6 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
         error,
         addCourseError,
         fetchCourses,
-        // classSchedule,
-        // setClassSchedule,
         removeCourse,
         addCourseToSchedule,
         showAlert,

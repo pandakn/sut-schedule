@@ -1,5 +1,6 @@
 import api from "./axiosInterceptors";
 import { CourseDataInterface } from "../models/course.interface";
+import { AxiosError } from "axios";
 
 const MAX_ROW = "50";
 
@@ -24,60 +25,16 @@ export const getCoursesData = async (
     } else {
       return { status: false, data: response.data.error };
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export const addCourseData = async (
-  userId: string,
-  course: CourseDataInterface,
-  token: string | null
-) => {
-  try {
-    const response = await api.post(
-      `/api/courses`,
-      {
-        userId,
-        course,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.status === 200) {
-      return response.data;
+  } catch (error: unknown) {
+    if (
+      error instanceof AxiosError &&
+      error.response &&
+      error.response.status === 404
+    ) {
+      return { status: false, data: error.response.data.error };
     } else {
-      console.error(response.data);
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export const deleteCourseOfUser = async (
-  userId: string,
-  courseId: string,
-  token: string | null
-) => {
-  try {
-    const response = await api.delete(`/api/course/${courseId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: { userId },
-    });
-
-    if (response.status === 200) {
-      return response.data.message;
-    } else {
-      console.error(response.data);
-    }
-  } catch (error) {
-    console.error(error);
   }
 };
 
@@ -156,6 +113,50 @@ export const deleteCourseFromStudyPlan = async (
         Authorization: `Bearer ${token}`,
       },
       data: { studyPlanID, courseID },
+    });
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error(response.data);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const addStudyPlan = async (
+  userID: string,
+  name: string,
+  token: string | null
+) => {
+  try {
+    const response = await api.post(
+      `/api/study-plan`,
+      { userID, name },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error(response.data);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteStudyPlan = async (id: string, token: string | null) => {
+  try {
+    const response = await api.delete(`/api/study-plan/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (response.status === 200) {

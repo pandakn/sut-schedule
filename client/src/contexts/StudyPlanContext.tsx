@@ -4,6 +4,8 @@ import { useAuth } from "../hooks";
 import {
   getStudyPlanOfUser,
   addCourseToStudyPlan,
+  addStudyPlan,
+  deleteStudyPlan,
 } from "../services/httpClient";
 import { setDataToLocalStorage } from "../utils/setLocalStorage";
 
@@ -22,6 +24,11 @@ interface ISelectedPlan {
   name: string;
 }
 
+export interface IAlert {
+  type: "add" | "delete" | "";
+  isShow: boolean;
+}
+
 interface StudyPlanProviderProps {
   children: React.ReactNode;
 }
@@ -38,7 +45,10 @@ export type StudyPlanContextType = {
     studyPlanID: string,
     courseSchedule: CourseDataInterface
   ) => Promise<void>;
+  handleAddStudyPlan: (name: string) => Promise<void>;
+  handleDeleteStudyPlan: (id: string) => Promise<void>;
   selectedPlan: ISelectedPlan;
+  showAlert: IAlert;
 };
 
 export const StudyPlanContext = createContext<StudyPlanContextType>({
@@ -54,9 +64,16 @@ export const StudyPlanContext = createContext<StudyPlanContextType>({
     throw new Error("handleChooseStudyPlan is not implemented");
   },
   handleAddCourseToStudyPlan: async () => {
-    // throw new Error("handleAddCourseToStudyPlan is not implemented");
+    throw new Error("handleAddCourseToStudyPlan is not implemented");
+  },
+  handleAddStudyPlan: async () => {
+    throw new Error("handleAddStudyPlan is not implemented");
+  },
+  handleDeleteStudyPlan: async () => {
+    throw new Error("handleDeleteStudyPlan is not implemented");
   },
   selectedPlan: { id: "", name: "" },
+  showAlert: { type: "", isShow: false },
 });
 
 export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
@@ -67,6 +84,10 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
   const [selectedPlan, setSelectedPlan] = useState<ISelectedPlan>({
     id: "",
     name: "",
+  });
+  const [showAlert, setShowAlert] = useState<IAlert>({
+    type: "",
+    isShow: false,
   });
 
   const { accessToken, payload } = useAuth();
@@ -126,10 +147,52 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
     }
   };
 
+  const handleAddStudyPlan = async (name: string) => {
+    if (name && studyPlan) {
+      setShowAlert({ type: "add", isShow: true });
+      const res = await addStudyPlan(payload.id, name, accessToken);
+      setStudyPlan((prev) => {
+        return [...prev, res.result];
+      });
+    }
+
+    setTimeout(() => setShowAlert({ type: "", isShow: false }), 1500);
+  };
+
+  const handleDeleteStudyPlan = async (id: string) => {
+    setShowAlert({ type: "delete", isShow: true });
+
+    setStudyPlan((prev) => {
+      const updatedStudyPlan = prev.filter((sp) => sp._id !== id);
+      // If  delete the study plan, will go back to first study plan
+      const selectedStudyPlan: IStudyPlan | null =
+        updatedStudyPlan.length > 0 ? updatedStudyPlan[0] : null;
+
+      // Set selectedStudyPlan to the state
+      selectedStudyPlan &&
+        setSelectedPlan({
+          id: selectedStudyPlan?._id,
+          name: selectedStudyPlan.name,
+        });
+
+      setDataToLocalStorage(
+        selectedStudyPlan?._id,
+        selectedStudyPlan?.name,
+        selectedStudyPlan?.courseSchedule
+      );
+      return updatedStudyPlan;
+    });
+    await deleteStudyPlan(id, accessToken);
+    window.location.reload();
+
+    setTimeout(() => setShowAlert({ type: "", isShow: false }), 1500);
+  };
+
   const fetchStudyPlan = useCallback(async () => {
     try {
       if (accessToken) {
         const res = await getStudyPlanOfUser(payload.id, accessToken);
+
         setStudyPlan(res.result);
       }
     } catch (error) {
@@ -164,6 +227,9 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
         selectedPlan,
         handleChooseStudyPlan,
         handleAddCourseToStudyPlan,
+        handleAddStudyPlan,
+        handleDeleteStudyPlan,
+        showAlert,
       }}
     >
       {children}

@@ -22,9 +22,18 @@ const Schedule = () => {
     [key: string]: ICourseInSchedule[];
   }>({});
 
+  // console.log("courseInSchedule", courseInSchedule);
+
   const [bgColor, setBgColor] = useState<IBgColor>({});
 
-  const { courseInPlanner, studyPlan, handleChooseStudyPlan } = useStudyPlan();
+  const {
+    courseInPlanner,
+    studyPlan,
+    handleChooseStudyPlan,
+    handleAddStudyPlan,
+    handleDeleteStudyPlan,
+    showAlert,
+  } = useStudyPlan();
 
   const mappedCourses = useCallback(() => {
     if (!Array.isArray(courseInPlanner)) {
@@ -91,7 +100,13 @@ const Schedule = () => {
 
   return (
     <>
-      <Modal studyPlan={studyPlan} handleSubmit={handleChooseStudyPlan} />
+      <Modal
+        studyPlan={studyPlan}
+        handleSubmit={handleChooseStudyPlan}
+        handleAddStudyPlan={handleAddStudyPlan}
+        handleDeleteStudyPlan={handleDeleteStudyPlan}
+        showAlert={showAlert}
+      />
       <StudyPlan courseInSchedule={courseInSchedule} />
       <div className="container mx-auto px-9 md:px-5 md:text-xl text-end">
         <p className="tracking-wide">
