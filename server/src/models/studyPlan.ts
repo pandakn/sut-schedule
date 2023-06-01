@@ -129,7 +129,6 @@ const courseScheduleSchema: Schema = new mongoose.Schema(
     },
     courseSchedule: {
       type: [courseSchema],
-      default: null,
     },
   },
   { timestamps: true }

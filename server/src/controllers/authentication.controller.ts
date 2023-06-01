@@ -39,10 +39,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       password: hashedPassword,
     });
 
+    const defaultStudyPlan = await createDefaultStudyPlan(newUser._id);
+    newUser.selectedStudyPlan = defaultStudyPlan._id;
+
     await newUser.save();
-
-    await createDefaultStudyPlan(newUser._id);
-
     res
       .status(200)
       .json({ message: "Registered successfully ", result: newUser });

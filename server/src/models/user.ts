@@ -9,7 +9,6 @@ const userSchema: Schema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      unique: true,
     },
     username: {
       type: String,
@@ -21,6 +20,10 @@ const userSchema: Schema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+    },
+    selectedStudyPlan: {
+      type: Schema.Types.ObjectId,
+      ref: "StudyPlan",
     },
   },
   { timestamps: true }

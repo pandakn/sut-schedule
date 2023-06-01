@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
+import mongoose, { ObjectId } from "mongoose";
 import User, { IUserModel } from "../models/user";
 import StudyPlan, { IStudyPlanModel } from "../models/studyPlan";
-import mongoose from "mongoose";
+import { createDefaultStudyPlan } from "../utils/defaultStudyPlan";
 
 // Get all users
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -77,12 +78,12 @@ export const deleteUserById = async (req: Request, res: Response) => {
 };
 
 export const addSubjectToStudyPlan = async (req: Request, res: Response) => {
-  const { studyPlanID, courseSchedule } = req.body;
-  const { id } = req.params;
+  const { courseSchedule } = req.body;
+  const { userID, studyPlanID } = req.params;
 
   try {
     // Find the user by ID
-    const user: IUserModel | null = await User.findById(id);
+    const user: IUserModel | null = await User.findById(userID);
     if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
@@ -146,13 +147,12 @@ export const deleteCourseOfUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { id } = req.params;
-  const { studyPlanID, courseID } = req.body;
+  const { userID, studyPlanID, courseID } = req.params;
 
   try {
     // Find the study plan by ID
     const studyPlan: IStudyPlanModel | null = await StudyPlan.findOneAndUpdate(
-      { _id: studyPlanID, creator: id },
+      { _id: studyPlanID, creator: userID },
       { $pull: { courseSchedule: { id: courseID } } },
       { new: true }
     );
@@ -168,5 +168,98 @@ export const deleteCourseOfUser = async (
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const selectStudyPlan = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { userId, studyPlanId } = req.params;
+
+  try {
+    // Check if the user exists
+    const user: IUserModel = await User.findById(userId);
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    // Check if the study plan exists
+    const studyPlan = await StudyPlan.findById(studyPlanId);
+
+    if (!studyPlan) {
+      res.status(404).json({ message: "Study plan not found" });
+      return;
+    }
+
+    // Update the user's selected study plan
+    user.selectedStudyPlan = studyPlan._id;
+    await user.save();
+
+    res.status(200).json({
+      message: "Selected study plan updated successfully",
+      result: user,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+};
+
+export const createStudyPlan = async (req: Request, res: Response) => {
+  const { name } = req.body;
+  const { id } = req.params;
+
+  try {
+    // Find the user by ID
+    const user: IUserModel | null = await User.findById(id);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    const studyPlan = await createDefaultStudyPlan(id, name);
+
+    res.status(200).json({
+      message: "added study plan successfully",
+      result: studyPlan,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to added study plan", error });
+  }
+};
+
+export const deleteStudyPlan = async (req: Request, res: Response) => {
+  const { userId, studyPlanId } = req.params;
+
+  const userIDObj = new mongoose.Types.ObjectId(userId);
+
+  try {
+    const studyPlan = await StudyPlan.findByIdAndDelete(studyPlanId);
+    if (!studyPlan) {
+      res.status(404).json({ message: "Study plan not found" });
+      return;
+    }
+
+    const studyPlans: IUserModel[] | null = await StudyPlan.find({
+      creator: userIDObj,
+    }).populate("creator");
+
+    // console.log(studyPlans.length);
+    if (studyPlans.length > 0) {
+      const selectedStudyPlan = studyPlans[0]._id;
+      await User.updateMany(
+        { selectedStudyPlan: studyPlanId },
+        { $set: { selectedStudyPlan } }
+      );
+    }
+
+    res.status(200).json({
+      message: "deleted study plan successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to deleted study plan", error });
   }
 };

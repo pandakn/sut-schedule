@@ -1,29 +1,5 @@
 import { Request, Response } from "express";
-import User, { IUserModel } from "../models/user";
-import { createDefaultStudyPlan } from "../utils/defaultStudyPlan";
 import StudyPlan from "../models/studyPlan";
-
-export const createStudyPlan = async (req: Request, res: Response) => {
-  const { userID, name } = req.body;
-
-  try {
-    // Find the user by ID
-    const user: IUserModel | null = await User.findById(userID);
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-      return;
-    }
-
-    const studyPlan = await createDefaultStudyPlan(userID, name);
-
-    res.status(200).json({
-      message: "added study plan successfully",
-      result: studyPlan,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to added study plan", error });
-  }
-};
 
 export const getStudyPlan = async (req: Request, res: Response) => {
   try {
@@ -45,7 +21,7 @@ export const getStudyPlan = async (req: Request, res: Response) => {
 export const getStudyPlanByID = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const studyPlan = await StudyPlan.findById({ _id: id }).exec();
+    const studyPlan = await StudyPlan.findById({ _id: id });
 
     if (!studyPlan) {
       res.status(404).json({ message: "Study plan not found" });
