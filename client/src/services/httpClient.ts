@@ -4,6 +4,100 @@ import { AxiosError } from "axios";
 
 const MAX_ROW = "50";
 
+export const getUserById = async (userId: string, token: string) => {
+  try {
+    if (userId) {
+      const response = await api.get(`/api/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(response.data);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getStudyPlanById = async (studyPlanID: string, token: string) => {
+  try {
+    if (studyPlanID) {
+      const response = await api.get(`/api/study-plan/${studyPlanID}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(response.data);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getSelectStudyPlan = async (
+  userID: string,
+  studyPlanID: string,
+  token: string
+) => {
+  try {
+    if (studyPlanID) {
+      const response = await api.post(
+        `/api/users/${userID}/study-plan/${studyPlanID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(response.data);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteStudyPlan = async (
+  userID: string,
+  studyPlanID: string,
+  token: string
+) => {
+  try {
+    if (studyPlanID) {
+      const response = await api.delete(
+        `/api/users/${userID}/study-plan/${studyPlanID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(response.data);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const getCoursesData = async (
   acadyear: string,
   semester: string,
@@ -38,36 +132,20 @@ export const getCoursesData = async (
   }
 };
 
-export const getCourseOfUser = async (userId: string, token: string) => {
-  try {
-    const response = await api.get(`/api/user/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.status === 200) {
-      return response.data.result.courses;
-    } else {
-      console.error(response.data);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export const getStudyPlanOfUser = async (userId: string, token: string) => {
   try {
-    const response = await api.get(`/api/user/study-plan/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    if (userId) {
+      const response = await api.get(`/api/users/${userId}/study-plans`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      console.error(response.data);
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(response.data);
+      }
     }
   } catch (error) {
     console.error(error);
@@ -81,20 +159,22 @@ export const addCourseToStudyPlan = async (
   token: string | null
 ) => {
   try {
-    const response = await api.post(
-      `/api/user/study-plan/${userID}`,
-      { studyPlanID, courseSchedule },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    if (userID && studyPlanID) {
+      const response = await api.post(
+        `/api/users/${userID}/study-plans/${studyPlanID}`,
+        { courseSchedule },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      console.error(response.data);
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(response.data);
+      }
     }
   } catch (error) {
     console.error(error);
@@ -108,12 +188,14 @@ export const deleteCourseFromStudyPlan = async (
   token: string | null
 ) => {
   try {
-    const response = await api.delete(`/api/user/study-plan/${userID}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: { studyPlanID, courseID },
-    });
+    const response = await api.delete(
+      `/api/users/${userID}/study-plans/${studyPlanID}/courses/${courseID}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.status === 200) {
       return response.data;
@@ -132,32 +214,14 @@ export const addStudyPlan = async (
 ) => {
   try {
     const response = await api.post(
-      `/api/study-plan`,
-      { userID, name },
+      `/api/users/${userID}/study-plans`,
+      { name },
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
-
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      console.error(response.data);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export const deleteStudyPlan = async (id: string, token: string | null) => {
-  try {
-    const response = await api.delete(`/api/study-plan/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
 
     if (response.status === 200) {
       return response.data;

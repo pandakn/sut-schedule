@@ -10,8 +10,6 @@ import {
 } from "../services/httpClient";
 import { useAuth, useStudyPlan } from "../hooks";
 import { handleSameSchedule } from "../utils/handleSameSchedule";
-import { setDataToLocalStorage } from "../utils/setLocalStorage";
-import { IStudyPlan } from "./StudyPlanContext";
 
 interface CourseContextType {
   courses: CourseInterface;
@@ -133,16 +131,12 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
       prevSchedule.filter((course) => course.id !== courseId)
     );
 
-    const res = await deleteCourseFromStudyPlan(
+    await deleteCourseFromStudyPlan(
       payload.id,
       selectedPlan.id,
       courseId,
       accessToken
     );
-
-    const data: IStudyPlan = res.result;
-
-    setDataToLocalStorage(data._id, data.name, data.courseSchedule);
 
     setTimeout(() => setShowAlert(false), 1500);
   };

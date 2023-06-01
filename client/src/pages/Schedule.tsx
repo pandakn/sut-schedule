@@ -5,6 +5,7 @@ import { useStudyPlan } from "../hooks";
 import StudyPlan from "../components/StudyPlan";
 import HorizontalCard from "../components/HorizontalCard";
 import Modal from "../components/Modal";
+import TotalCredits from "../components/TotalCredits";
 
 // interface
 import { ICourseInSchedule } from "../models/course.interface";
@@ -22,17 +23,16 @@ const Schedule = () => {
     [key: string]: ICourseInSchedule[];
   }>({});
 
-  // console.log("courseInSchedule", courseInSchedule);
-
   const [bgColor, setBgColor] = useState<IBgColor>({});
 
   const {
     courseInPlanner,
-    studyPlan,
+    studyPlanOfUser,
     handleChooseStudyPlan,
     handleAddStudyPlan,
     handleDeleteStudyPlan,
     showAlert,
+    selectedPlan,
   } = useStudyPlan();
 
   const mappedCourses = useCallback(() => {
@@ -101,30 +101,15 @@ const Schedule = () => {
   return (
     <>
       <Modal
-        studyPlan={studyPlan}
+        studyPlan={studyPlanOfUser}
         handleSubmit={handleChooseStudyPlan}
         handleAddStudyPlan={handleAddStudyPlan}
         handleDeleteStudyPlan={handleDeleteStudyPlan}
         showAlert={showAlert}
       />
+      <p className="mt-5 text-3xl text-center">{selectedPlan.name}</p>
       <StudyPlan courseInSchedule={courseInSchedule} />
-      <div className="container mx-auto px-9 md:px-5 md:text-xl text-end">
-        <p className="tracking-wide">
-          total credit:{" "}
-          <span className="ml-2">
-            {courseInPlanner.reduce(
-              (sum, cs) => sum + parseInt(cs.credit.split(" ")[0]),
-              0
-            )}
-          </span>{" "}
-          {courseInPlanner.reduce(
-            (sum, cs) => sum + parseInt(cs.credit.split(" ")[0]),
-            0
-          ) > 1
-            ? "credits"
-            : "credit"}
-        </p>
-      </div>
+      <TotalCredits courseInPlanner={courseInPlanner} />
       <HorizontalCard color={bgColor} courseInPlanner={courseInPlanner} />
     </>
   );

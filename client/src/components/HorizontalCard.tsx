@@ -75,13 +75,13 @@ const HorizontalCard = ({ color, courseInPlanner }: Props) => {
                   <p className="text-base font-semibold">
                     Mid:
                     <span className="pl-3 font-light">
-                      {cs.details.midExam || "-"}
+                      {cs.details?.midExam || "-"}
                     </span>
                   </p>
                   <p className="text-base font-semibold">
                     Final:
                     <span className="pl-2 font-light">
-                      {cs.details.finalExam || "-"}
+                      {cs.details?.finalExam || "-"}
                     </span>
                   </p>
                 </section>
