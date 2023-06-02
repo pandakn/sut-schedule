@@ -24,26 +24,6 @@ export const getUserById = async (userId: string, token: string) => {
   }
 };
 
-export const getStudyPlanById = async (studyPlanID: string, token: string) => {
-  try {
-    if (studyPlanID) {
-      const response = await api.get(`/api/study-plan/${studyPlanID}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.status === 200) {
-        return response.data;
-      } else {
-        console.error(response.data);
-      }
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export const getSelectStudyPlan = async (
   userID: string,
   studyPlanID: string,
@@ -171,13 +151,21 @@ export const addCourseToStudyPlan = async (
       );
 
       if (response.status === 200) {
-        return response.data;
+        return { status: true, data: response.data };
       } else {
         console.error(response.data);
       }
     }
   } catch (error) {
-    console.error(error);
+    if (
+      error instanceof AxiosError &&
+      error.response &&
+      error.response.status === 404
+    ) {
+      return { status: false, data: error.response.data };
+    } else {
+      console.error(error);
+    }
   }
 };
 
