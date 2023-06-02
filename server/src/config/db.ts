@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const DB_NAME = "sut-schedule";
+const DB_NAME = "sut_schedule";
 
 export async function connectToDatabase() {
   try {
