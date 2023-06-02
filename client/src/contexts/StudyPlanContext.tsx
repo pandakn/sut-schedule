@@ -7,7 +7,6 @@ import {
   addStudyPlan,
   deleteStudyPlan,
   getUserById,
-  getStudyPlanById,
   getSelectStudyPlan,
 } from "../services/httpClient";
 
@@ -46,7 +45,7 @@ export type StudyPlanContextType = {
   handleAddCourseToStudyPlan: (
     studyPlanID: string,
     courseSchedule: CourseDataInterface
-  ) => Promise<void>;
+  ) => Promise<string>;
   handleAddStudyPlan: (name: string) => Promise<void>;
   handleDeleteStudyPlan: (id: string) => Promise<void>;
   selectedPlan: ISelectedPlan;
@@ -112,7 +111,7 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
     if (planID && studyPlanName && accessToken && courseSchedule) {
       await getSelectStudyPlan(payload.id, planID, accessToken);
 
-      fetchUser();
+      fetchSelectStudyPlanOfUser();
 
       setCourseInPlanner(courseSchedule);
       setSelectedPlan({ id: planID, name: studyPlanName });
@@ -131,13 +130,16 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
         accessToken
       );
 
-      if (res) {
+      if (res?.status) {
         setCourseInPlanner((prev) => {
           if (selectedPlan && courseSchedule) {
             return [...prev, courseSchedule];
           }
           return prev;
         });
+      } else {
+        const errorMsg = res?.data.message;
+        return errorMsg;
       }
     }
   };
@@ -180,27 +182,28 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
     setTimeout(() => setShowAlert({ type: "", isShow: false }), 1500);
   };
 
-  const fetchUser = useCallback(async () => {
+  const fetchSelectStudyPlanOfUser = useCallback(async () => {
     if (accessToken) {
       const res = await getUserById(payload.id, accessToken);
-      const studyPlanID = res.result.selectedStudyPlan;
+
+      const studyPlan = res.result.selectedStudyPlan;
 
       if (res) {
-        const resStudyPlan = await getStudyPlanById(studyPlanID, accessToken);
-        const id = resStudyPlan.result._id;
-        const name = resStudyPlan.result.name;
-        const courseSchedule = resStudyPlan.result.courseSchedule;
+        const id = studyPlan._id;
+        const name = studyPlan.name;
+        const courseSchedule = studyPlan.courseSchedule;
         setCourseInPlanner(courseSchedule);
         setSelectedPlan({ id, name });
       }
     }
   }, [accessToken, payload]);
 
+  // for get select study plan of user
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    fetchSelectStudyPlanOfUser();
+  }, [fetchSelectStudyPlanOfUser]);
 
-  const fetchStudyPlan = useCallback(async () => {
+  const fetchAllStudyPlanOfUser = useCallback(async () => {
     try {
       if (accessToken) {
         const res = await getStudyPlanOfUser(payload.id, accessToken);
@@ -212,9 +215,10 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
     }
   }, [accessToken, payload.id]);
 
+  // for get all study plan of user
   useEffect(() => {
-    fetchStudyPlan();
-  }, [fetchStudyPlan]);
+    fetchAllStudyPlanOfUser();
+  }, [fetchAllStudyPlanOfUser]);
 
   return (
     <StudyPlanContext.Provider

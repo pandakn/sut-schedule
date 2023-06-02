@@ -9,13 +9,15 @@ import {
   getCoursesData,
 } from "../services/httpClient";
 import { useAuth, useStudyPlan } from "../hooks";
-import { handleSameSchedule } from "../utils/handleSameSchedule";
 
 interface CourseContextType {
   courses: CourseInterface;
   loading: boolean;
   error: string | null;
-  addCourseError: boolean;
+  addCourseError: {
+    isError: boolean;
+    message: string;
+  };
   fetchCourses: (params: CourseSearchParamsInterface) => Promise<void>;
   addCourseToSchedule: (
     studyPlanID: string,
@@ -29,7 +31,10 @@ const CourseContext = createContext<CourseContextType>({
   courses: { year: "", courseData: [] },
   loading: false,
   error: null,
-  addCourseError: false,
+  addCourseError: {
+    isError: false,
+    message: "",
+  },
   fetchCourses: async () => {
     throw new Error("fetchCourses is not implemented");
   },
@@ -48,12 +53,8 @@ interface CourseProviderProps {
 
 const CourseProvider = ({ children }: CourseProviderProps) => {
   const { payload, accessToken } = useAuth();
-  const {
-    courseInPlanner,
-    setCourseInPlanner,
-    handleAddCourseToStudyPlan,
-    selectedPlan,
-  } = useStudyPlan();
+  const { setCourseInPlanner, handleAddCourseToStudyPlan, selectedPlan } =
+    useStudyPlan();
 
   const [courses, setCourses] = useState<CourseInterface>({
     year: "",
@@ -61,7 +62,10 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [addCourseError, setAddCourseError] = useState(false);
+  const [addCourseError, setAddCourseError] = useState({
+    isError: false,
+    message: "",
+  });
   const [showAlert, setShowAlert] = useState(false);
 
   const fetchCourses = async (
@@ -85,8 +89,6 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
       }
       setLoading(false);
     } catch (err) {
-      // setError((err as Error).message);
-      // setError({ status: false, message: (err as Error).message });
       setLoading(false);
     }
   };
@@ -97,26 +99,17 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
     studyPlanID: string,
     course: CourseDataInterface
   ) => {
-    setAddCourseError(false);
+    const errorMsg = await handleAddCourseToStudyPlan(studyPlanID, course);
 
-    const isSameSchedule: boolean = courseInPlanner.some((c) => {
-      const checkCourseCode = c.courseCode === course.courseCode;
-      const sameSchedule = handleSameSchedule(
-        course.classSchedule,
-        c.classSchedule
-      );
-
-      return checkCourseCode || sameSchedule ? true : false;
-    });
-
-    // console.log("isSameSchedule", isSameSchedule);
-
-    if (isSameSchedule) {
+    if (errorMsg) {
       setShowAlert(true);
-      setAddCourseError(true);
+      setAddCourseError({ isError: true, message: errorMsg });
       setTimeout(() => setShowAlert(false), 2000);
     } else {
-      handleAddCourseToStudyPlan(studyPlanID, course);
+      setAddCourseError({
+        isError: false,
+        message: "Course added successfully",
+      });
     }
 
     setShowAlert(true);
