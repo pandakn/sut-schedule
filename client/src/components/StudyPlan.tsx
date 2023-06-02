@@ -15,7 +15,7 @@ type Props = {
 
 const StudyPlan = ({ courseInSchedule }: Props) => {
   return (
-    <div className="container mx-auto my-10 overflow-x-auto">
+    <div className="container mx-auto mb-10 overflow-x-auto">
       <div className="min-w-[700px] rounded-lg mx-5">
         {/* header */}
         <div

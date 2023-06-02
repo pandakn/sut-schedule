@@ -7,7 +7,6 @@ import Navbar from "./components/Navbar";
 import ProtectedUserRoute from "./routes/ProtectedUserRoute";
 
 // pages
-import Schedule from "./pages/Schedule";
 import SearchCourse from "./pages/SearchCourse";
 import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";
@@ -23,14 +22,6 @@ function App() {
           element={
             <ProtectedUserRoute>
               <Homepage />
-            </ProtectedUserRoute>
-          }
-        />
-        <Route
-          path="/schedule"
-          element={
-            <ProtectedUserRoute>
-              <Schedule />
             </ProtectedUserRoute>
           }
         />

@@ -22,7 +22,7 @@ const Alert = ({ children, textColor, bgColor, icon }: Props) => {
         className={`p-4 text-sm rounded-lg`}
       >
         <span className="flex items-center justify-center gap-2 font-medium">
-          {icon} <p className="text-lg">{children}</p>
+          {icon} <p className="text-lg tracking-wide">{children}</p>
         </span>
       </div>
     </motion.div>

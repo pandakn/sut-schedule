@@ -91,23 +91,23 @@ const GroupCourseTable = ({ data }: Props) => {
   return (
     <div className="container mx-auto my-10">
       {/* Alert */}
-      {!addCourseError && showAlert && (
+      {!addCourseError.isError && showAlert && (
         <Alert
           textColor="#166534"
           bgColor="#f0fdf4"
           icon={<AiOutlineCheckCircle className="text-xl" />}
         >
-          Course added successfully
+          {addCourseError.message}
         </Alert>
       )}
 
-      {addCourseError && showAlert && (
+      {addCourseError.isError && showAlert && (
         <Alert
           textColor="#991b1b"
           bgColor="#fef2f2"
           icon={<VscError className="text-xl" />}
         >
-          Cannot add the course
+          {addCourseError.message}
         </Alert>
       )}
 

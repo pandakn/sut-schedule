@@ -28,12 +28,6 @@ const Navbar = () => {
                 <div className="flex items-center gap-6">
                   <Link
                     className="text-gray-600 uppercase hover:text-gray-800"
-                    to="schedule"
-                  >
-                    Schedule
-                  </Link>
-                  <Link
-                    className="text-gray-600 uppercase hover:text-gray-800"
                     to="search-course"
                   >
                     Search
@@ -86,9 +80,6 @@ const Navbar = () => {
             id="mobile-menu"
           >
             <div className="flex flex-col px-2 pt-2 pb-3 gap-y-1 sm:px-3">
-              <Link className="uppercase hover:text-gray-800" to="schedule">
-                Schedule
-              </Link>
               <Link
                 className="uppercase hover:text-gray-800"
                 to="search-course"
