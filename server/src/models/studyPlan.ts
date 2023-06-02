@@ -9,113 +9,119 @@ export interface IStudyPlanModel extends Document {
   updatedAt: Date;
 }
 
-const scheduleSchema: Schema = new mongoose.Schema({
-  day: {
-    type: String,
+const scheduleSchema: Schema = new mongoose.Schema(
+  {
+    day: {
+      type: String,
+    },
+    times: {
+      type: String,
+    },
+    room: {
+      type: String,
+    },
   },
-  times: {
-    type: String,
-  },
-  room: {
-    type: String,
-  },
-});
+  { _id: false }
+);
 
-const courseSchema: Schema = new mongoose.Schema({
-  id: {
-    type: String,
-  },
-  url: {
-    type: String,
-  },
-  courseCode: {
-    type: String,
-  },
-  version: {
-    type: String,
-  },
-  courseNameEN: {
-    type: String,
-  },
-  courseNameTH: {
-    type: String,
-    default: null,
-  },
-  faculty: {
-    type: String,
-  },
-  department: {
-    type: String,
-  },
-  note: {
-    type: String,
-    default: null,
-  },
-  professors: {
-    type: [String],
-  },
-  credit: {
-    type: String,
-  },
-  section: {
-    type: String,
-  },
-  statusSection: {
-    type: String,
-  },
-  language: {
-    type: String,
-  },
-  degree: {
-    type: String,
-  },
-  classSchedule: {
-    type: [scheduleSchema],
-    default: null,
-  },
-  seat: {
-    type: Object,
-    properties: {
-      totalSeat: {
-        type: String,
+const courseSchema: Schema = new mongoose.Schema(
+  {
+    id: {
+      type: String,
+    },
+    url: {
+      type: String,
+    },
+    courseCode: {
+      type: String,
+    },
+    version: {
+      type: String,
+    },
+    courseNameEN: {
+      type: String,
+    },
+    courseNameTH: {
+      type: String,
+      default: null,
+    },
+    faculty: {
+      type: String,
+    },
+    department: {
+      type: String,
+    },
+    note: {
+      type: String,
+      default: null,
+    },
+    professors: {
+      type: [String],
+    },
+    credit: {
+      type: String,
+    },
+    section: {
+      type: String,
+    },
+    statusSection: {
+      type: String,
+    },
+    language: {
+      type: String,
+    },
+    degree: {
+      type: String,
+    },
+    classSchedule: {
+      type: [scheduleSchema],
+      default: null,
+    },
+    seat: {
+      type: Object,
+      properties: {
+        totalSeat: {
+          type: String,
+        },
+        registered: {
+          type: String,
+        },
+        remain: {
+          type: String,
+        },
       },
-      registered: {
-        type: String,
-      },
-      remain: {
-        type: String,
+    },
+    details: {
+      type: Object,
+      properties: {
+        courseStatus: {
+          type: String,
+        },
+        courseCondition: {
+          type: [String],
+          default: null,
+        },
+        continueCourse: {
+          type: [String],
+          default: null,
+        },
+        equivalentCourse: {
+          type: String,
+          default: null,
+        },
+        midExam: {
+          type: String,
+          default: null,
+        },
+        finalExam: {
+          type: String,
+          default: null,
+        },
       },
     },
   },
-  details: {
-    type: Object,
-    properties: {
-      courseStatus: {
-        type: String,
-      },
-      courseCondition: {
-        type: [String],
-        default: null,
-      },
-      continueCourse: {
-        type: [String],
-        default: null,
-      },
-      equivalentCourse: {
-        type: String,
-        default: null,
-      },
-      midExam: {
-        type: String,
-        default: null,
-      },
-      finalExam: {
-        type: String,
-        default: null,
-      },
-    },
-  },
-});
+  { _id: false }
+);
 
 const courseScheduleSchema: Schema = new mongoose.Schema(
   {

@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import mongoose, { ObjectId } from "mongoose";
+import mongoose from "mongoose";
 import User, { IUserModel } from "../models/user";
 import StudyPlan, { IStudyPlanModel } from "../models/studyPlan";
 import { createDefaultStudyPlan } from "../utils/defaultStudyPlan";
+import { handleSameSchedule } from "../utils/handleSameSchedule";
 
 // Get all users
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -20,7 +21,7 @@ export const getUserById = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
 
-    const user = await User.findById({ _id: id }).exec();
+    const user = await User.findById({ _id: id }).populate("selectedStudyPlan");
     if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
@@ -77,7 +78,7 @@ export const deleteUserById = async (req: Request, res: Response) => {
   }
 };
 
-export const addSubjectToStudyPlan = async (req: Request, res: Response) => {
+export const addCourseToStudyPlan = async (req: Request, res: Response) => {
   const { courseSchedule } = req.body;
   const { userID, studyPlanID } = req.params;
 
@@ -96,6 +97,41 @@ export const addSubjectToStudyPlan = async (req: Request, res: Response) => {
     if (!studyPlan) {
       res.status(404).json({ message: "Study plan not found" });
       return;
+    }
+
+    const courseInStudyPlan = studyPlan.courseSchedule;
+
+    const isSameSchedule = courseInStudyPlan.some((c) => {
+      const checkCourseCode = c.courseCode === courseSchedule.courseCode;
+
+      const sameSchedule = handleSameSchedule(
+        courseSchedule.classSchedule,
+        c.classSchedule
+      );
+
+      return sameSchedule || checkCourseCode;
+    });
+
+    if (isSameSchedule) {
+      const conflictingCourses = courseInStudyPlan.filter((c) => {
+        const checkCourseCode = c.courseCode === courseSchedule.courseCode;
+
+        const sameSchedule = handleSameSchedule(
+          courseSchedule.classSchedule,
+          c.classSchedule
+        );
+
+        return sameSchedule || checkCourseCode;
+      });
+
+      if (conflictingCourses.length > 0) {
+        const courseConflicts = conflictingCourses.map((c) => c.courseNameEN);
+
+        const errorMsg = `The class schedule conflicts with ${courseConflicts}`;
+
+        res.status(404).json({ message: errorMsg });
+        return;
+      }
     }
 
     // Add the class schedule to the existing study plan

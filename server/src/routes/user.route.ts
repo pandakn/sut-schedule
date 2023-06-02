@@ -4,7 +4,7 @@ import {
   getUserById,
   deleteUserById,
   editUser,
-  addSubjectToStudyPlan,
+  addCourseToStudyPlan,
   getStudyPlansOfUser,
   deleteCourseOfUser,
   selectStudyPlan,
@@ -25,7 +25,7 @@ export default (router: express.Router) => {
   router.post(
     "/users/:userID/study-plans/:studyPlanID",
     authenticateToken,
-    addSubjectToStudyPlan
+    addCourseToStudyPlan
   );
 
   router.delete(
