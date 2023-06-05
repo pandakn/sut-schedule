@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import connectRedis from "../utils/connect-redis";
 import { scrapeCourseData } from "../scraping/scraper";
 import { scrapeCourseDataTest } from "../scraping/scrapeTest";
-import User, { IUserModel } from "../models/user";
 
 const redisClient = connectRedis();
 
