@@ -1,5 +1,6 @@
 import api from "./axiosInterceptors";
 import { ILoginResponse } from "../models/auth.interface";
+import { AxiosError } from "axios";
 
 export const register = async (
   name: string,
@@ -21,8 +22,15 @@ export const register = async (
       return { data: response.data, error: true };
     }
   } catch (error) {
-    // Handle any network or server errors
-    console.error(error);
+    if (
+      error instanceof AxiosError &&
+      error.response &&
+      error.response.status === 400
+    ) {
+      return { error: true, data: error.response.data };
+    } else {
+      console.error(error);
+    }
   }
 };
 
@@ -45,13 +53,17 @@ export const login = async (
     if (response.status === 200) {
       // Handle the success response
       return { data: response.data, error: false };
-    } else {
-      // Handle the error response
-      return { data: response.data, error: true };
     }
   } catch (error) {
-    // Handle any network or server errors
-    console.error(error);
+    if (
+      error instanceof AxiosError &&
+      error.response &&
+      error.response.status === 400
+    ) {
+      return { error: true, data: error.response.data };
+    } else {
+      console.error(error);
+    }
   }
 };
 

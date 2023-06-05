@@ -27,10 +27,10 @@ const Navbar = () => {
               <div className="hidden md:block">
                 <div className="flex items-center gap-6">
                   <Link
-                    className="text-gray-600 uppercase hover:text-gray-800"
+                    className="text-gray-600 capitalize hover:text-gray-800"
                     to="search-course"
                   >
-                    Search
+                    Search Course
                   </Link>
                   {accessToken ? (
                     <>
@@ -42,7 +42,7 @@ const Navbar = () => {
                     </>
                   ) : (
                     <Link
-                      className="text-gray-600 uppercase hover:text-gray-800"
+                      className="text-gray-600 capitalize hover:text-gray-800"
                       to="login"
                     >
                       Login
@@ -81,10 +81,10 @@ const Navbar = () => {
           >
             <div className="flex flex-col px-2 pt-2 pb-3 gap-y-1 sm:px-3">
               <Link
-                className="uppercase hover:text-gray-800"
+                className="capitalize hover:text-gray-800"
                 to="search-course"
               >
-                Search
+                Search Course
               </Link>
               {accessToken ? (
                 <>
