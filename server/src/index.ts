@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import morgan from "morgan";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { connectToDatabase } from "./config/db";
@@ -30,6 +31,7 @@ app.use(
 
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(morgan("dev"));
 
 app.use("/api", router());
 
