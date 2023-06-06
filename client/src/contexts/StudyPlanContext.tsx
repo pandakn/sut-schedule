@@ -186,9 +186,8 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
     if (accessToken) {
       const res = await getUserById(payload.id, accessToken);
 
-      const studyPlan = res.result.selectedStudyPlan;
-
       if (res) {
+        const studyPlan = res.result.selectedStudyPlan;
         const id = studyPlan._id;
         const name = studyPlan.name;
         const courseSchedule = studyPlan.courseSchedule;

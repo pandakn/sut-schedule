@@ -73,11 +73,10 @@ const Navbar = () => {
 
         {isMenuOpen && (
           <motion.div
-            initial={{ y: -20 }}
+            initial={{ y: -16 }}
             animate={{ y: 0 }}
             transition={{ duration: 0.2 }}
             className="md:hidden"
-            id="mobile-menu"
           >
             <div className="flex flex-col px-2 pt-2 pb-3 gap-y-1 sm:px-3">
               <Link

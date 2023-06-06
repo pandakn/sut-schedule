@@ -40,7 +40,7 @@ const CardOfSchedule = ({ courseInSchedule, day }: Props) => {
         return (
           <span
             key={`group-${idx}`}
-            className="flex flex-col justify-between h-auto p-2 text-xs border rounded md:px-3 md:py-2 md:text-sm"
+            className="flex flex-col p-2 text-xs border rounded text-on-CardOfSchedule gap-y-2 md:text-sm"
             style={{
               color: `${textColor}`,
               backgroundColor: `${bgColor}`,
@@ -48,9 +48,8 @@ const CardOfSchedule = ({ courseInSchedule, day }: Props) => {
               gridColumn: `${startCol}/${endCol}`,
             }}
           >
-            <p className="font-bold truncate">{code}</p>
+            <p className="font-bold">{code}</p>
             <p className="font-bold truncate">{name}</p>
-            <div></div>
             <p>Sec. {section}</p>
           </span>
         );

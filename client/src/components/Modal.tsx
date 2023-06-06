@@ -8,6 +8,7 @@ import {
 } from "react-icons/ai";
 import Alert from "./Alert";
 import { IAlert } from "../contexts/StudyPlanContext";
+import { motion } from "framer-motion";
 
 interface IStudyPlan {
   _id: string;
@@ -46,7 +47,9 @@ const Modal = ({
     setStudyPlanName(value);
   };
 
-  const submit = () => {
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+
     if (inputRef.current) {
       inputRef.current.value = "";
     }
@@ -58,7 +61,21 @@ const Modal = ({
       {isOpenModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
           <div className="relative w-auto max-w-md mx-auto my-6">
-            <div className="relative z-20 text-gray-900 bg-white rounded-lg shadow-lg">
+            <motion.div
+              initial={{
+                opacity: 0,
+                scale: 0.75,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                transition: {
+                  ease: "easeOut",
+                  duration: 0.2,
+                },
+              }}
+              className="relative z-20 text-gray-900 bg-white rounded-lg shadow-lg"
+            >
               <div className="flex items-center justify-between p-5 border-b border-gray-200">
                 <h2 className="text-2xl font-bold">Study Plan</h2>
                 <button
@@ -97,7 +114,10 @@ const Modal = ({
                   );
                 })}
               </div>
-              <div className="flex flex-col items-center justify-end w-full p-5 border-t border-gray-200 gap-y-3">
+              <form
+                onSubmit={submit}
+                className="flex flex-col items-center justify-end w-full p-5 border-t border-gray-200 gap-y-3"
+              >
                 <input
                   ref={inputRef}
                   type="text"
@@ -108,12 +128,12 @@ const Modal = ({
                 <button
                   disabled={!studyPlanName && true}
                   className="w-full px-4 py-2 font-bold text-white capitalize bg-blue-500 rounded hover:bg-blue-700 disabled:opacity-50"
-                  onClick={submit}
+                  onSubmit={submit}
                 >
                   Add Plan
                 </button>
-              </div>
-            </div>
+              </form>
+            </motion.div>
             <div>
               {/* Alert */}
               {showAlert.isShow && showAlert.type === "add" && (

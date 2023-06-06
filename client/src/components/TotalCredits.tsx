@@ -6,7 +6,7 @@ type Props = {
 
 const TotalCredits = ({ courseInPlanner }: Props) => {
   return (
-    <div className="container mx-auto px-9 md:px-5 md:text-xl text-end">
+    <div className="md:text-xl text-end">
       <p className="tracking-wide">
         total credit:{" "}
         <span className="ml-2">

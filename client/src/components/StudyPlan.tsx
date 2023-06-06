@@ -11,12 +11,13 @@ const daysOfWeek = ["mo", "tu", "we", "th", "fr", "sa", "su"];
 
 type Props = {
   courseInSchedule: { [key: string]: ICourseInSchedule[] };
+  studyContainer: React.MutableRefObject<null>;
 };
 
-const StudyPlan = ({ courseInSchedule }: Props) => {
+const StudyPlan = ({ courseInSchedule, studyContainer }: Props) => {
   return (
-    <div className="container mx-auto mb-10 overflow-x-auto">
-      <div className="min-w-[700px] rounded-lg mx-5">
+    <div className="container mx-auto mb-6 overflow-x-auto">
+      <div ref={studyContainer} className="min-w-[700px] rounded-lg mx-5">
         {/* header */}
         <div
           className="grid overflow-x-auto"
