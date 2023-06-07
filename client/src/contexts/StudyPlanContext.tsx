@@ -36,7 +36,6 @@ interface StudyPlanProviderProps {
 
 export type StudyPlanContextType = {
   studyPlanOfUser: IStudyPlanOfUser[];
-  setStudyPlanOfUser: React.Dispatch<React.SetStateAction<IStudyPlanOfUser[]>>;
   courseInPlanner: CourseDataInterface[];
   setCourseInPlanner: React.Dispatch<
     React.SetStateAction<CourseDataInterface[]>
@@ -54,9 +53,6 @@ export type StudyPlanContextType = {
 
 export const StudyPlanContext = createContext<StudyPlanContextType>({
   studyPlanOfUser: [],
-  setStudyPlanOfUser: () => {
-    throw new Error("setStudyPlanOfUser is not implemented");
-  },
   courseInPlanner: [],
   setCourseInPlanner: () => {
     throw new Error("setCourseInPlanner is not implemented");
@@ -223,7 +219,6 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
     <StudyPlanContext.Provider
       value={{
         studyPlanOfUser,
-        setStudyPlanOfUser,
         courseInPlanner,
         setCourseInPlanner,
         selectedPlan,
