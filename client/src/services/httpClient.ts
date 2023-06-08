@@ -4,6 +4,46 @@ import { AxiosError } from "axios";
 
 const MAX_ROW = "50";
 
+// edit profile
+
+export const updateUserProfile = async (
+  userId: string,
+  name: string,
+  username: string,
+  password: string,
+  token: string
+) => {
+  try {
+    if (userId) {
+      const response = await api.put(
+        `/api/users/${userId}`,
+        { name, username, password },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(response.data);
+      }
+    }
+  } catch (error) {
+    if (
+      error instanceof AxiosError &&
+      error.response &&
+      error.response.status === 400
+    ) {
+      return { status: false, data: error.response.data.error };
+    } else {
+      console.error(error);
+    }
+  }
+};
+
 export const getUserById = async (userId: string, token: string) => {
   try {
     if (userId) {

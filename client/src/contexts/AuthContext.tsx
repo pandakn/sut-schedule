@@ -1,4 +1,10 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useEffect,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { login, logout, register } from "../services/authHttpClient";
 
@@ -23,6 +29,7 @@ type AuthContextType = {
   handleLogout: () => Promise<void>;
   accessToken: string | null;
   payload: AccessTokenPayload;
+  setPayload: Dispatch<SetStateAction<AccessTokenPayload>>;
   loggedIn: AuthMsg;
   registered: AuthMsg;
   showAlert: boolean;
@@ -40,6 +47,9 @@ const initialAuthContext: AuthContextType = {
   },
   accessToken: localStorage.getItem("accessToken"),
   payload: { id: "", name: "", username: "" },
+  setPayload: () => {
+    throw new Error("setPayload is not implemented");
+  },
   loggedIn: { message: "", error: false },
   registered: { message: "", error: false },
   showAlert: false,
@@ -152,6 +162,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     handleLogout,
     accessToken,
     payload,
+    setPayload,
     loggedIn,
     registered,
     showAlert,

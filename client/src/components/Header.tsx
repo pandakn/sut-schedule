@@ -1,9 +1,9 @@
-type HeaderProp = {
+type HeaderProps = {
   toggleModal: () => void;
   studyPlanName: string;
 };
 
-const Header = ({ studyPlanName, toggleModal }: HeaderProp) => {
+const Header = ({ studyPlanName, toggleModal }: HeaderProps) => {
   return (
     <header className="container flex flex-col items-center justify-between gap-3 p-5 mx-auto mt-4 md:flex-row">
       <h3 className="text-xl text-gray-600 md:text-4xl">{studyPlanName}</h3>

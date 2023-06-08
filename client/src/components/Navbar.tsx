@@ -8,6 +8,9 @@ import { motion } from "framer-motion";
 const Navbar = () => {
   const { accessToken, payload, handleLogout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isShowEditProfile, setIsShowEditProfile] = useState(false);
+
+  const toggleProfile = () => setIsShowEditProfile(!isShowEditProfile);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -26,15 +29,39 @@ const Navbar = () => {
               </div>
               <div className="hidden md:block">
                 <div className="flex items-center gap-6">
-                  <Link
-                    className="text-gray-600 capitalize hover:text-gray-800"
-                    to="search-course"
-                  >
-                    Search Course
-                  </Link>
                   {accessToken ? (
                     <>
-                      |<h3 className="">{payload.name}</h3>
+                      <Link
+                        className="text-gray-600 capitalize hover:text-gray-800"
+                        to="search-course"
+                      >
+                        Search Course
+                      </Link>
+                      |
+                      <div className="relative">
+                        <h3
+                          className="hover:cursor-pointer hover:opacity-80"
+                          onClick={toggleProfile}
+                        >
+                          {payload.name}
+                        </h3>
+                        {isShowEditProfile && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.25 }}
+                            onClick={toggleProfile}
+                            className="absolute p-1 px-2 bg-white border border-gray-400 rounded-lg hover:cursor-pointer hover:bg-white/50 w-28 -left-2 top-8"
+                          >
+                            <Link
+                              className="text-gray-600 capitalize hover:text-gray-800 "
+                              to="edit-profile"
+                            >
+                              Edit Profile
+                            </Link>
+                          </motion.div>
+                        )}
+                      </div>
                       <MdLogout
                         onClick={handleLogout}
                         className="text-red-400 w-7 h-7 hover:text-red-600 hover:cursor-pointer"
@@ -78,16 +105,22 @@ const Navbar = () => {
             transition={{ duration: 0.2 }}
             className="md:hidden"
           >
-            <div className="flex flex-col px-2 pt-2 pb-3 gap-y-1 sm:px-3">
-              <Link
-                className="capitalize hover:text-gray-800"
-                to="search-course"
-              >
-                Search Course
-              </Link>
+            <div className="flex flex-col px-5 pt-2 pb-3 gap-y-1 sm:px-3">
               {accessToken ? (
                 <>
+                  <Link
+                    className="text-gray-600 capitalize hover:text-gray-800"
+                    to="search-course"
+                  >
+                    Search Course
+                  </Link>
                   <h3 className="text-lg cursor-pointer ">{payload.name}</h3>
+                  <Link
+                    className="text-gray-600 capitalize hover:text-gray-800"
+                    to="edit-profile"
+                  >
+                    Edit Profile
+                  </Link>
                   <MdLogout
                     onClick={handleLogout}
                     className="text-red-400 w-7 h-7 hover:text-red-600 hover:cursor-pointer"

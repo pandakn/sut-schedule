@@ -11,6 +11,7 @@ import SearchCourse from "./pages/SearchCourse";
 import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";
 import RegisterForm from "./components/RegisterForm";
+import EditProfile from "./components/EditProfile";
 
 function App() {
   return (
@@ -30,6 +31,14 @@ function App() {
           element={
             <ProtectedUserRoute>
               <SearchCourse />
+            </ProtectedUserRoute>
+          }
+        />
+        <Route
+          path="/edit-profile"
+          element={
+            <ProtectedUserRoute>
+              <EditProfile />
             </ProtectedUserRoute>
           }
         />

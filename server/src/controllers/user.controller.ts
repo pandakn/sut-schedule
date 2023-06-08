@@ -36,7 +36,7 @@ export const getUserById = async (req: Request, res: Response) => {
 // edit a user by ID
 export const editUser = async (req: Request, res: Response): Promise<void> => {
   const userId = req.params.id;
-  const { username, password } = req.body;
+  const { name, username, password } = req.body;
 
   try {
     const user: IUserModel | null = await User.findById(userId);
@@ -45,7 +45,15 @@ export const editUser = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Check if the new username is already taken by another user
+    const existingUser: IUserModel | null = await User.findOne({ username });
+    if (existingUser && existingUser._id.toString() !== userId) {
+      res.status(400).json({ message: "Username already exists" });
+      return;
+    }
+
     user.username = username || user.username;
+    user.name = name || user.name;
     if (password) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
