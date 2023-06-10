@@ -7,6 +7,7 @@ import HorizontalCard from "../components/HorizontalCard";
 import Modal from "../components/Modal";
 import TotalCredits from "../components/TotalCredits";
 import Header from "../components/Header";
+import Tabs from "../components/Tabs";
 
 // icon
 import { AiOutlineDownload } from "react-icons/ai";
@@ -18,6 +19,7 @@ import { ICourseInSchedule } from "../models/course.interface";
 import { IColor, getRandomColor } from "../utils/colors";
 import { timeToCol } from "../utils/timeToColumn";
 import { downloadImage } from "../utils/downloadPng";
+import TableSchedule from "../components/TableSchedule";
 
 interface IBgColor {
   [key: string]: string;
@@ -115,7 +117,7 @@ const Homepage = () => {
         courseInSchedule={courseInSchedule}
         studyContainer={studyContainer}
       />
-      <div className="container flex items-center justify-between px-5 mx-auto mb-10">
+      <div className="container flex items-center justify-between px-5 mx-auto mb-5">
         {/* button download study plan */}
         <button
           disabled={courseInPlanner.length <= 0}
@@ -126,7 +128,12 @@ const Homepage = () => {
         </button>
         <TotalCredits courseInPlanner={courseInPlanner} />
       </div>
-      <HorizontalCard color={bgColor} courseInPlanner={courseInPlanner} />
+      <Tabs
+        components={[
+          <HorizontalCard color={bgColor} courseInPlanner={courseInPlanner} />,
+          <TableSchedule courseInPlanner={courseInPlanner} />,
+        ]}
+      />
       <Modal
         studyPlan={studyPlanOfUser}
         handleSubmit={handleChooseStudyPlan}

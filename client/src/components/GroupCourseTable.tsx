@@ -124,7 +124,8 @@ const GroupCourseTable = ({ data }: Props) => {
                     <h3 className="font-bold">
                       {course.courseCode}-{course.version}
                     </h3>
-                    <p className="mt-1">{course.courseNameEN}</p>
+                    <p className="mt-2">{course.courseNameEN}</p>
+                    <p className="mt-2">{course.courseNameTH}</p>
                   </div>
                   <p>credit: {course.credit}</p>
                   <p>degree: {course.degree}</p>

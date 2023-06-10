@@ -3,12 +3,12 @@ import { useCourse } from "../hooks";
 
 // acadyear
 const currentYear = new Date().getFullYear() + 543;
-const acadyear = Array.from({ length: 3 }, (_, i) =>
+const acadyear = Array.from({ length: 4 }, (_, i) =>
   (currentYear - 3 + i).toString()
 );
-acadyear.reverse();
+// acadyear.reverse();
 
-const semester = ["3", "2", "1"];
+const semester = ["1", "2", "3"];
 
 // Default value
 const ACADYEAR = (currentYear - 1).toString();

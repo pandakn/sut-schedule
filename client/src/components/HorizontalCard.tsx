@@ -10,7 +10,6 @@ interface Color {
 
 type Props = {
   color: Color;
-  // for test
   courseInPlanner: CourseDataInterface[];
 };
 
@@ -18,7 +17,7 @@ const HorizontalCard = ({ color, courseInPlanner }: Props) => {
   const { removeCourse, showAlert } = useCourse();
 
   return (
-    <div className="px-4">
+    <div className="">
       {showAlert && (
         <Alert
           textColor="#991b1b"
@@ -34,7 +33,7 @@ const HorizontalCard = ({ color, courseInPlanner }: Props) => {
             key={cs.courseCode}
             className="container grid gap-4 mx-auto mt-5 mb-10"
           >
-            <div className="relative grid justify-between grid-cols-1 mx-5 border rounded-md sm:grid-cols-10">
+            <div className="relative grid justify-between grid-cols-1 border rounded-md sm:grid-cols-10">
               {/* color */}
               <div
                 className="col-span-1 bg-blue-100 border"
