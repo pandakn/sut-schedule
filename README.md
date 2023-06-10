@@ -6,5 +6,6 @@ A dope Web App for SUT students to plan their class schedules
 
 ![image](client/public/screenshots/home.jpeg)
 
-# API 
+# API
+
 - [Course from SUT Reg](https://github.com/pandakn/sut-schedule/tree/main/server)
