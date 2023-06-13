@@ -199,14 +199,10 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
   }, [fetchSelectStudyPlanOfUser]);
 
   const fetchAllStudyPlanOfUser = useCallback(async () => {
-    try {
-      if (accessToken) {
-        const res = await getStudyPlanOfUser(payload.id, accessToken);
+    if (accessToken) {
+      const res = await getStudyPlanOfUser(payload.id, accessToken);
 
-        setStudyPlanOfUser(res.result);
-      }
-    } catch (error) {
-      console.error("Failed to fetch study plans:", error);
+      res && setStudyPlanOfUser(res.result);
     }
   }, [accessToken, payload.id]);
 

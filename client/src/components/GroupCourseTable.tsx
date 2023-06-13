@@ -33,7 +33,7 @@ const RenderDetails = ({ course }: DetailsProp) => {
           {course.courseCondition?.map((condition, i) => {
             return (
               <p
-                key={`${course.courseCode}-${course.version}-${condition + i}`}
+                key={`${course.courseCode}-${course.version}-condition-${i}`}
                 className="px-2 py-1 bg-green-200 rounded-md"
               >
                 {condition || "-"}
@@ -49,7 +49,7 @@ const RenderDetails = ({ course }: DetailsProp) => {
           {course.continueCourse?.map((con, i) => {
             return (
               <p
-                key={`${course.courseCode}-${course.version}-${con + i}`}
+                key={`${course.courseCode}-${course.version}-continue-${i}`}
                 className="px-2 py-1 bg-orange-200 rounded-md"
               >
                 {con}
@@ -64,15 +64,10 @@ const RenderDetails = ({ course }: DetailsProp) => {
         <div className="flex gap-2">
           {course.equivalentCourse?.map((e, i) => {
             return (
-              <div>
-                <p
-                  key={`${course.courseCode}-${course.version + course}-${
-                    e + i
-                  }`}
-                  className="px-2 py-1 rounded-md bg-blue-50"
-                >
-                  {e}
-                </p>
+              <div
+                key={`${course.courseCode}-${course.version}-equivalent-${i}`}
+              >
+                <p className="px-2 py-1 rounded-md bg-blue-50">{e}</p>
               </div>
             );
           }) || "-"}
@@ -116,7 +111,7 @@ const GroupCourseTable = ({ data }: Props) => {
           {data.map((course) => {
             return (
               <div
-                key={`${course.courseCode}-${course.version}`}
+                key={`${course.courseCode}-${course.version}-section:${course.sections}`}
                 className="mx-5 mb-5 border rounded-lg shadow-md"
               >
                 <div className="flex flex-col p-5 mb-3 gap-y-2">
@@ -153,17 +148,16 @@ const GroupCourseTable = ({ data }: Props) => {
 
                           {sec.classSchedule?.map((cs) => {
                             return (
-                              <div className="flex gap-2 text-lg">
-                                <p
-                                  style={{
-                                    color: `${
-                                      colorOfDays[cs.day.toLowerCase()]
-                                        .textColor
-                                    }`,
-                                  }}
-                                >
-                                  {cs.day}
-                                </p>
+                              <div
+                                key={`${cs.day}-${cs.times}-${cs.room}`}
+                                className="flex gap-2 text-lg"
+                                style={{
+                                  color: `${
+                                    colorOfDays[cs.day.toLowerCase()].textColor
+                                  }`,
+                                }}
+                              >
+                                <p>{cs.day}</p>
                                 <p>{cs.times}</p>
                                 <u>{cs.room}</u>
                               </div>
@@ -190,9 +184,6 @@ const GroupCourseTable = ({ data }: Props) => {
                             onClick={() =>
                               addCourseToSchedule(selectedPlan.id, sec)
                             }
-                            // onClick={() =>
-                            //   handleAddCourse(selectedPlan.id, sec)
-                            // }
                             className="bg-green-400 btn-logo"
                           >
                             <AiOutlinePlusCircle className="logo-center " />

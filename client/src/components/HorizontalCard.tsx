@@ -3,6 +3,7 @@ import Alert from "./Alert";
 import { MdDelete } from "react-icons/md";
 import { AiOutlineDelete } from "react-icons/ai";
 import { CourseDataInterface } from "../models/course.interface";
+import { colorOfDays } from "../utils/colors";
 
 interface Color {
   [key: string]: string;
@@ -61,7 +62,10 @@ const HorizontalCard = ({ color, courseInPlanner }: Props) => {
                   return (
                     <div
                       key={idx}
-                      className="flex gap-2 text-sm font-light leading-relaxed text-gray-500 md:text-lg"
+                      className="flex gap-2 text-sm leading-relaxed text-gray-500 md:text-lg"
+                      style={{
+                        color: `${colorOfDays[day.toLowerCase()].textColor}`,
+                      }}
                     >
                       <p className="font-semibold">{day}</p>
                       <p>{times}</p>

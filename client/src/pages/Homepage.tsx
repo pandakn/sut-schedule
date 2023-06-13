@@ -2,9 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useStudyPlan } from "../hooks";
 
 // components
-import StudyPlan from "../components/StudyPlan";
+import Schedule from "../components/Schedule";
 import HorizontalCard from "../components/HorizontalCard";
-import Modal from "../components/Modal";
 import TotalCredits from "../components/TotalCredits";
 import Header from "../components/Header";
 import Tabs from "../components/Tabs";
@@ -31,21 +30,8 @@ const Homepage = () => {
   }>({});
 
   const [bgColor, setBgColor] = useState<IBgColor>({});
-  const {
-    courseInPlanner,
-    studyPlanOfUser,
-    handleChooseStudyPlan,
-    handleAddStudyPlan,
-    handleDeleteStudyPlan,
-    showAlert,
-    selectedPlan,
-  } = useStudyPlan();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const studyContainer = useRef(null);
-
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-  };
+  const { courseInPlanner, selectedPlan } = useStudyPlan();
+  const scheduleContainer = useRef(null);
 
   const mappedCourses = useCallback(() => {
     if (!Array.isArray(courseInPlanner)) {
@@ -112,17 +98,17 @@ const Homepage = () => {
 
   return (
     <>
-      <Header studyPlanName={selectedPlan.name} toggleModal={toggleModal} />
-      <StudyPlan
+      <Header studyPlanName={selectedPlan.name} />
+      <Schedule
         courseInSchedule={courseInSchedule}
-        studyContainer={studyContainer}
+        scheduleContainer={scheduleContainer}
       />
       <div className="container flex items-center justify-between px-5 mx-auto mb-5">
         {/* button download study plan */}
         <button
           disabled={courseInPlanner.length <= 0}
-          onClick={() => downloadImage(studyContainer.current)}
-          className="flex items-center justify-center px-4 py-2 border border-gray-700 rounded-md gap-x-2 hover:bg-gray-50 disabled:opacity-25"
+          onClick={() => downloadImage(scheduleContainer.current)}
+          className="flex items-center justify-center px-4 py-2 border border-gray-700 rounded-md gap-x-2 hover:bg-gray-800 hover:text-white disabled:opacity-25"
         >
           <AiOutlineDownload className="w-6 h-6" /> PNG
         </button>
@@ -133,15 +119,6 @@ const Homepage = () => {
           <HorizontalCard color={bgColor} courseInPlanner={courseInPlanner} />,
           <TableSchedule courseInPlanner={courseInPlanner} />,
         ]}
-      />
-      <Modal
-        studyPlan={studyPlanOfUser}
-        handleSubmit={handleChooseStudyPlan}
-        handleAddStudyPlan={handleAddStudyPlan}
-        handleDeleteStudyPlan={handleDeleteStudyPlan}
-        showAlert={showAlert}
-        isOpenModal={isModalOpen}
-        toggleModal={toggleModal}
       />
     </>
   );
