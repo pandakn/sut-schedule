@@ -68,7 +68,7 @@ const TableSchedule = ({ courseInPlanner }: TableScheduleProp) => {
   };
 
   return (
-    <>
+    <div className="mb-16">
       {/* Alert */}
       {showAlert && (
         <Alert
@@ -177,7 +177,7 @@ const TableSchedule = ({ courseInPlanner }: TableScheduleProp) => {
           </div>
         </div>
       </DragDropContext>
-    </>
+    </div>
   );
 };
 

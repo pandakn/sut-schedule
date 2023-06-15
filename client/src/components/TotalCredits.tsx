@@ -8,7 +8,7 @@ const TotalCredits = ({ courseInPlanner }: Props) => {
   return (
     <div className="md:text-xl text-end">
       <p className="tracking-wide">
-        total credit:{" "}
+        Total credit:{" "}
         <span className="ml-2">
           {courseInPlanner.reduce((sum, cs) => {
             if (cs && cs.credit) {

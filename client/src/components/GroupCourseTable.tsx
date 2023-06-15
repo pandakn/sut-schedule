@@ -84,7 +84,7 @@ const GroupCourseTable = ({ data }: Props) => {
   const { selectedPlan } = useStudyPlan();
 
   return (
-    <div className="container mx-auto my-10">
+    <div className="container mx-auto my-10 mb-28">
       {/* Alert */}
       {!addCourseError.isError && showAlert && (
         <Alert

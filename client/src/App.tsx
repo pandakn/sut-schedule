@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 // component
 import Navbar from "./components/Navbar";
+import { Footer } from "./components/Footer";
 
 // protected route
 import ProtectedUserRoute from "./routes/ProtectedUserRoute";
@@ -45,6 +46,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterForm />} />
       </Routes>
+      <Footer />
     </>
   );
 }

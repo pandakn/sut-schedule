@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  @apply relative min-h-screen;
+}
+
 .btn-logo {
   @apply relative w-full md:w-14 md:pl-2 py-4 md:py-3 text-2xl text-center text-white rounded-sm mt-3 md:mt-0;
 }

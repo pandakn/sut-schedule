@@ -18,7 +18,7 @@ const HorizontalCard = ({ color, courseInPlanner }: Props) => {
   const { removeCourse, showAlert } = useCourse();
 
   return (
-    <div className="">
+    <div className="mb-20">
       {showAlert && (
         <Alert
           textColor="#991b1b"
@@ -32,7 +32,7 @@ const HorizontalCard = ({ color, courseInPlanner }: Props) => {
         return (
           <div
             key={cs.courseCode}
-            className="container grid gap-4 mx-auto mt-5 mb-10"
+            className="container grid gap-4 mx-auto my-5"
           >
             <div className="relative grid justify-between grid-cols-1 border rounded-md sm:grid-cols-10">
               {/* color */}
