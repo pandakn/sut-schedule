@@ -46,7 +46,7 @@ const SearchBox = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="container mx-auto my-5">
-        <div className="mx-5 overflow-hidden bg-white rounded-lg shadow-lg ">
+        <div className="mx-5 overflow-hidden bg-white rounded-lg shadow-lg">
           <div className="flex flex-col justify-center gap-6 px-6 py-4 md:items-center md:flex-row">
             {/* dropdowns */}
             <div className="flex gap-x-5">

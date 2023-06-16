@@ -27,9 +27,9 @@ const RenderDetails = ({ course }: DetailsProp) => {
   return (
     <div>
       <p>status: {course.courseStatus}</p>
-      <section className="flex items-center gap-2 my-2">
+      <section className="flex items-baseline gap-2 my-2">
         <p>condition:</p>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {course.courseCondition?.map((condition, i) => {
             return (
               <p
@@ -43,9 +43,9 @@ const RenderDetails = ({ course }: DetailsProp) => {
         </div>
       </section>
 
-      <section className="flex items-center gap-2 mb-2">
+      <section className="flex items-baseline gap-2 mb-2">
         <p>continue:</p>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {course.continueCourse?.map((con, i) => {
             return (
               <p
@@ -59,9 +59,9 @@ const RenderDetails = ({ course }: DetailsProp) => {
         </div>
       </section>
 
-      <section className="flex items-center gap-2">
+      <section className="flex items-baseline gap-2">
         <p>equivalent:</p>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {course.equivalentCourse?.map((e, i) => {
             return (
               <div
@@ -84,7 +84,7 @@ const GroupCourseTable = ({ data }: Props) => {
   const { selectedPlan } = useStudyPlan();
 
   return (
-    <div className="container mx-auto my-10 mb-28">
+    <div className="container mx-auto mt-5 mb-28">
       {/* Alert */}
       {!addCourseError.isError && showAlert && (
         <Alert

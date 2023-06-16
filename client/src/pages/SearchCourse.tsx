@@ -11,7 +11,7 @@ import GroupCourseTable from "../components/GroupCourseTable";
 import { IGroupedCourse } from "../models/course.interface";
 
 const CourseTable = () => {
-  const { courses, error } = useCourse();
+  const { courses, error, loading } = useCourse();
   const [groupCoursesData, setGroupCoursesData] = useState<IGroupedCourse[]>(
     []
   );
@@ -65,11 +65,18 @@ const CourseTable = () => {
     <>
       <SearchBox />
       {error ? (
-        <div className="container mx-auto my-10 text-center">
+        <div className="container mx-auto mt-10 text-center">
           <p className="text-3xl">{error}</p>
         </div>
       ) : (
-        <GroupCourseTable data={groupCoursesData} />
+        <>
+          {groupCoursesData.length > 0 && !loading && (
+            <h3 className="container px-5 mx-auto mt-10 text-2xl tracking-wider">
+              Year : {courses.year}
+            </h3>
+          )}
+          <GroupCourseTable data={groupCoursesData} />
+        </>
       )}
     </>
   );
