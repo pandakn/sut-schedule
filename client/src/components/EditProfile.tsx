@@ -17,7 +17,11 @@ interface IEditProfile {
   confirmPassword: string;
 }
 
-const EditProfile = () => {
+type EditProfileProps = {
+  toggleModal: () => void;
+};
+
+const EditProfile = ({ toggleModal }: EditProfileProps) => {
   const { accessToken, payload, setPayload } = useAuth();
   const [userProfile, setUserProfile] = useState<IEditProfile>({
     name: "",
@@ -186,14 +190,20 @@ const EditProfile = () => {
             />
             {error && <p className="mt-1 text-red-500">{error}</p>}
           </div>
-          <div>
+          <div className="flex gap-y-3">
             <button
               onSubmit={submitEditProfile}
               type="submit"
-              className="w-full px-6 py-2 text-xl font-medium text-white uppercase bg-black rounded-3xl"
+              className="w-full px-6 py-2 text-xl font-medium text-white uppercase bg-gray-900 rounded-3xl hover:bg-gray-900/75"
             >
               Save
             </button>
+            <p
+              onClick={toggleModal}
+              className="px-6 py-2 text-xl font-medium text-center text-gray-900 uppercase hover:text-gray-600 hover:cursor-pointer"
+            >
+              Cancel
+            </p>
           </div>
         </form>
       </FormContainer>

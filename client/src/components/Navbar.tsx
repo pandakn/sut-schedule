@@ -1,22 +1,31 @@
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+
+// components
+import Modal from "./Modal";
+import EditProfile from "./EditProfile";
+
+// icons
 import { MdLogout } from "react-icons/md";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
-import { motion } from "framer-motion";
 
 const Navbar = () => {
   const { accessToken, payload, handleLogout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isShowEditProfile, setIsShowEditProfile] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleProfile = () => setIsShowEditProfile(!isShowEditProfile);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
-  // px-4 mx-auto max-w-7xl sm:px-6 lg:px-8
 
   return (
     <motion.nav className="bg-white shadow-lg sticky-navbar">
@@ -41,12 +50,13 @@ const Navbar = () => {
                     |
                     <div className="relative">
                       <h3
-                        className="hover:cursor-pointer hover:opacity-80"
+                        className="hover:cursor-pointer hover:opacity-60 "
                         onClick={toggleProfile}
                       >
                         <span className="mr-1 text-orange-500">Hey,</span>
                         {payload.name}
                       </h3>
+
                       {isShowEditProfile && (
                         <motion.div
                           initial={{ opacity: 0, y: -5 }}
@@ -55,12 +65,12 @@ const Navbar = () => {
                           onClick={toggleProfile}
                           className="absolute p-1 px-2 bg-white border border-gray-400 rounded-lg hover:cursor-pointer hover:bg-white/50 w-28 -left-2 top-8"
                         >
-                          <Link
-                            className="text-gray-600 capitalize hover:text-gray-800 "
-                            to="edit-profile"
+                          <div
+                            className="text-gray-600 capitalize hover:text-gray-800"
+                            onClick={toggleModal}
                           >
                             Edit Profile
-                          </Link>
+                          </div>
                         </motion.div>
                       )}
                     </div>
@@ -132,12 +142,12 @@ const Navbar = () => {
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.6 }}
                 >
-                  <Link
+                  <div
+                    onClick={toggleModal}
                     className="text-gray-600 capitalize hover:text-gray-800"
-                    to="edit-profile"
                   >
                     Edit Profile
-                  </Link>
+                  </div>
                 </motion.div>
                 <motion.div
                   initial={{ y: -10, opacity: 0 }}
@@ -163,6 +173,10 @@ const Navbar = () => {
           </div>
         </div>
       )}
+      {/* EditProfile */}
+      <Modal isOpenModal={isModalOpen}>
+        <EditProfile toggleModal={toggleModal} />
+      </Modal>
     </motion.nav>
   );
 };
