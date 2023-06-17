@@ -67,23 +67,6 @@ export const login = async (
   }
 };
 
-export const getRefreshToken = async () => {
-  try {
-    const response = await api.get(`/api/auth/refresh-tokens`);
-
-    if (response.status === 200) {
-      // Handle the success response
-      return { data: response.data, error: false };
-    } else {
-      // Handle the error response
-      return { data: response.data, error: true };
-    }
-  } catch (error) {
-    // Handle any network or server errors
-    console.error(error);
-  }
-};
-
 export const logout = async () => {
   try {
     const response = await api.get(`/api/auth/logout`);
