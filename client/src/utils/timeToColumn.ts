@@ -19,9 +19,14 @@ export const timesOfDay = [
 export const timeToCol = (timeString: string): number => {
   const [hours, minutes] = timeString.split(":").map(Number);
   const remainder = minutes / 60;
-  const numberOfColumns = timesOfDay.length;
-  const calculatedCol =
-    (hours + remainder) * 2 - numberOfColumns + (numberOfColumns - 13);
+
+  // const numberOfColumns = timesOfDay.length;
+  // const calculatedCol =
+  //   (hours + remainder) * 2 - numberOfColumns + (numberOfColumns - 13);
+
+  // Multiply 2 to get an integer.
+  // In case : 9:30, 12:30, 17:00
+  const calculatedCol = (hours + remainder) * 2 - 13;
 
   return calculatedCol;
 };
