@@ -25,9 +25,7 @@ export const getCourseDataTest = async (req: Request, res: Response) => {
     url = `http://reg.sut.ac.th/registrar/class_info_1.asp?coursestatus=O00&facultyid=all&maxrow=${maxrow}&acadyear=${acadyear}&semester=${semester}&CAMPUSID=&LEVELID=&coursecode=${coursecode}&coursename=${coursename}&cmd=${cmd}&weekdays=${weekdays}&timefrom=${timefrom}&timeto=${timeto}`;
   }
 
-  // Use the query parameters to build the URL for the course data
-
-  const cacheKey = `${coursecode}:${coursename}:${semester}:${acadyear}`;
+  const cacheKey = `${coursecode}:${coursename}:${semester}:${acadyear}:${weekdays}:${timefrom}:${timeto}`;
   const cachedData = await redisClient.get(cacheKey);
 
   if (cachedData) {
@@ -51,7 +49,7 @@ export const getCourseDataTest = async (req: Request, res: Response) => {
     },
   };
 
-  // expire 1 hr.
+  // expire 3 hr.
   await redisClient.set(cacheKey, JSON.stringify(jsonData), { EX: 3600 * 3 });
   res.json(jsonData);
 };
@@ -71,12 +69,12 @@ export const getCourseDataFromREG = async (req: Request, res: Response) => {
 
   let url = `http://reg.sut.ac.th/registrar/class_info_1.asp?coursestatus=O00&facultyid=all&maxrow=${maxrow}&acadyear=${acadyear}&semester=${semester}&CAMPUSID=&LEVELID=&coursecode=${coursecode}&coursename=${coursename}&cmd=${cmd}`;
 
-  // use filter course by day and time
+  // use filter course by day and times
   if (cmd === "1") {
     url = `http://reg.sut.ac.th/registrar/class_info_1.asp?coursestatus=O00&facultyid=all&maxrow=${maxrow}&acadyear=${acadyear}&semester=${semester}&CAMPUSID=&LEVELID=&coursecode=${coursecode}&coursename=${coursename}&cmd=${cmd}&weekdays=${weekdays}&timefrom=${timefrom}&timeto=${timeto}`;
   }
 
-  const cacheKey = `${coursecode}:${coursename}:${semester}:${acadyear}`;
+  const cacheKey = `${coursecode}:${coursename}:${semester}:${acadyear}:${weekdays}:${timefrom}:${timeto}`;
   const cachedData = await redisClient.get(cacheKey);
 
   if (cachedData) {
