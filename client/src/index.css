@@ -17,3 +17,15 @@ html {
 .sticky-navbar {
   @apply sticky top-0 z-10;
 }
+
+.combobox-search {
+  @apply p-2 px-4 text-gray-500 bg-white border rounded-md shadow-sm outline-none appearance-none focus:outline-none focus:border-gray-500;
+}
+
+.input-search {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-500;
+}
+
+.how-to-search {
+  @apply text-orange-500 font-bold;
+}
