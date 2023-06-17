@@ -74,7 +74,9 @@ export const getCourseDataFromREG = async (req: Request, res: Response) => {
     url = `http://reg.sut.ac.th/registrar/class_info_1.asp?coursestatus=O00&facultyid=all&maxrow=${maxrow}&acadyear=${acadyear}&semester=${semester}&CAMPUSID=&LEVELID=&coursecode=${coursecode}&coursename=${coursename}&cmd=${cmd}&weekdays=${weekdays}&timefrom=${timefrom}&timeto=${timeto}`;
   }
 
-  const cacheKey = `${coursecode}:${coursename}:${semester}:${acadyear}:${weekdays}:${timefrom}:${timeto}`;
+  const cacheKey = `${coursecode}:${coursename}:${semester}:${acadyear}:${
+    weekdays || ""
+  }:${timefrom || ""}:${timeto || ""}`;
   const cachedData = await redisClient.get(cacheKey);
 
   if (cachedData) {
