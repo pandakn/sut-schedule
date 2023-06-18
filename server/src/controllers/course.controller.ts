@@ -22,7 +22,7 @@ export const getCourseDataTest = async (req: Request, res: Response) => {
 
   // use filter course by day and time
   if (cmd === "1") {
-    url = `http://reg.sut.ac.th/registrar/class_info_1.asp?coursestatus=O00&facultyid=all&maxrow=${maxrow}&acadyear=${acadyear}&semester=${semester}&CAMPUSID=&LEVELID=&coursecode=${coursecode}&coursename=${coursename}&cmd=${cmd}&weekdays=${weekdays}&timefrom=${timefrom}&timeto=${timeto}`;
+    url += `&weekdays=${weekdays}&timefrom=${timefrom}&timeto=${timeto}`;
   }
 
   const cacheKey = `${coursecode}:${coursename}:${semester}:${acadyear}:${weekdays}:${timefrom}:${timeto}`;
@@ -61,7 +61,7 @@ export const getCourseDataFromREG = async (req: Request, res: Response) => {
     semester,
     coursecode,
     coursename,
-    cmd = 2,
+    cmd,
     weekdays,
     timefrom,
     timeto,
@@ -71,7 +71,7 @@ export const getCourseDataFromREG = async (req: Request, res: Response) => {
 
   // use filter course by day and times
   if (cmd === "1") {
-    url = `http://reg.sut.ac.th/registrar/class_info_1.asp?coursestatus=O00&facultyid=all&maxrow=${maxrow}&acadyear=${acadyear}&semester=${semester}&CAMPUSID=&LEVELID=&coursecode=${coursecode}&coursename=${coursename}&cmd=${cmd}&weekdays=${weekdays}&timefrom=${timefrom}&timeto=${timeto}`;
+    url += `&weekdays=${weekdays}&timefrom=${timefrom}&timeto=${timeto}`;
   }
 
   const cacheKey = `${coursecode}:${coursename}:${semester}:${acadyear}:${

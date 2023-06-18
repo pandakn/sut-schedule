@@ -79,7 +79,11 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
         params.acadyear,
         params.semester,
         params.coursecode,
-        params.coursename
+        params.coursename,
+        params.cmd,
+        params.weekdays,
+        params.timefrom,
+        params.timeto
       );
 
       if (res?.status) {

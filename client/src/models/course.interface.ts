@@ -3,6 +3,10 @@ export interface CourseSearchParamsInterface {
   semester: string;
   coursecode: string;
   coursename: string;
+  cmd: string;
+  weekdays: string;
+  timefrom: string;
+  timeto: string;
 }
 
 export interface ClassScheduleInterface {

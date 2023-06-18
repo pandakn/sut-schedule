@@ -5,7 +5,6 @@ import { AxiosError } from "axios";
 const MAX_ROW = "50";
 
 // edit profile
-
 export const updateUserProfile = async (
   userId: string,
   name: string,
@@ -122,10 +121,20 @@ export const getCoursesData = async (
   acadyear: string,
   semester: string,
   coursecode: string,
-  coursename: string
+  coursename: string,
+  cmd: string,
+  weekdays: string,
+  timefrom: string,
+  timeto: string
 ) => {
-  const url = `/api/courses?acadyear=${acadyear}&semester=${semester}&coursecode=${coursecode}&coursename=${coursename}&maxrow=${MAX_ROW}`;
   const token = localStorage.getItem("accessToken");
+  let url = `/api/courses?acadyear=${acadyear}&semester=${semester}&coursecode=${coursecode}&coursename=${coursename}&maxrow=${MAX_ROW}&cmd=${cmd}`;
+
+  if (cmd === "1") {
+    url += `&weekdays=${weekdays}&timefrom=${timefrom}&timeto=${timeto}`;
+  }
+
+  console.log(url);
 
   try {
     const response = await api.get(url, {

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useCourse } from "../hooks";
 
 // components
-import SearchBox from "../components/SearchBox";
+import SearchBox from "../components/search/SearchBox";
 // import TableOfClass from "../components/TableOfClass";
 import GroupCourseTable from "../components/GroupCourseTable";
 
