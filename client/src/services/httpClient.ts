@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 
 const MAX_ROW = "50";
 
-// edit profile
+// ---------- user -----------
 export const updateUserProfile = async (
   userId: string,
   name: string,
@@ -90,33 +90,6 @@ export const getSelectStudyPlan = async (
   }
 };
 
-export const deleteStudyPlan = async (
-  userID: string,
-  studyPlanID: string,
-  token: string
-) => {
-  try {
-    if (studyPlanID) {
-      const response = await api.delete(
-        `/api/users/${userID}/study-plan/${studyPlanID}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        return response.data;
-      } else {
-        console.error(response.data);
-      }
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export const getCoursesData = async (
   acadyear: string,
   semester: string,
@@ -133,8 +106,6 @@ export const getCoursesData = async (
   if (cmd === "1") {
     url += `&weekdays=${weekdays}&timefrom=${timefrom}&timeto=${timeto}`;
   }
-
-  console.log(url);
 
   try {
     const response = await api.get(url, {
@@ -158,26 +129,6 @@ export const getCoursesData = async (
     } else {
       console.error(error);
     }
-  }
-};
-
-export const getStudyPlanOfUser = async (userId: string, token: string) => {
-  try {
-    if (userId) {
-      const response = await api.get(`/api/users/${userId}/study-plans`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.status === 200) {
-        return response.data;
-      } else {
-        console.error(response.data);
-      }
-    }
-  } catch (error) {
-    console.error(error);
   }
 };
 
@@ -244,6 +195,27 @@ export const deleteCourseFromStudyPlan = async (
   }
 };
 
+// --------- study plan -----------
+export const getStudyPlanOfUser = async (userId: string, token: string) => {
+  try {
+    if (userId) {
+      const response = await api.get(`/api/users/${userId}/study-plans`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(response.data);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const addStudyPlan = async (
   userID: string,
   name: string,
@@ -264,6 +236,54 @@ export const addStudyPlan = async (
       return response.data;
     } else {
       console.error(response.data);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const editStudyPlan = async (
+  studyPlanID: string,
+  name: string,
+  token: string
+) => {
+  try {
+    if (studyPlanID) {
+      const response = await api.put(
+        `/api/study-plan/${studyPlanID}`,
+        { name },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(response.data);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteStudyPlan = async (studyPlanID: string, token: string) => {
+  try {
+    if (studyPlanID) {
+      const response = await api.delete(`/api/study-plan/${studyPlanID}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(response.data);
+      }
     }
   } catch (error) {
     console.error(error);

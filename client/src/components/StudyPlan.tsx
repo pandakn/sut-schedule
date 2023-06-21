@@ -10,6 +10,9 @@ import {
   AiOutlineCheckCircle,
   AiOutlineDelete,
   AiOutlineSelect,
+  AiOutlineSave,
+  AiOutlineEdit,
+  AiOutlineClose,
 } from "react-icons/ai";
 
 import { FiTrash2 } from "react-icons/fi";
@@ -28,6 +31,7 @@ type StudyPlanProps = {
   studyPlan: IStudyPlan[];
   handleSubmit: (event: React.MouseEvent<HTMLButtonElement>) => void;
   handleAddStudyPlan: (name: string) => Promise<void>;
+  handleEditStudyPlan: (id: string, name: string) => Promise<void>;
   handleDeleteStudyPlan: (id: string) => Promise<void>;
   showAlert: IAlert;
 };
@@ -36,17 +40,29 @@ const StudyPlan = ({
   studyPlan,
   handleSubmit,
   handleAddStudyPlan,
+  handleEditStudyPlan,
   handleDeleteStudyPlan,
   showAlert,
 }: StudyPlanProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [studyPlanName, setStudyPlanName] = useState("");
   const [detectedStudyPlanName, setDetectedStudyPlanName] = useState("");
+  const [showInputField, setShowInputField] = useState(false);
+  const [editId, setEditId] = useState("");
+  const [studyPlanNewName, setStudyPlanNewName] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setStudyPlanName(value);
+  };
+
+  const handleEditStudyPlanName = (id: string, name: string) => {
+    handleEditStudyPlan(id, name);
+    setTimeout(() => {
+      window.location.reload();
+      setShowInputField(false);
+    }, 1000);
   };
 
   const submit = (e: React.FormEvent) => {
@@ -76,6 +92,17 @@ const StudyPlan = ({
           Study Plan added successfully
         </Alert>
       )}
+
+      {showAlert.isShow && showAlert.type === "update" && (
+        <Alert
+          textColor="#166534"
+          bgColor="#f0fdf4"
+          icon={<AiOutlineCheckCircle className="text-xl" />}
+        >
+          Study Plan updated successfully
+        </Alert>
+      )}
+
       {showAlert.isShow && showAlert.type === "delete" && (
         <Alert
           textColor="#991b1b"
@@ -89,27 +116,85 @@ const StudyPlan = ({
       <div className="relative flex-auto p-6">
         {studyPlan.map((sp) => {
           return (
-            <div key={sp._id} className="flex items-center w-80">
-              <p className="flex-1 my-2 text-lg leading-relaxed text-gray-700">
-                {sp.name}
-              </p>
+            <div
+              key={sp._id}
+              className="flex items-center w-72 sm:w-80 md:w-96"
+            >
+              {/* study plan name */}
+              <div className="flex-1 my-2 text-lg leading-relaxed text-gray-700">
+                {showInputField ? (
+                  <input
+                    onChange={(e) => setStudyPlanNewName(e.target.value)}
+                    disabled={editId !== sp._id}
+                    placeholder={sp.name}
+                    className="pl-1 border border-orange-500 rounded disabled:border-none disabled:bg-white disabled:opacity-100 focus:outline-orange-600"
+                  />
+                ) : (
+                  <p>{sp.name}</p>
+                )}
+              </div>
+
+              {/* button */}
               <div className="flex gap-x-2">
-                <button
-                  name={sp.name}
-                  value={sp._id}
-                  onClick={handleSubmit}
-                  className="px-1 py-2 bg-green-500 rounded hover:bg-green-600"
-                >
-                  <AiOutlineSelect className="text-white" />
-                </button>
-                <button
-                  name={sp.name}
-                  value={sp._id}
-                  onClick={(e) => toggleModal(e)}
-                  className="px-1 py-2 bg-red-500 rounded hover:bg-red-600"
-                >
-                  <AiOutlineDelete className="text-white" />
-                </button>
+                {showInputField ? (
+                  <>
+                    {/* button update */}
+                    <button
+                      disabled={studyPlanNewName === ""}
+                      name={sp.name}
+                      value={sp._id}
+                      onClick={() =>
+                        handleEditStudyPlanName(editId, studyPlanNewName)
+                      }
+                      className={`study-plan-btn bg-green-500  hover:bg-green-600 ${
+                        editId !== sp._id && "hidden"
+                      } disabled:opacity-60`}
+                    >
+                      <AiOutlineSave className="text-white" />
+                    </button>
+                    {/* cancel btn */}
+                    <button
+                      name={sp.name}
+                      value={sp._id}
+                      onClick={() => setShowInputField(false)}
+                      className={`study-plan-btn bg-red-500  hover:bg-red-600 ${
+                        editId !== sp._id && "hidden"
+                      }`}
+                    >
+                      <AiOutlineClose className="text-white" />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      name={sp.name}
+                      value={sp._id}
+                      onClick={handleSubmit}
+                      className="bg-green-500 study-plan-btn hover:bg-green-600"
+                    >
+                      <AiOutlineSelect className="text-white" />
+                    </button>
+                    <button
+                      name={sp.name}
+                      value={sp._id}
+                      onClick={() => {
+                        setShowInputField(true);
+                        setEditId(sp._id);
+                      }}
+                      className="bg-blue-500 study-plan-btn hover:bg-blue-600"
+                    >
+                      <AiOutlineEdit className="text-white" />
+                    </button>
+                    <button
+                      name={sp.name}
+                      value={sp._id}
+                      onClick={(e) => toggleModal(e)}
+                      className="bg-red-500 study-plan-btn hover:bg-red-600"
+                    >
+                      <AiOutlineDelete className="text-white" />
+                    </button>
+                  </>
+                )}
 
                 <Modal isOpenModal={isModalOpen}>
                   <div className="p-6 text-center">
@@ -142,6 +227,7 @@ const StudyPlan = ({
           );
         })}
       </div>
+
       <form
         onSubmit={submit}
         className="flex flex-col items-center justify-end w-full p-5 border-t border-gray-200 gap-y-3"

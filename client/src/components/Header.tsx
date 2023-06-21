@@ -13,6 +13,7 @@ const Header = ({ studyPlanName }: HeaderProps) => {
     studyPlanOfUser,
     handleChooseStudyPlan,
     handleAddStudyPlan,
+    handleEditStudyPlan,
     handleDeleteStudyPlan,
     showAlert,
   } = useStudyPlan();
@@ -43,6 +44,7 @@ const Header = ({ studyPlanName }: HeaderProps) => {
           studyPlan={studyPlanOfUser}
           handleSubmit={handleChooseStudyPlan}
           handleAddStudyPlan={handleAddStudyPlan}
+          handleEditStudyPlan={handleEditStudyPlan}
           handleDeleteStudyPlan={handleDeleteStudyPlan}
           showAlert={showAlert}
         />

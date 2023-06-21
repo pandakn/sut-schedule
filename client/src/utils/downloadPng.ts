@@ -13,8 +13,6 @@ export const downloadImage = async (dom: HTMLElement | null) => {
 
   const clone = dom.cloneNode(true) as HTMLElement;
 
-  console.log(clone);
-
   // clone.style.width = `${dom.offsetWidth}px`;
   // clone.style.height = `${dom.offsetHeight}px`;
   clone.style.width = `1920px`;

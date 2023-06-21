@@ -8,6 +8,7 @@ import {
   deleteStudyPlan,
   getUserById,
   getSelectStudyPlan,
+  editStudyPlan,
 } from "../services/httpClient";
 
 export interface IStudyPlanOfUser {
@@ -26,7 +27,7 @@ interface ISelectedPlan {
 }
 
 export interface IAlert {
-  type: "add" | "delete" | "";
+  type: "add" | "delete" | "update" | "";
   isShow: boolean;
 }
 
@@ -46,6 +47,7 @@ export type StudyPlanContextType = {
     courseSchedule: CourseDataInterface
   ) => Promise<string>;
   handleAddStudyPlan: (name: string) => Promise<void>;
+  handleEditStudyPlan: (id: string, name: string) => Promise<void>;
   handleDeleteStudyPlan: (id: string) => Promise<void>;
   selectedPlan: ISelectedPlan;
   showAlert: IAlert;
@@ -65,6 +67,9 @@ export const StudyPlanContext = createContext<StudyPlanContextType>({
   },
   handleAddStudyPlan: async () => {
     throw new Error("handleAddStudyPlan is not implemented");
+  },
+  handleEditStudyPlan: async () => {
+    throw new Error("handleEditStudyPlan is not implemented");
   },
   handleDeleteStudyPlan: async () => {
     throw new Error("handleDeleteStudyPlan is not implemented");
@@ -152,6 +157,26 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
     setTimeout(() => setShowAlert({ type: "", isShow: false }), 1500);
   };
 
+  const handleEditStudyPlan = async (studyPlanID: string, name: string) => {
+    setShowAlert({ type: "update", isShow: true });
+
+    if (accessToken) {
+      const res = await editStudyPlan(studyPlanID, name, accessToken);
+
+      if (res) {
+        setStudyPlanOfUser((prev) => {
+          const updatedStudyPlan = prev.map((sp) =>
+            sp._id === studyPlanID ? { ...sp, name } : sp
+          );
+
+          return updatedStudyPlan;
+        });
+      }
+    }
+
+    setTimeout(() => setShowAlert({ type: "", isShow: false }), 1000);
+  };
+
   const handleDeleteStudyPlan = async (studyPlanID: string) => {
     setShowAlert({ type: "delete", isShow: true });
 
@@ -170,8 +195,7 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
       return updatedStudyPlan;
     });
 
-    accessToken &&
-      (await deleteStudyPlan(payload.id, studyPlanID, accessToken));
+    accessToken && (await deleteStudyPlan(studyPlanID, accessToken));
 
     window.location.reload();
 
@@ -221,6 +245,7 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
         handleChooseStudyPlan,
         handleAddCourseToStudyPlan,
         handleAddStudyPlan,
+        handleEditStudyPlan,
         handleDeleteStudyPlan,
         showAlert,
       }}
