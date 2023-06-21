@@ -38,5 +38,4 @@ export default (router: express.Router) => {
   // create study plan
   router.post("/users/:id/study-plans", createStudyPlan);
   router.post("/users/:userId/study-plan/:studyPlanId", selectStudyPlan);
-  router.delete("/users/:userId/study-plan/:studyPlanId", deleteStudyPlan);
 };

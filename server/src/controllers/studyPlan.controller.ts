@@ -36,6 +36,31 @@ export const getStudyPlanByID = async (req: Request, res: Response) => {
   }
 };
 
+export const updateStudyPlan = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name } = req.body;
+
+  try {
+    const studyPlan = await StudyPlan.findById({ _id: id });
+
+    if (!studyPlan) {
+      res.status(404).json({ message: "Study plan not found" });
+      return;
+    }
+
+    studyPlan.name = name || studyPlan.name;
+
+    studyPlan.save();
+
+    res.status(200).json({
+      message: "Study plan updated successfully",
+      result: studyPlan,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to deleted study plan", error });
+  }
+};
+
 export const deleteStudyPlan = async (req: Request, res: Response) => {
   const { id } = req.params;
 
