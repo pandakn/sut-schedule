@@ -30,7 +30,7 @@ interface IStudyPlan {
 type StudyPlanProps = {
   studyPlan: IStudyPlan[];
   handleSubmit: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  handleAddStudyPlan: (name: string) => Promise<void>;
+  handleAddStudyPlan: (name: string) => Promise<string>;
   handleEditStudyPlan: (id: string, name: string) => Promise<void>;
   handleDeleteStudyPlan: (id: string) => Promise<void>;
   showAlert: IAlert;
@@ -48,8 +48,9 @@ const StudyPlan = ({
   const [studyPlanName, setStudyPlanName] = useState("");
   const [detectedStudyPlanName, setDetectedStudyPlanName] = useState("");
   const [showInputField, setShowInputField] = useState(false);
-  const [editId, setEditId] = useState("");
+  const [chooseStudyPlan, setChooseStudyPlan] = useState("");
   const [studyPlanNewName, setStudyPlanNewName] = useState("");
+  const [errorAddStudyPlan, setErrorAddStudyPlan] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,25 +66,38 @@ const StudyPlan = ({
     }, 1000);
   };
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (inputRef.current) {
       inputRef.current.value = "";
     }
-    handleAddStudyPlan(studyPlanName);
+    const res = await handleAddStudyPlan(studyPlanName);
+    setErrorAddStudyPlan(res);
   };
 
   const toggleModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     const name = e.currentTarget.name;
+    const id = e.currentTarget.value;
     name && setDetectedStudyPlanName(name);
     setIsModalOpen(!isModalOpen);
+    setChooseStudyPlan(id);
   };
 
   return (
     <>
       {/* Alert */}
-      {showAlert.isShow && showAlert.type === "add" && (
+      {showAlert.isShow && errorAddStudyPlan && (
+        <Alert
+          textColor="#991b1b"
+          bgColor="#fef2f2"
+          icon={<AiOutlineCheckCircle className="text-xl" />}
+        >
+          {errorAddStudyPlan}
+        </Alert>
+      )}
+
+      {showAlert.isShow && showAlert.type === "add" && !errorAddStudyPlan && (
         <Alert
           textColor="#166534"
           bgColor="#f0fdf4"
@@ -117,7 +131,7 @@ const StudyPlan = ({
         {studyPlan.map((sp) => {
           return (
             <div
-              key={sp._id}
+              key={sp._id + sp.name}
               className="flex items-center w-72 sm:w-80 md:w-96"
             >
               {/* study plan name */}
@@ -125,7 +139,7 @@ const StudyPlan = ({
                 {showInputField ? (
                   <input
                     onChange={(e) => setStudyPlanNewName(e.target.value)}
-                    disabled={editId !== sp._id}
+                    disabled={chooseStudyPlan !== sp._id}
                     placeholder={sp.name}
                     className="pl-1 border border-orange-500 rounded disabled:border-none disabled:bg-white disabled:opacity-100 focus:outline-orange-600"
                   />
@@ -144,10 +158,13 @@ const StudyPlan = ({
                       name={sp.name}
                       value={sp._id}
                       onClick={() =>
-                        handleEditStudyPlanName(editId, studyPlanNewName)
+                        handleEditStudyPlanName(
+                          chooseStudyPlan,
+                          studyPlanNewName
+                        )
                       }
                       className={`study-plan-btn bg-green-500  hover:bg-green-600 ${
-                        editId !== sp._id && "hidden"
+                        chooseStudyPlan !== sp._id && "hidden"
                       } disabled:opacity-60`}
                     >
                       <AiOutlineSave className="text-white" />
@@ -158,7 +175,7 @@ const StudyPlan = ({
                       value={sp._id}
                       onClick={() => setShowInputField(false)}
                       className={`study-plan-btn bg-red-500  hover:bg-red-600 ${
-                        editId !== sp._id && "hidden"
+                        chooseStudyPlan !== sp._id && "hidden"
                       }`}
                     >
                       <AiOutlineClose className="text-white" />
@@ -179,17 +196,18 @@ const StudyPlan = ({
                       value={sp._id}
                       onClick={() => {
                         setShowInputField(true);
-                        setEditId(sp._id);
+                        setChooseStudyPlan(sp._id);
                       }}
                       className="bg-blue-500 study-plan-btn hover:bg-blue-600"
                     >
                       <AiOutlineEdit className="text-white" />
                     </button>
                     <button
+                      disabled={studyPlan.length <= 1}
                       name={sp.name}
                       value={sp._id}
                       onClick={(e) => toggleModal(e)}
-                      className="bg-red-500 study-plan-btn hover:bg-red-600"
+                      className="bg-red-500 study-plan-btn hover:bg-red-600 disabled:opacity-40"
                     >
                       <AiOutlineDelete className="text-white" />
                     </button>
@@ -207,7 +225,7 @@ const StudyPlan = ({
                       ?
                     </h3>
                     <button
-                      onClick={() => handleDeleteStudyPlan(sp._id)}
+                      onClick={() => handleDeleteStudyPlan(chooseStudyPlan)}
                       type="button"
                       className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
                     >

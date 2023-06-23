@@ -46,7 +46,7 @@ export type StudyPlanContextType = {
     studyPlanID: string,
     courseSchedule: CourseDataInterface
   ) => Promise<string>;
-  handleAddStudyPlan: (name: string) => Promise<void>;
+  handleAddStudyPlan: (name: string) => Promise<string>;
   handleEditStudyPlan: (id: string, name: string) => Promise<void>;
   handleDeleteStudyPlan: (id: string) => Promise<void>;
   selectedPlan: ISelectedPlan;
@@ -149,12 +149,16 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
     if (name && studyPlanOfUser) {
       setShowAlert({ type: "add", isShow: true });
       const res = await addStudyPlan(payload.id, name, accessToken);
-      setStudyPlanOfUser((prev) => {
-        return [...prev, res.result];
-      });
-    }
 
-    setTimeout(() => setShowAlert({ type: "", isShow: false }), 1500);
+      setTimeout(() => setShowAlert({ type: "", isShow: false }), 1500);
+      if (res?.status) {
+        setStudyPlanOfUser((prev) => {
+          return [...prev, res.data.result];
+        });
+      } else {
+        return res?.data.message;
+      }
+    }
   };
 
   const handleEditStudyPlan = async (studyPlanID: string, name: string) => {
@@ -179,23 +183,8 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
 
   const handleDeleteStudyPlan = async (studyPlanID: string) => {
     setShowAlert({ type: "delete", isShow: true });
-
-    setStudyPlanOfUser((prev) => {
-      const updatedStudyPlan = prev.filter((sp) => sp._id !== studyPlanID);
-      // If  delete the study plan, will go back to first study plan
-      const selectedStudyPlan: IStudyPlanOfUser | null =
-        updatedStudyPlan.length > 0 ? updatedStudyPlan[0] : null;
-
-      // Set selectedStudyPlan to the state
-      selectedStudyPlan &&
-        setSelectedPlan({
-          id: selectedStudyPlan?._id,
-          name: selectedStudyPlan.name,
-        });
-      return updatedStudyPlan;
-    });
-
-    accessToken && (await deleteStudyPlan(studyPlanID, accessToken));
+    accessToken &&
+      (await deleteStudyPlan(payload.id, studyPlanID, accessToken));
 
     window.location.reload();
 

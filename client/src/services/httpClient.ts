@@ -233,12 +233,20 @@ export const addStudyPlan = async (
     );
 
     if (response.status === 200) {
-      return response.data;
+      return { status: true, data: response.data };
     } else {
       console.error(response.data);
     }
   } catch (error) {
-    console.error(error);
+    if (
+      error instanceof AxiosError &&
+      error.response &&
+      error.response.status === 404
+    ) {
+      return { status: false, data: error.response.data };
+    } else {
+      console.error(error);
+    }
   }
 };
 
@@ -270,14 +278,21 @@ export const editStudyPlan = async (
   }
 };
 
-export const deleteStudyPlan = async (studyPlanID: string, token: string) => {
+export const deleteStudyPlan = async (
+  userID: string,
+  studyPlanID: string,
+  token: string
+) => {
   try {
     if (studyPlanID) {
-      const response = await api.delete(`/api/study-plan/${studyPlanID}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.delete(
+        `/api/users/${userID}/study-plan/${studyPlanID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         return response.data;
