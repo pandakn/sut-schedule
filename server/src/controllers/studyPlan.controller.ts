@@ -78,3 +78,31 @@ export const deleteStudyPlan = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to deleted study plan", error });
   }
 };
+
+export const reOrderOfCourseInStudyPlan = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id } = req.params;
+    const { newSequence } = req.body;
+
+    // Find the course schedule by its ID
+    const courseSchedule = await StudyPlan.findById(id);
+
+    if (!courseSchedule) {
+      return res.status(404).json({ message: "Course schedule not found" });
+    }
+
+    // Update the course schedule's sequence with the new sequence
+    courseSchedule.courseSchedule = newSequence;
+
+    // Save the updated course schedule
+    await courseSchedule.save();
+
+    return res.status(200).json({ message: "Sequence updated successfully" });
+  } catch (error) {
+    console.error("Error updating sequence:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
