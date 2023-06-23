@@ -264,6 +264,19 @@ export const createStudyPlan = async (req: Request, res: Response) => {
       return;
     }
 
+    const maximumStudyPlans = user.maximumStudyPlans;
+
+    // Check the number of existing study plans for the user
+    const studyPlanCount = await StudyPlan.countDocuments({ creator: id });
+
+    // If the user has three or more study plans, throw an error
+    if (studyPlanCount >= maximumStudyPlans) {
+      res
+        .status(404)
+        .json({ message: `maximum of ${maximumStudyPlans} study plans` });
+      return;
+    }
+
     const studyPlan = await createDefaultStudyPlan(id, name);
 
     res.status(200).json({

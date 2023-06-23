@@ -25,6 +25,10 @@ const userSchema: Schema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "StudyPlan",
     },
+    maximumStudyPlans: {
+      type: Number,
+      default: 3,
+    },
   },
   { timestamps: true }
 );

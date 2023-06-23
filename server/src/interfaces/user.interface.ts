@@ -5,6 +5,7 @@ export interface IUser extends Document {
   username: string;
   password: string;
   selectedStudyPlan: ObjectId;
+  maximumStudyPlans: number;
   createdAt: Date;
   updatedAt: Date;
 }
