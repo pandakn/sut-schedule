@@ -92,6 +92,7 @@ const HorizontalCard = ({ color, courseInPlanner }: Props) => {
               <div className="absolute col-span-1 right-2 md:right-5 top-4 sm:col-span-1">
                 <button
                   name="btnDelete"
+                  aria-label={`remove course: ${cs.courseCode}`}
                   hidden={!cs.classSchedule && true}
                   onClick={() => removeCourse(cs.id)}
                 >

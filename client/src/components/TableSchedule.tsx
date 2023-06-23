@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth, useStudyPlan } from "../hooks";
 
 // Support strict mode
 // ref : https://github.com/atlassian/react-beautiful-dnd/issues/2437
@@ -17,6 +18,7 @@ import { AiOutlineCheckCircle, AiOutlineCopy } from "react-icons/ai";
 
 // model
 import { CourseDataInterface } from "../models/course.interface";
+import { reOrderOfCourseInStudyPlan } from "../services/httpClient";
 
 const headerOfTable: string[] = [
   "",
@@ -35,8 +37,8 @@ type TableScheduleProp = {
 const TableSchedule = ({ courseInPlanner }: TableScheduleProp) => {
   const [showAlert, setShowAlert] = useState(false);
   const [showMsg, setShowMsg] = useState("");
-  const [courseData, setCourseData] =
-    useState<CourseDataInterface[]>(courseInPlanner);
+  const { selectedPlan, setCourseInPlanner } = useStudyPlan();
+  const { accessToken } = useAuth();
 
   const handleCopyCourseCode = (courseCode: string) => {
     navigator.clipboard
@@ -55,16 +57,24 @@ const TableSchedule = ({ courseInPlanner }: TableScheduleProp) => {
       });
   };
 
-  const handleDragEnd = (result: DropResult) => {
+  const handleDragEnd = async (result: DropResult) => {
     if (!result.destination) return;
 
     // Reorder the courseData array based on the drag and drop result
-    const items = Array.from(courseData);
+    const items = Array.from(courseInPlanner);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
     // Update the state with the reordered array
-    setCourseData(items);
+
+    if (accessToken) {
+      const res = await reOrderOfCourseInStudyPlan(
+        selectedPlan.id,
+        items,
+        accessToken
+      );
+      res && setCourseInPlanner(items);
+    }
   };
 
   return (
@@ -99,7 +109,7 @@ const TableSchedule = ({ courseInPlanner }: TableScheduleProp) => {
                 {(provided) => (
                   <tbody ref={provided.innerRef} {...provided.droppableProps}>
                     {/* map course */}
-                    {courseData.map((course, index) => (
+                    {courseInPlanner.map((course, index) => (
                       <Draggable
                         key={course.courseCode}
                         draggableId={course.courseCode}

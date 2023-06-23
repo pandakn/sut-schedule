@@ -289,3 +289,29 @@ export const deleteStudyPlan = async (studyPlanID: string, token: string) => {
     console.error(error);
   }
 };
+
+export const reOrderOfCourseInStudyPlan = async (
+  id: string,
+  newSequence: CourseDataInterface[],
+  token: string
+) => {
+  try {
+    const response = await api.post(
+      `/api/study-plan/${id}/courseSchedule/update-sequence`,
+      { newSequence },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error(response.data);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
