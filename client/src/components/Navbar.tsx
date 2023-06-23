@@ -11,6 +11,16 @@ import EditProfile from "./EditProfile";
 import { MdLogout } from "react-icons/md";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 
+const variants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+};
+
+const childrenVariants = {
+  initial: { y: -5, opacity: 0 },
+  animate: { y: 0, opacity: 1 },
+};
+
 const Navbar = () => {
   const { accessToken, payload, handleLogout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -109,39 +119,32 @@ const Navbar = () => {
 
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="container flex flex-col px-5 pb-8 mx-auto gap-y-2">
+          <motion.div
+            initial="initial"
+            animate="animate"
+            variants={variants}
+            transition={{
+              staggerChildren: 0.2,
+            }}
+            className="container flex flex-col px-5 pb-8 mx-auto gap-y-2"
+          >
             {accessToken ? (
               <>
-                <motion.div
-                  initial={{ y: -8, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                >
+                <motion.div variants={childrenVariants}>
                   <span className="mr-1 text-lg text-orange-500">Hey,</span>
                   {payload.name}
                 </motion.div>
-                <motion.div
-                  initial={{ y: -10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <motion.div
-                    initial={{ y: -10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                  >
+                <motion.div variants={childrenVariants}>
+                  <div>
                     <Link
                       className="text-gray-600 capitalize hover:text-gray-800"
                       to="search-course"
                     >
                       Search Course
                     </Link>
-                  </motion.div>
+                  </div>
                 </motion.div>
-                <motion.div
-                  initial={{ y: -10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                >
+                <motion.div variants={childrenVariants}>
                   <div
                     onClick={toggleModal}
                     className="text-gray-600 capitalize hover:text-gray-800"
@@ -149,11 +152,7 @@ const Navbar = () => {
                     Edit Profile
                   </div>
                 </motion.div>
-                <motion.div
-                  initial={{ y: -10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                >
+                <motion.div variants={childrenVariants}>
                   <MdLogout
                     onClick={handleLogout}
                     className="text-red-400 w-7 h-7 hover:text-red-600 hover:cursor-pointer"
@@ -161,16 +160,13 @@ const Navbar = () => {
                 </motion.div>
               </>
             ) : (
-              <motion.div
-                initial={{ y: -8, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-              >
+              <motion.div variants={childrenVariants}>
                 <Link className="hover:text-gray-800" to="login">
                   Login
                 </Link>
               </motion.div>
             )}
-          </div>
+          </motion.div>
         </div>
       )}
       {/* EditProfile */}

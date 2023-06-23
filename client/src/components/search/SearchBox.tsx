@@ -30,7 +30,10 @@ const SearchBox = () => {
   } = useSearch();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const toggleModal = () => setIsModalOpen(!isModalOpen);
+  const toggleModal = () => {
+    setIsShowFilter(false);
+    setIsModalOpen(!isModalOpen);
+  };
 
   return (
     <>

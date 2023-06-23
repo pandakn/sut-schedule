@@ -47,10 +47,8 @@ const Modal = ({
                   </button>
                 </div>
               )}
-
               {children}
             </motion.div>
-
             <div
               className="fixed inset-0 z-10 bg-black/25"
               onClick={toggleModal}
