@@ -1,19 +1,13 @@
+import { UserPayload } from "../controllers/authentication.controller";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-
-interface TokenPayload {
-  user: {
-    id: string;
-    name: string;
-    username: string;
-  };
-}
 
 interface AuthenticatedRequest extends Request {
   user?: {
     id: string;
     name: string;
     username: string;
+    role: string;
   };
 }
 
@@ -37,8 +31,21 @@ export const authenticateToken = (
       return;
     }
 
-    const payload = decodedToken as TokenPayload;
-    req.user = payload.user;
+    const payload = decodedToken as UserPayload;
+    req.user = payload;
     next();
   });
+};
+
+export const adminCheck = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  if (req.user.role !== "admin") {
+    res.status(403).json({ message: "Unauthorized, admin access required" });
+    return;
+  }
+
+  next();
 };

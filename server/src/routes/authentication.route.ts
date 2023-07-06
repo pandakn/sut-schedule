@@ -11,4 +11,7 @@ export default (router: express.Router) => {
   router.post("/auth/login", login);
   router.get("/auth/refresh-tokens", jwtRefreshToken);
   router.get("/auth/logout", logout);
+
+  // current admin
+  router.get("/auth/current-admin");
 };

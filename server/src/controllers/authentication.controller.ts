@@ -7,10 +7,11 @@ import { IUser } from "interfaces/user.interface";
 
 import { createDefaultStudyPlan } from "../utils/defaultStudyPlan";
 
-interface UserPayload {
+export interface UserPayload {
   id: string;
   name: string;
   username: string;
+  role: string;
 }
 
 export const register = async (req: Request, res: Response): Promise<void> => {
@@ -78,6 +79,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       id: user._id,
       name: user.name,
       username: user.username,
+      role: user.role,
     };
 
     const accessToken = jwt.sign(accessPayload, process.env.JWT_SECRET!, {
@@ -88,6 +90,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       id: user._id,
       name: user.name,
       username: user.username,
+      role: user.role,
     };
 
     const refreshToken = jwt.sign(

@@ -11,10 +11,10 @@ import {
   createStudyPlan,
   deleteStudyPlan,
 } from "../controllers/user.controller";
-import { authenticateToken } from "../middleware/auth.middleware";
+import { adminCheck, authenticateToken } from "../middleware/auth.middleware";
 
 export default (router: express.Router) => {
-  router.get("/users", authenticateToken, getAllUsers);
+  router.get("/users", authenticateToken, adminCheck, getAllUsers);
   router.get("/users/:id", authenticateToken, getUserById);
   router.delete("/users/:id", authenticateToken, deleteUserById);
   router.put("/users/:id", authenticateToken, editUser);
