@@ -1,6 +1,7 @@
 import { UserPayload } from "../controllers/authentication.controller";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import User from "../models/user";
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -42,7 +43,11 @@ export const adminCheck = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (req.user.role !== "admin") {
+  const userCheck = await User.findOne({ username: req.user.username })
+    .select("-password")
+    .exec();
+
+  if (userCheck.role !== "admin") {
     res.status(403).json({ message: "Unauthorized, admin access required" });
     return;
   }
