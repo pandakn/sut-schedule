@@ -1,6 +1,6 @@
 import ScrollTopButton from "./ScrollTopButton";
 
-export const Footer = () => {
+const Footer = () => {
   return (
     <footer className="absolute left-0 w-full -bottom-32 bg-slate-600">
       <div className="flex items-center justify-center h-28 md:h-32">
@@ -19,3 +19,5 @@ export const Footer = () => {
     </footer>
   );
 };
+
+export default Footer;

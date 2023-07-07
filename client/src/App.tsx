@@ -1,23 +1,42 @@
 import { Routes, Route } from "react-router-dom";
 
-// component
-import Navbar from "./components/Navbar";
-import { Footer } from "./components/Footer";
+// components
+import TableManageUsers from "./components/admin/TableManageUsers";
 
 // protected route
+import ProtectedAdminRoute from "./routes/ProtectedAdminRoute";
 import ProtectedUserRoute from "./routes/ProtectedUserRoute";
 
 // pages
 import SearchCourse from "./pages/SearchCourse";
 import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";
-import RegisterForm from "./components/RegisterForm";
+import RegisterForm from "./components/auth/RegisterForm";
+import AdminPage from "./pages/admin/AdminPage";
 
 function App() {
   return (
     <>
-      <Navbar />
       <Routes>
+        {/* admin */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedAdminRoute>
+              <AdminPage />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/manage-users"
+          element={
+            <ProtectedAdminRoute>
+              <TableManageUsers />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        {/* user */}
         <Route
           path="/"
           element={
@@ -37,7 +56,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterForm />} />
       </Routes>
-      <Footer />
     </>
   );
 }

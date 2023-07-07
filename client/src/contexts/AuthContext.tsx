@@ -17,6 +17,7 @@ interface AccessTokenPayload {
   id: string;
   name: string;
   username: string;
+  role: string;
 }
 
 type AuthContextType = {
@@ -46,7 +47,7 @@ const initialAuthContext: AuthContextType = {
     throw new Error("handleLogout is not implemented");
   },
   accessToken: localStorage.getItem("accessToken"),
-  payload: { id: "", name: "", username: "" },
+  payload: { id: "", name: "", username: "", role: "" },
   setPayload: () => {
     throw new Error("setPayload is not implemented");
   },
@@ -66,6 +67,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     id: "",
     name: "",
     username: "",
+    role: "",
   });
 
   const [accessToken, setAccessToken] = useState(
@@ -127,6 +129,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         setTimeout(() => {
           setAccessToken(accessToken);
           setPayload(accessPayload);
+          // if (accessPayload.role === "admin") {
+          //   window.location.href = "/admin";
+          // }
         }, 1500);
       }
     }

@@ -1,5 +1,5 @@
 import { useAuth } from "../hooks/useAuth";
-import LoginForm from "../components/LoginForm";
+import LoginForm from "../components/auth/LoginForm";
 import { Navigate } from "react-router-dom";
 
 const Login = () => {

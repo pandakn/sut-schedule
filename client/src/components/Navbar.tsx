@@ -10,6 +10,7 @@ import EditProfile from "./EditProfile";
 // icons
 import { MdLogout } from "react-icons/md";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
+import Logo from "./Logo";
 
 const variants = {
   initial: { opacity: 0 },
@@ -42,18 +43,22 @@ const Navbar = () => {
       <div className="container px-5 mx-auto">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center justify-between w-full ">
-            <div className="flex-shrink-0">
-              <Link to="/" className="text-xl uppercase">
-                <span className="text-orange-500">Sut</span> Schedule
-              </Link>
-            </div>
+            <Logo />
             <div className="hidden md:block">
               <div className="flex items-center gap-6">
                 {accessToken ? (
                   <>
+                    {payload.role === "admin" && (
+                      <Link
+                        className="text-gray-600 capitalize hover:text-gray-800"
+                        to="/admin"
+                      >
+                        Dashboard
+                      </Link>
+                    )}
                     <Link
                       className="text-gray-600 capitalize hover:text-gray-800"
-                      to="search-course"
+                      to="/search-course"
                     >
                       Search Course
                     </Link>
@@ -117,6 +122,7 @@ const Navbar = () => {
         </div>
       </div>
 
+      {/* mobile nav */}
       {isMenuOpen && (
         <div className="md:hidden">
           <motion.div
@@ -171,7 +177,10 @@ const Navbar = () => {
       )}
       {/* EditProfile */}
       <Modal isOpenModal={isModalOpen}>
-        <EditProfile toggleModal={toggleModal} />
+        <EditProfile
+          setIsModalOpen={setIsModalOpen}
+          toggleModal={toggleModal}
+        />
       </Modal>
     </motion.nav>
   );

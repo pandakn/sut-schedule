@@ -180,7 +180,7 @@ const GroupCourseTable = ({ data }: Props) => {
                         <div className="flex">
                           <button
                             name="btnAdd"
-                            hidden={!sec.classSchedule && true}
+                            // hidden={!sec.classSchedule && true}
                             onClick={() =>
                               addCourseToSchedule(selectedPlan.id, sec)
                             }
@@ -190,7 +190,7 @@ const GroupCourseTable = ({ data }: Props) => {
                           </button>
                           <button
                             name="btnInfo"
-                            hidden={!sec.classSchedule && true}
+                            // hidden={!sec.classSchedule && true}
                             onClick={() => window.open(`${sec.url}`, "_blank")}
                             className="bg-blue-400 btn-logo "
                           >

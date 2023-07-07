@@ -1,41 +1,36 @@
 import { SetStateAction, useCallback, useEffect, useState } from "react";
-import { useAuth } from "../hooks";
-
-// components
-import Alert from "./Alert";
-import FormContainer from "./FormContainer";
-
-// services
-import { getUserById, updateUserProfile } from "../services/httpClient";
-import { VscError } from "react-icons/vsc";
+import { useAuth } from "../../hooks";
+import { getUserById, updateUserProfile } from "../../services/httpClient";
+import FormContainer from "../FormContainer";
+import Alert from "../Alert";
 import { AiOutlineCheckCircle } from "react-icons/ai";
+import { VscError } from "react-icons/vsc";
 
 interface IEditProfile {
   name: string;
-  username: string;
-  password: string;
-  confirmPassword: string;
+  username?: string;
 }
 
-type EditProfileProps = {
-  setIsModalOpen: React.Dispatch<SetStateAction<boolean>>;
+interface EditUserProps {
+  userId: string;
   toggleModal: () => void;
-};
+  setIsModalOpen: React.Dispatch<SetStateAction<boolean>>;
+}
 
-const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
+const EditUser = ({ userId, toggleModal, setIsModalOpen }: EditUserProps) => {
   const { accessToken, payload, setPayload } = useAuth();
   const [userProfile, setUserProfile] = useState<IEditProfile>({
     name: "",
     username: "",
-    password: "",
-    confirmPassword: "",
+    // password: "",
+    // confirmPassword: "",
   });
   const [error, setError] = useState("");
   const [showAlert, setShowAlert] = useState(false);
 
   const fetchUserProfile = useCallback(async () => {
     if (accessToken) {
-      const res = await getUserById(payload.id, accessToken);
+      const res = await getUserById(userId, accessToken);
 
       if (res) {
         const data = res.result;
@@ -44,7 +39,7 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
         });
       }
     }
-  }, [accessToken, payload]);
+  }, [accessToken, userId]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserProfile({
@@ -56,40 +51,48 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
   const submitEditProfile = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setShowAlert(true);
-
-    if (userProfile.password !== userProfile.confirmPassword) {
-      setError("Password and confirm password do not match");
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 1500);
-      return;
-    }
-
     if (accessToken) {
       const res = await updateUserProfile(
+        // payload.id,
         accessToken,
-        payload.id,
+        userId,
         userProfile.name,
-        userProfile.username,
-        userProfile.password
+        userProfile.username
       );
+
+      console.log(res);
+
+      // handle error
+      if (!res?.status) {
+        setError(res?.data.message);
+        return;
+      }
+
       const data = res?.data;
 
       setPayload((prev) => {
-        const updatedPayload = {
-          ...prev,
-          name: data.name,
-          username: data.username,
-        };
-        localStorage.setItem("payload", JSON.stringify(updatedPayload));
-        return updatedPayload;
+        setShowAlert(true);
+        setError("");
+        if (data._id === payload.id) {
+          const updatedPayload = {
+            ...prev,
+            name: data.name,
+            username: data.username,
+          };
+
+          localStorage.setItem("payload", JSON.stringify(updatedPayload));
+
+          return updatedPayload;
+        }
+
+        return prev;
       });
     }
 
     setTimeout(() => {
       setShowAlert(false);
       setIsModalOpen(false);
+      window.location.reload();
     }, 1500);
   };
 
@@ -120,7 +123,7 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
         </Alert>
       )}
 
-      <FormContainer header="Edit Profile">
+      <FormContainer header="Edit User">
         <form className="w-full space-y-6" onSubmit={submitEditProfile}>
           <div>
             <label
@@ -157,41 +160,7 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
               className="w-full p-2 border border-gray-300 rounded-lg"
               placeholder="Enter your username"
             />
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block mb-2 font-bold text-gray-800"
-            >
-              Password
-            </label>
-            <input
-              onChange={handleInputChange}
-              required
-              type="password"
-              id="password"
-              name="password"
-              className="w-full p-2 border border-gray-300 rounded-lg"
-              placeholder="password"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block mb-2 font-bold text-gray-800"
-            >
-              Confirm Password
-            </label>
-            <input
-              onChange={handleInputChange}
-              required
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              className="w-full p-2 border border-gray-300 rounded-lg"
-              placeholder="confirm password"
-            />
-            {error && <p className="mt-1 text-red-500">{error}</p>}
+            <p className="mt-1 text-red-500">{error}</p>
           </div>
           <div className="flex justify-end gap-3">
             <button
@@ -214,4 +183,4 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
   );
 };
 
-export default EditProfile;
+export default EditUser;

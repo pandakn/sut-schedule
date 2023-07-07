@@ -19,7 +19,7 @@ const Modal = ({
   return (
     <div className="flex items-center justify-center">
       {isOpenModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-2 overflow-x-hidden overflow-y-auto">
+        <div className="fixed inset-0 z-40 flex items-center justify-center px-2 overflow-x-hidden overflow-y-auto">
           <div className="relative w-auto mx-auto my-6">
             <motion.div
               initial={{

@@ -6,11 +6,11 @@ const MAX_ROW = "50";
 
 // ---------- user -----------
 export const updateUserProfile = async (
+  token: string,
   userId: string,
   name: string,
-  username: string,
-  password: string,
-  token: string
+  username?: string,
+  password?: string
 ) => {
   try {
     if (userId) {
@@ -25,18 +25,18 @@ export const updateUserProfile = async (
       );
 
       if (response.status === 200) {
-        return response.data;
-      } else {
-        console.error(response.data);
+        return { data: response.data, status: true };
       }
     }
   } catch (error) {
+    console.log(error);
+
     if (
       error instanceof AxiosError &&
       error.response &&
       error.response.status === 400
     ) {
-      return { status: false, data: error.response.data.error };
+      return { status: false, data: error.response.data };
     } else {
       console.error(error);
     }
@@ -63,21 +63,14 @@ export const getUserById = async (userId: string, token: string) => {
   }
 };
 
-export const getSelectStudyPlan = async (
-  userID: string,
-  studyPlanID: string,
-  token: string
-) => {
+export const deleteUserById = async (userId: string, token: string) => {
   try {
-    if (studyPlanID) {
-      const response = await api.post(
-        `/api/users/${userID}/study-plan/${studyPlanID}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    if (userId) {
+      const response = await api.delete(`/api/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.status === 200) {
         return response.data;
@@ -90,6 +83,7 @@ export const getSelectStudyPlan = async (
   }
 };
 
+// -------- courses -----------
 export const getCoursesData = async (
   acadyear: string,
   semester: string,
@@ -196,6 +190,33 @@ export const deleteCourseFromStudyPlan = async (
 };
 
 // --------- study plan -----------
+export const getSelectStudyPlan = async (
+  userID: string,
+  studyPlanID: string,
+  token: string
+) => {
+  try {
+    if (studyPlanID) {
+      const response = await api.post(
+        `/api/users/${userID}/study-plan/${studyPlanID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        console.error(response.data);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const getStudyPlanOfUser = async (userId: string, token: string) => {
   try {
     if (userId) {

@@ -13,6 +13,7 @@ interface IAccessPayload {
   id: string;
   name: string;
   username: string;
+  role: string;
 }
 
 export interface ILoginResponse {

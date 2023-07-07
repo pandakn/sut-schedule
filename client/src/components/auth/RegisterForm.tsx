@@ -1,24 +1,26 @@
 import React, { useState } from "react";
+import { useAuth } from "../../hooks";
 import { Link } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
 
 // components
-import Alert from "./Alert";
-import FormContainer from "./FormContainer";
+import Alert from "../Alert";
+import FormContainer from "../FormContainer";
 
 // interface
-import { ILoginForm } from "../models/auth.interface";
+import { IRegisterForm } from "../../models/auth.interface";
 
 // icons
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { VscError } from "react-icons/vsc";
 
-const LoginForm = () => {
-  const [inputForm, setInputForm] = useState<ILoginForm>({
+const RegisterForm = () => {
+  const [inputForm, setInputForm] = useState<IRegisterForm>({
+    name: "",
     username: "",
     password: "",
   });
-  const { handleLogin, loggedIn, showAlert } = useAuth();
+
+  const { handleRegister, registered, showAlert } = useAuth();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputForm({
@@ -27,36 +29,54 @@ const LoginForm = () => {
     });
   };
 
-  const login = (event: React.FormEvent) => {
+  const register = (event: React.FormEvent) => {
     event.preventDefault();
-    handleLogin(inputForm.username, inputForm.password);
+    handleRegister(inputForm.name, inputForm.username, inputForm.password);
   };
 
   return (
     <>
       {/* Alert */}
-      {!loggedIn.error && showAlert && (
+      {!registered.error && showAlert && (
         <Alert
           textColor="#166534"
           bgColor="#f0fdf4"
           icon={<AiOutlineCheckCircle className="text-xl" />}
         >
-          {loggedIn.message}
+          {registered.message}
         </Alert>
       )}
 
-      {loggedIn.error && showAlert && (
+      {registered.error && showAlert && (
         <Alert
           textColor="#991b1b"
           bgColor="#fef2f2"
           icon={<VscError className="text-xl" />}
         >
-          {loggedIn.message}
+          {registered.message}
         </Alert>
       )}
 
-      <FormContainer header="login">
-        <form className="space-y-6" onSubmit={login}>
+      <FormContainer header="register">
+        <form className="space-y-6" onSubmit={register}>
+          <div>
+            <label
+              htmlFor="name"
+              className="block mb-2 font-bold text-gray-800"
+            >
+              Name
+            </label>
+            <input
+              required
+              type="text"
+              id="name"
+              name="name"
+              onChange={handleInputChange}
+              value={inputForm.name}
+              className="w-full p-2 border border-gray-300 rounded-lg"
+              placeholder="Enter your name"
+            />
+          </div>
           <div>
             <label
               htmlFor="username"
@@ -75,10 +95,6 @@ const LoginForm = () => {
               placeholder="Enter your username"
             />
           </div>
-          {/* show msg error */}
-          {loggedIn.error && (
-            <span className="text-sm text-red-500">{loggedIn.message}</span>
-          )}
           <div>
             <label
               htmlFor="password"
@@ -97,25 +113,18 @@ const LoginForm = () => {
               placeholder="Enter your password"
             />
           </div>
-          {/* show msg error */}
-          {loggedIn.error && (
-            <span className="text-sm text-red-500">{loggedIn.message}</span>
-          )}
           <div>
             <button
               type="submit"
-              onSubmit={login}
+              onSubmit={register}
               className="w-full px-6 py-2 text-xl font-medium text-white uppercase bg-black rounded-3xl"
             >
-              Login
+              Register
             </button>
             <p className="mt-4 text-center">
-              Don't have an account?{" "}
-              <Link
-                to="/register"
-                className="pl-1 text-blue-600 hover:underline"
-              >
-                Register
+              Already have an account?
+              <Link to="/login" className="pl-1 text-blue-600 hover:underline">
+                Login
               </Link>
             </p>
           </div>
@@ -125,4 +134,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
