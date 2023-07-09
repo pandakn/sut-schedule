@@ -31,9 +31,12 @@ const UserProvider = ({ children }: UserProviderProps) => {
   const fetchAllUsers = useCallback(async () => {
     if (accessToken) {
       const res = await getAllUsers(accessToken);
-      const data = res.result;
-      setUsersInfo(data);
-      setTotalUser(data.length);
+
+      if (res) {
+        const data = res.result;
+        setUsersInfo(data);
+        setTotalUser(data.length);
+      }
     }
   }, [accessToken]);
 

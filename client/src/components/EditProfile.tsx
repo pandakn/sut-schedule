@@ -82,7 +82,7 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
           name: data.name,
           username: data.username,
         };
-        localStorage.setItem("payload", JSON.stringify(updatedPayload));
+
         return updatedPayload;
       });
     }
@@ -90,6 +90,7 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
     setTimeout(() => {
       setShowAlert(false);
       setIsModalOpen(false);
+      window.location.reload();
     }, 1500);
   };
 

@@ -37,3 +37,7 @@ html {
 .study-plan-btn {
   @apply px-1 py-2  rounded;
 }
+
+.totalCard-icon {
+  @apply w-6 h-6 text-gray-900;
+}
