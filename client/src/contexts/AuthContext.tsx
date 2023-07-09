@@ -2,11 +2,13 @@ import React, {
   Dispatch,
   SetStateAction,
   createContext,
+  useCallback,
   useEffect,
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { login, logout, register } from "../services/authHttpClient";
+import { getUserById } from "../services/httpClient";
 
 interface AuthMsg {
   message: string | undefined;
@@ -124,20 +126,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         const { accessToken, accessPayload } = result;
         setLoggedIn({ message: data?.message, error: false });
         localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("payload", JSON.stringify(accessPayload));
 
         setTimeout(() => {
           setAccessToken(accessToken);
           setPayload(accessPayload);
-          // if (accessPayload.role === "admin") {
-          //   window.location.href = "/admin";
-          // }
         }, 1500);
       }
     }
-
     setShowAlert(true);
-
     setTimeout(() => {
       setShowAlert(false);
     }, 1500);
@@ -150,6 +146,25 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       window.location.reload();
     }, 1000);
   };
+
+  const currentUser = useCallback(async () => {
+    if (accessToken) {
+      const res = await getUserById(payload.id, accessToken);
+
+      if (res) {
+        const { _id, name, username, role } = res.result;
+        setPayload({ id: _id, name, username, role });
+        localStorage.setItem(
+          "payload",
+          JSON.stringify({ id: _id, name, username, role })
+        );
+      }
+    }
+  }, [accessToken, payload.id]);
+
+  useEffect(() => {
+    currentUser();
+  }, [currentUser]);
 
   useEffect(() => {
     // const accessToken = localStorage.getItem("accessToken");

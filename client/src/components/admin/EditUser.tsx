@@ -11,11 +11,11 @@ interface IEditProfile {
   username?: string;
 }
 
-interface EditUserProps {
+type EditUserProps = {
   userId: string;
   toggleModal: () => void;
   setIsModalOpen: React.Dispatch<SetStateAction<boolean>>;
-}
+};
 
 const EditUser = ({ userId, toggleModal, setIsModalOpen }: EditUserProps) => {
   const { accessToken, payload, setPayload } = useAuth();

@@ -3,13 +3,13 @@ import Alert from "../Alert";
 import Modal from "../Modal";
 import { FiTrash2 } from "react-icons/fi";
 
-interface ModalDeleteProps {
+type ModalDeleteProps = {
   name?: string;
   isModalDeleteOpen: boolean;
   toggleModelDelete: () => void;
   handleDelete: () => void;
   showAlert: boolean;
-}
+};
 
 const ModalDeleteUser = ({
   name,

@@ -1,18 +1,20 @@
 import { Routes, Route } from "react-router-dom";
 
-// components
-import TableManageUsers from "./components/admin/TableManageUsers";
-
 // protected route
 import ProtectedAdminRoute from "./routes/ProtectedAdminRoute";
 import ProtectedUserRoute from "./routes/ProtectedUserRoute";
 
 // pages
-import SearchCourse from "./pages/SearchCourse";
-import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";
 import RegisterForm from "./components/auth/RegisterForm";
+
+// user pages
+import SearchCourse from "./pages/SearchCourse";
+import Homepage from "./pages/Homepage";
+
+// admin pages
 import AdminPage from "./pages/admin/AdminPage";
+import ManageUsers from "./pages/admin/ManageUsers";
 
 function App() {
   return (
@@ -31,7 +33,7 @@ function App() {
           path="/admin/manage-users"
           element={
             <ProtectedAdminRoute>
-              <TableManageUsers />
+              <ManageUsers />
             </ProtectedAdminRoute>
           }
         />

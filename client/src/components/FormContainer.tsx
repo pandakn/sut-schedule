@@ -6,9 +6,15 @@ type Props = {
 };
 
 const FormContainer = ({ children, header }: Props) => {
+  const checkHeader = header === "login" || header === "register";
+
   return (
-    <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center w-full top-10 md:top-0">
-      <div className="p-8 bg-white rounded-lg shadow-2xl w-72 sm:w-80 md:w-[480px] shadow-slate-300">
+    <div
+      className={`${
+        checkHeader && "absolute bottom-0 left-0 right-0 top-0"
+      } flex items-center justify-center w-full`}
+    >
+      <div className="p-8 rounded-lg  shadow-2xl w-72 sm:w-80 md:w-[480px] shadow-slate-300">
         <h2 className="mb-4 text-2xl font-bold capitalize">{header}</h2>
         {children}
       </div>

@@ -121,6 +121,7 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
       )}
 
       <FormContainer header="Edit Profile">
+        {/* <div className="w-[300px] p-6"> */}
         <form className="w-full space-y-6" onSubmit={submitEditProfile}>
           <div>
             <label
@@ -209,6 +210,7 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
             </p>
           </div>
         </form>
+        {/* </div> */}
       </FormContainer>
     </>
   );

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-  @apply relative min-h-screen;
+  @apply relative min-h-screen font-poppins;
 }
 
 .btn-logo {
