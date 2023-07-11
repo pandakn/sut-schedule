@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    volumes:
+      - redis_volume_data:/data
+    ports:
+      - 6379:6379
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - 3000:3000
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+
+volumes:
+  redis_volume_data:

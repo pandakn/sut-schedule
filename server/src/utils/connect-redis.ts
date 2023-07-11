@@ -1,6 +1,17 @@
 import { createClient } from "redis";
+import dotenv from "dotenv";
 
-const client = createClient({ url: process.env.REDIS_URL });
+dotenv.config();
+
+const host = process.env.REDIS_HOST || "127.0.0.1";
+const port = 6379;
+
+const client = createClient({
+  socket: {
+    host,
+    port,
+  },
+});
 
 (async () => {
   await client.connect();
