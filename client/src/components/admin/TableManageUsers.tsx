@@ -18,14 +18,19 @@ import {
 } from "react-icons/ai";
 import { deleteUserById } from "../../services/httpClient";
 
-const tableHeader = ["name", "role", "status", "action"];
+const tableHeader = ["name", "role", "max. plans", "status", "action"];
 
 type TableManageUsersProps = {
   usersInfo: Users[];
 };
 
 const TableManageUsers = ({ usersInfo }: TableManageUsersProps) => {
-  const [editUser, setEditUser] = useState<IEditUser>({ id: "", name: "" });
+  const [editUser, setEditUser] = useState<IEditUser>({
+    id: "",
+    name: "",
+    role: "user",
+    maximumStudyPlans: 0,
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalDeleteOpen, setIsModelDeleteOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -46,8 +51,14 @@ const TableManageUsers = ({ usersInfo }: TableManageUsersProps) => {
     setSearch(searchFieldString);
   };
 
-  const handleEditUser = (userId: string) => {
-    setEditUser({ id: userId });
+  const handleEditUser = (
+    userId: string,
+    role: "admin" | "user",
+    maximumStudyPlans: number
+  ) => {
+    console.log(role);
+
+    setEditUser({ id: userId, role, maximumStudyPlans });
   };
 
   const toggleModal = () => {
@@ -115,7 +126,7 @@ const TableManageUsers = ({ usersInfo }: TableManageUsersProps) => {
               return (
                 <tr
                   key={user._id}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 "
+                  className="bg-white border-b text dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 "
                 >
                   <th className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap">
                     <div className="pl-3">
@@ -125,35 +136,50 @@ const TableManageUsers = ({ usersInfo }: TableManageUsersProps) => {
                       </div>
                     </div>
                   </th>
-                  <td className="px-6 py-4 capitalize">{user.role}</td>
+                  <td className="px-6 py-4 capitalize">{user.role} </td>
+                  <td className="px-6 py-4 capitalize">
+                    {user.maximumStudyPlans}{" "}
+                    {user.maximumStudyPlans <= 1 ? "Plan" : "Plans"}
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center">
                       <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>{" "}
                       Online
                     </div>
                   </td>
-                  <td className="px-6 py-4 space-x-2">
-                    {/* <!-- Modal toggle --> */}
-                    <button
-                      // onClick={toggleModal}
-                      onClick={() => {
-                        handleEditUser(user._id);
-                        toggleModal();
-                      }}
-                      className="bg-blue-500 study-plan-btn hover:bg-blue-600"
-                    >
-                      <AiOutlineEdit className="text-white" />
-                    </button>
-                    <button
-                      disabled={payload.id === user._id}
-                      onClick={() => {
-                        setEditUser({ id: user._id, name: user.name });
-                        toggleModelDelete();
-                      }}
-                      className="bg-red-500 study-plan-btn hover:bg-red-600 disabled:opacity-30"
-                    >
-                      <AiOutlineDelete className="text-white" />
-                    </button>
+                  <td className="px-6 py-4 space-x-2 ">
+                    <div className="flex gap-2">
+                      {/* <!-- Modal toggle --> */}
+                      <button
+                        // onClick={toggleModal}
+                        onClick={() => {
+                          handleEditUser(
+                            user._id,
+                            user.role,
+                            user.maximumStudyPlans
+                          );
+                          toggleModal();
+                        }}
+                        className="bg-blue-500 study-plan-btn hover:bg-blue-600"
+                      >
+                        <AiOutlineEdit className="text-white" />
+                      </button>
+                      <button
+                        disabled={payload.id === user._id}
+                        onClick={() => {
+                          setEditUser({
+                            id: user._id,
+                            name: user.name,
+                            role: user.role,
+                            maximumStudyPlans: user.maximumStudyPlans,
+                          });
+                          toggleModelDelete();
+                        }}
+                        className="bg-red-500 study-plan-btn hover:bg-red-600 disabled:opacity-30"
+                      >
+                        <AiOutlineDelete className="text-white" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );
@@ -165,7 +191,7 @@ const TableManageUsers = ({ usersInfo }: TableManageUsersProps) => {
       {/* <!-- Edit user modal --> */}
       <Modal isOpenModal={isModalOpen}>
         <EditUser
-          userId={editUser.id}
+          user={editUser}
           toggleModal={toggleModal}
           setIsModalOpen={setIsModalOpen}
         />

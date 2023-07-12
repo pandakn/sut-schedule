@@ -1,6 +1,7 @@
 import api from "./axiosInterceptors";
 import { CourseDataInterface } from "../models/course.interface";
 import { AxiosError } from "axios";
+import { Role } from "../components/admin/@types/user";
 
 const MAX_ROW = "50";
 
@@ -9,6 +10,8 @@ export const updateUserProfile = async (
   token: string,
   userId: string,
   name: string,
+  role: Role,
+  maximumStudyPlans: number,
   username?: string,
   password?: string
 ) => {
@@ -16,7 +19,7 @@ export const updateUserProfile = async (
     if (userId) {
       const response = await api.put(
         `/api/users/${userId}`,
-        { name, username, password },
+        { name, username, role, password, maximumStudyPlans },
         {
           headers: {
             Authorization: `Bearer ${token}`,

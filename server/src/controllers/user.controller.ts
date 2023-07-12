@@ -36,7 +36,7 @@ export const getUserById = async (req: Request, res: Response) => {
 // edit a user by ID
 export const editUser = async (req: Request, res: Response): Promise<void> => {
   const userId = req.params.id;
-  const { name, username, password } = req.body;
+  const { name, username, password, role, maximumStudyPlans } = req.body;
 
   try {
     const user: IUserModel | null = await User.findById(userId);
@@ -54,6 +54,8 @@ export const editUser = async (req: Request, res: Response): Promise<void> => {
 
     user.username = username || user.username;
     user.name = name || user.name;
+    user.role = role || user.role;
+    user.maximumStudyPlans = maximumStudyPlans || user.maximumStudyPlans;
     if (password) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);

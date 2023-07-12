@@ -5,23 +5,30 @@ import FormContainer from "../FormContainer";
 import Alert from "../Alert";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { VscError } from "react-icons/vsc";
+import { EditUser as IEditUser, Role } from "./@types/user";
 
 interface IEditProfile {
   name: string;
   username?: string;
+  role: Role;
+  maximumStudyPlans: number;
 }
 
 type EditUserProps = {
-  userId: string;
+  user: IEditUser;
   toggleModal: () => void;
   setIsModalOpen: React.Dispatch<SetStateAction<boolean>>;
 };
 
-const EditUser = ({ userId, toggleModal, setIsModalOpen }: EditUserProps) => {
+const roles = ["admin", "user"];
+
+const EditUser = ({ user, toggleModal, setIsModalOpen }: EditUserProps) => {
   const { accessToken, payload, setPayload } = useAuth();
   const [userProfile, setUserProfile] = useState<IEditProfile>({
     name: "",
     username: "",
+    role: "user",
+    maximumStudyPlans: 0,
     // password: "",
     // confirmPassword: "",
   });
@@ -30,18 +37,33 @@ const EditUser = ({ userId, toggleModal, setIsModalOpen }: EditUserProps) => {
 
   const fetchUserProfile = useCallback(async () => {
     if (accessToken) {
-      const res = await getUserById(userId, accessToken);
+      const res = await getUserById(user.id, accessToken);
 
       if (res) {
         const data = res.result;
         setUserProfile((prev) => {
-          return { ...prev, name: data.name, username: data.username };
+          return {
+            ...prev,
+            name: data.name,
+            username: data.username,
+            role: data.role,
+            maximumStudyPlans: data.maximumStudyPlans,
+          };
         });
       }
     }
-  }, [accessToken, userId]);
+  }, [accessToken, user.id]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserProfile({
+      ...userProfile,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(event.target.value);
+
     setUserProfile({
       ...userProfile,
       [event.target.name]: event.target.value,
@@ -55,12 +77,12 @@ const EditUser = ({ userId, toggleModal, setIsModalOpen }: EditUserProps) => {
       const res = await updateUserProfile(
         // payload.id,
         accessToken,
-        userId,
+        user.id,
         userProfile.name,
+        userProfile.role,
+        userProfile.maximumStudyPlans,
         userProfile.username
       );
-
-      console.log(res);
 
       // handle error
       if (!res?.status) {
@@ -78,6 +100,7 @@ const EditUser = ({ userId, toggleModal, setIsModalOpen }: EditUserProps) => {
             ...prev,
             name: data.name,
             username: data.username,
+            role: data.role,
           };
 
           localStorage.setItem("payload", JSON.stringify(updatedPayload));
@@ -125,54 +148,86 @@ const EditUser = ({ userId, toggleModal, setIsModalOpen }: EditUserProps) => {
 
       <FormContainer header="Edit User">
         <form className="w-full space-y-6" onSubmit={submitEditProfile}>
-          <div>
-            <label
-              htmlFor="name"
-              className="block mb-2 font-bold text-gray-800"
-            >
-              Name
-            </label>
-            <input
-              onChange={handleInputChange}
-              value={userProfile.name}
-              required
-              type="text"
-              id="name"
-              name="name"
-              className="w-full p-2 border border-gray-300 rounded-lg"
-              placeholder="Enter your name"
-            />
+          <div className="flex flex-col gap-2 md:flex-row">
+            {/* name */}
+            <div className="w-full">
+              <label
+                htmlFor="name"
+                className="block mb-2 font-bold text-gray-800"
+              >
+                Name
+              </label>
+              <input
+                onChange={handleInputChange}
+                value={userProfile.name}
+                required
+                type="text"
+                id="name"
+                name="name"
+                className="w-full p-2 border border-gray-300 rounded-lg "
+                placeholder="Enter your name"
+              />
+            </div>
+            <section className="flex w-full gap-2">
+              {/* role */}
+              <div className="w-full">
+                <label
+                  htmlFor="role"
+                  className="block mb-2 font-bold text-gray-800"
+                >
+                  Role
+                </label>
+                <select
+                  defaultValue={user.role}
+                  name="role"
+                  id="role"
+                  onChange={handleSelectChange}
+                  className="w-full combobox-search"
+                >
+                  {roles.map((role, idx) => {
+                    return (
+                      <option key={idx} value={role}>
+                        {role}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              {/* max study plans */}
+              <div className="w-full">
+                <label
+                  htmlFor="maximumStudyPlans"
+                  className="block mb-2 font-bold text-gray-800"
+                >
+                  Max. Plan
+                </label>
+                <input
+                  min={1}
+                  onChange={handleInputChange}
+                  value={userProfile.maximumStudyPlans}
+                  required
+                  type="number"
+                  id="maximumStudyPlans"
+                  name="maximumStudyPlans"
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  placeholder="Max. Plan"
+                />
+                <p className="mt-1 text-red-500">{error}</p>
+              </div>
+            </section>
           </div>
-          <div>
-            <label
-              htmlFor="username"
-              className="block mb-2 font-bold text-gray-800"
-            >
-              Username
-            </label>
-            <input
-              onChange={handleInputChange}
-              value={userProfile.username}
-              required
-              type="text"
-              id="username"
-              name="username"
-              className="w-full p-2 border border-gray-300 rounded-lg"
-              placeholder="Enter your username"
-            />
-            <p className="mt-1 text-red-500">{error}</p>
-          </div>
+
           <div className="flex justify-end gap-3">
             <button
               onSubmit={submitEditProfile}
               type="submit"
-              className="px-6 py-2 text-lg font-medium text-white uppercase bg-gray-900 rounded-3xl hover:bg-gray-900/75"
+              className="px-6 py-2 font-medium text-white uppercase bg-gray-900 rounded-3xl hover:bg-gray-900/75"
             >
               Save
             </button>
             <p
               onClick={toggleModal}
-              className="px-4 py-2 text-lg font-medium text-gray-900 uppercase border border-gray-800 rounded-3xl hover:text-gray-600 hover:cursor-pointer"
+              className="px-4 py-2 font-medium text-gray-900 uppercase border border-gray-800 rounded-3xl hover:text-gray-600 hover:cursor-pointer"
             >
               Cancel
             </p>
