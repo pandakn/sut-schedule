@@ -24,9 +24,9 @@ interface UserProviderProps {
 const UserContext = createContext<UserContextType>(initialAuthContext);
 
 const UserProvider = ({ children }: UserProviderProps) => {
+  const { accessToken } = useAuth();
   const [usersInfo, setUsersInfo] = useState<Users[]>([]);
   const [totalUser, setTotalUser] = useState(0);
-  const { accessToken } = useAuth();
 
   const fetchAllUsers = useCallback(async () => {
     if (accessToken) {

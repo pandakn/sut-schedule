@@ -1,6 +1,6 @@
 import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../hooks";
-import { getUserById, updateUserProfile } from "../../services/httpClient";
+import { editUserProfile, getUserById } from "../../services/httpClient";
 import FormContainer from "../FormContainer";
 import Alert from "../Alert";
 import { AiOutlineCheckCircle } from "react-icons/ai";
@@ -74,14 +74,13 @@ const EditUser = ({ user, toggleModal, setIsModalOpen }: EditUserProps) => {
     event.preventDefault();
 
     if (accessToken) {
-      const res = await updateUserProfile(
+      const res = await editUserProfile(
         // payload.id,
         accessToken,
         user.id,
         userProfile.name,
         userProfile.role,
-        userProfile.maximumStudyPlans,
-        userProfile.username
+        userProfile.maximumStudyPlans
       );
 
       // handle error

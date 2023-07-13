@@ -24,7 +24,7 @@ npm install
 
 After this step, you will get `node_modules` folder in the root of the project.
 
-### Start Server
+### Start Server 🐳
 
 ```zsh
 docker-compose -f docker-compose.yml up
@@ -48,7 +48,7 @@ docker exec -it redis redis-cli
 
 # Screenshot 📸
 
-![image](client/public/screenshots/home.jpeg)
+![image](./client/public/screenshots/home.jpeg)
 
 # API
 

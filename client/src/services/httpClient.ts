@@ -6,12 +6,48 @@ import { Role } from "../components/admin/@types/user";
 const MAX_ROW = "50";
 
 // ---------- user -----------
+export const editUserProfile = async (
+  token: string,
+  userId: string,
+  name: string,
+  role?: Role,
+  maximumStudyPlans?: number
+) => {
+  try {
+    if (userId) {
+      const response = await api.put(
+        `/api/users/${userId}`,
+        { name, role, maximumStudyPlans },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        return { data: response.data, status: true };
+      }
+    }
+  } catch (error) {
+    console.log(error);
+
+    if (
+      error instanceof AxiosError &&
+      error.response &&
+      error.response.status === 400
+    ) {
+      return { status: false, data: error.response.data };
+    } else {
+      console.error(error);
+    }
+  }
+};
+
 export const updateUserProfile = async (
   token: string,
   userId: string,
   name: string,
-  role: Role,
-  maximumStudyPlans: number,
   username?: string,
   password?: string
 ) => {
@@ -19,7 +55,7 @@ export const updateUserProfile = async (
     if (userId) {
       const response = await api.put(
         `/api/users/${userId}`,
-        { name, username, role, password, maximumStudyPlans },
+        { name, username, password },
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -1,14 +1,14 @@
 import { useUser } from "../../hooks";
 
 // component
-import TableManageUsers from "../../components/admin/TableManageUsers";
+import PaginatedUsers from "../../components/admin/PaginatedUsers";
 
 const ManageUsers = () => {
   const { usersInfo } = useUser();
 
   return (
     <>
-      <TableManageUsers usersInfo={usersInfo} />
+      <PaginatedUsers data={usersInfo} itemsPerPage={6} />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useState } from "react";
 import { useAuth } from "../../hooks";
 
 // types
@@ -21,35 +21,28 @@ import { deleteUserById } from "../../services/httpClient";
 const tableHeader = ["name", "role", "max. plans", "status", "action"];
 
 type TableManageUsersProps = {
-  usersInfo: Users[];
+  usersData: Users[];
+  searchQuery: string;
+  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  setSearchQuery: React.Dispatch<SetStateAction<string>>;
 };
 
-const TableManageUsers = ({ usersInfo }: TableManageUsersProps) => {
+const TableManageUsers = ({
+  usersData,
+  searchQuery,
+  setSearchQuery,
+  onSearchChange,
+}: TableManageUsersProps) => {
   const [editUser, setEditUser] = useState<IEditUser>({
     id: "",
     name: "",
     role: "user",
     maximumStudyPlans: 0,
   });
+  const { accessToken, payload } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalDeleteOpen, setIsModelDeleteOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [search, setSearch] = useState("");
-  const [filterUsersInfo, setFilterUsersInfo] = useState<Users[]>(usersInfo);
-  const { accessToken, payload } = useAuth();
-
-  useEffect(() => {
-    const newFilteredUser = usersInfo.filter((user) => {
-      return user.name.toLocaleLowerCase().includes(search);
-    });
-
-    setFilterUsersInfo(newFilteredUser);
-  }, [usersInfo, search]);
-
-  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const searchFieldString = event.target.value.toLocaleLowerCase();
-    setSearch(searchFieldString);
-  };
 
   const handleEditUser = (
     userId: string,
@@ -95,13 +88,13 @@ const TableManageUsers = ({ usersInfo }: TableManageUsersProps) => {
             <input
               onChange={onSearchChange}
               type="text"
-              value={search}
+              value={searchQuery}
               className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:border-gray-500 focus:outline-none"
               placeholder="Search for users"
             />
-            {search && (
+            {searchQuery && (
               <div
-                onClick={() => setSearch("")}
+                onClick={() => setSearchQuery("")}
                 className="absolute inset-y-0 right-0 flex items-center pr-3 hover:cursor-pointer"
               >
                 <AiOutlineClose className="w-4 h-4 text-red-500" />
@@ -122,22 +115,22 @@ const TableManageUsers = ({ usersInfo }: TableManageUsersProps) => {
           </thead>
           {/* users data */}
           <tbody>
-            {filterUsersInfo.map((user) => {
+            {usersData.map((user) => {
               return (
                 <tr
                   key={user._id}
                   className="bg-white border-b text dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 "
                 >
                   <th className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap">
-                    <div className="pl-3">
+                    <div className="">
                       <div className="text-base font-semibold">{user.name}</div>
                       <div className="font-normal text-gray-500">
                         @{user.username}
                       </div>
                     </div>
                   </th>
-                  <td className="px-6 py-4 capitalize">{user.role} </td>
-                  <td className="px-6 py-4 capitalize">
+                  <td className="py-6 capitalize px-7">{user.role} </td>
+                  <td className="py-4 capitalize px-9">
                     {user.maximumStudyPlans}{" "}
                     {user.maximumStudyPlans <= 1 ? "Plan" : "Plans"}
                   </td>
