@@ -11,6 +11,7 @@ import {
   createStudyPlan,
   deleteStudyPlan,
 } from "../controllers/user.controller";
+import { createBlog } from "../controllers/blog.controller";
 import { adminCheck, authenticateToken } from "../middleware/auth.middleware";
 
 export default (router: express.Router) => {
@@ -39,4 +40,7 @@ export default (router: express.Router) => {
   router.post("/users/:id/study-plans", createStudyPlan);
   router.post("/users/:userId/study-plan/:studyPlanId", selectStudyPlan);
   router.delete("/users/:userId/study-plan/:studyPlanId", deleteStudyPlan);
+
+  // blogs
+  router.post("/users/:userId/blogs", createBlog);
 };
