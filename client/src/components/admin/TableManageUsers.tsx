@@ -17,8 +17,9 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai";
 import { deleteUserById } from "../../services/httpClient";
+import AddUser from "./AddUser";
 
-const tableHeader = ["name", "role", "max. plans", "status", "action"];
+const tableHeader = ["name", "role", "max. plans", "action"];
 
 type TableManageUsersProps = {
   usersData: Users[];
@@ -40,8 +41,9 @@ const TableManageUsers = ({
     maximumStudyPlans: 0,
   });
   const { accessToken, payload } = useAuth();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalEditUser, setIsModalEditUser] = useState(false);
   const [isModalDeleteOpen, setIsModelDeleteOpen] = useState(false);
+  const [isModalAddUser, setIsModalAddUser] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
   const handleEditUser = (
@@ -54,8 +56,12 @@ const TableManageUsers = ({
     setEditUser({ id: userId, role, maximumStudyPlans });
   };
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
+  const toggleModalEditUser = () => {
+    setIsModalEditUser(!isModalEditUser);
+  };
+
+  const toggleModalAddUser = () => {
+    setIsModalAddUser(!isModalAddUser);
   };
 
   const toggleModelDelete = () => {
@@ -79,7 +85,7 @@ const TableManageUsers = ({
   return (
     <>
       <div className="container relative mx-auto overflow-x-auto shadow-md sm:rounded-lg">
-        <div className="flex items-center py-4 bg-white">
+        <div className="flex items-center justify-between py-4 bg-white">
           <label className="sr-only">Search</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -101,6 +107,14 @@ const TableManageUsers = ({
               </div>
             )}
           </div>
+
+          {/* btn */}
+          <button
+            className="px-4 py-2 font-bold text-white bg-orange-500 rounded-lg disabled:opacity-50 hover:bg-orange-400"
+            onClick={toggleModalAddUser}
+          >
+            Add User
+          </button>
         </div>
 
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -134,12 +148,7 @@ const TableManageUsers = ({
                     {user.maximumStudyPlans}{" "}
                     {user.maximumStudyPlans <= 1 ? "Plan" : "Plans"}
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center">
-                      <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>{" "}
-                      Online
-                    </div>
-                  </td>
+
                   <td className="px-6 py-4 space-x-2 ">
                     <div className="flex gap-2">
                       {/* <!-- Modal toggle --> */}
@@ -151,7 +160,7 @@ const TableManageUsers = ({
                             user.role,
                             user.maximumStudyPlans
                           );
-                          toggleModal();
+                          toggleModalEditUser();
                         }}
                         className="bg-blue-500 study-plan-btn hover:bg-blue-600"
                       >
@@ -182,11 +191,18 @@ const TableManageUsers = ({
       </div>
 
       {/* <!-- Edit user modal --> */}
-      <Modal isOpenModal={isModalOpen}>
+      <Modal isOpenModal={isModalEditUser}>
         <EditUser
           user={editUser}
-          toggleModal={toggleModal}
-          setIsModalOpen={setIsModalOpen}
+          toggleModal={toggleModalEditUser}
+          setIsModalOpen={setIsModalEditUser}
+        />
+      </Modal>
+
+      <Modal isOpenModal={isModalAddUser}>
+        <AddUser
+          toggleModal={toggleModalAddUser}
+          setIsModalOpen={setIsModalAddUser}
         />
       </Modal>
 
