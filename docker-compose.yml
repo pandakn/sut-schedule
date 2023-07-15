@@ -14,12 +14,20 @@ services:
       context: ./server
       dockerfile: Dockerfile
     container_name: backend
+    volumes:
+      - ./server:/app
+      - /app/node_modules
     ports:
       - 3000:3000
     depends_on:
       - redis
     environment:
       - REDIS_HOST=redis
+      - NODE_ENV=development
+    command:
+      - npm
+      - run
+      - dev
 
 volumes:
   redis_volume_data:
