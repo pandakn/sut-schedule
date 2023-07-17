@@ -30,6 +30,7 @@ app.use(
 );
 
 app.use(bodyParser.json());
+app.use(express.static("public"));
 app.use(cookieParser());
 app.use(morgan("dev"));
 

@@ -8,7 +8,7 @@ export const getAllBlogs = async (
 ): Promise<void> => {
   try {
     const blogs: IBlog[] = await Blog.find().populate(
-      "creator",
+      "author",
       "name username"
     );
     res.status(200).json({ result: blogs });
@@ -24,7 +24,7 @@ export const getBlogById = async (
   const { id } = req.params;
   try {
     const blog: IBlog | null = await Blog.findById(id).populate(
-      "creator",
+      "author",
       "name username"
     );
     if (!blog) {
@@ -42,7 +42,8 @@ export const createBlog = async (
   res: Response
 ): Promise<void> => {
   const { userId } = req.params;
-  const { title, body, tags } = req.body;
+  let { cover, title, body, tags } = req.body;
+
   try {
     // Find the user by ID
     const user: IUserModel | null = await User.findById(userId);
@@ -51,8 +52,13 @@ export const createBlog = async (
       return;
     }
 
+    if (req.file) {
+      cover = req.file.filename;
+    }
+
     const newBlog: IBlog = new Blog({
-      creator: userId,
+      author: userId,
+      cover,
       title,
       body,
       tags,
@@ -73,11 +79,11 @@ export const updateBlog = async (
   res: Response
 ): Promise<void> => {
   const { id } = req.params;
-  const { title, body, tags } = req.body;
+  const { title, body, tags, cover } = req.body;
   try {
     const updatedBlog: IBlog | null = await Blog.findByIdAndUpdate(
       id,
-      { title, body, tags },
+      { cover, title, body, tags },
       { new: true }
     );
     if (!updatedBlog) {

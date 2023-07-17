@@ -13,6 +13,7 @@ import {
 } from "../controllers/user.controller";
 import { createBlog } from "../controllers/blog.controller";
 import { adminCheck, authenticateToken } from "../middleware/auth.middleware";
+import upload from "../middleware/upload";
 
 export default (router: express.Router) => {
   router.get("/users", authenticateToken, adminCheck, getAllUsers);
@@ -37,10 +38,23 @@ export default (router: express.Router) => {
 
   // study plan
   // create study plan
-  router.post("/users/:id/study-plans", createStudyPlan);
-  router.post("/users/:userId/study-plan/:studyPlanId", selectStudyPlan);
-  router.delete("/users/:userId/study-plan/:studyPlanId", deleteStudyPlan);
+  router.post("/users/:id/study-plans", authenticateToken, createStudyPlan);
+  router.post(
+    "/users/:userId/study-plan/:studyPlanId",
+    authenticateToken,
+    selectStudyPlan
+  );
+  router.delete(
+    "/users/:userId/study-plan/:studyPlanId",
+    authenticateToken,
+    deleteStudyPlan
+  );
 
   // blogs
-  router.post("/users/:userId/blogs", createBlog);
+  router.post(
+    "/users/:userId/blogs",
+    authenticateToken,
+    upload.single("cover"),
+    createBlog
+  );
 };
