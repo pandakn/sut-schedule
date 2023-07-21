@@ -45,6 +45,10 @@ export const createBlog = async (
   let { cover, title, body, tags } = req.body;
 
   try {
+    if (!req.file) {
+      res.status(404).json({ message: "Cover image must have" });
+      return;
+    }
     // Find the user by ID
     const user: IUserModel | null = await User.findById(userId);
     if (!user) {
