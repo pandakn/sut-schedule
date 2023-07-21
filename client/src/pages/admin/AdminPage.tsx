@@ -3,6 +3,7 @@ import { useAuth, useUser } from "../../hooks";
 
 // services
 import { getAllStudyPlans } from "../../services/httpClientForAdmin";
+import { getBlogs } from "../../services/blog";
 
 // components
 import TotalCard from "../../components/admin/TotalCard";
@@ -14,20 +15,29 @@ import {
 
 const AdminPage = () => {
   const { accessToken } = useAuth();
-  const [totalStudyPlans, setTotalStudyPlans] = useState(0);
   const { totalUser } = useUser();
+  const [totalStudyPlans, setTotalStudyPlans] = useState(0);
+  const [totalBlogs, setTotalBlogs] = useState(0);
+
+  const fetchAllBlogs = useCallback(async () => {
+    if (accessToken) {
+      const res = await getBlogs(accessToken);
+      const countBlogs = res.result.length;
+      setTotalBlogs(countBlogs);
+    }
+  }, [accessToken]);
 
   const fetchAllStudyPlans = useCallback(async () => {
     if (accessToken) {
       const res = await getAllStudyPlans(accessToken);
-      console.log(res);
       setTotalStudyPlans(res.countStudyPlan);
     }
   }, [accessToken]);
 
   useEffect(() => {
     fetchAllStudyPlans();
-  }, [fetchAllStudyPlans]);
+    fetchAllBlogs();
+  }, [fetchAllStudyPlans, fetchAllBlogs]);
 
   return (
     <div className="flex flex-col justify-around gap-6 md:flex-row">
@@ -39,7 +49,7 @@ const AdminPage = () => {
       />
       <TotalCard
         title="Total Blogs"
-        total={5}
+        total={totalBlogs}
         color="#8294C4"
         icon={<AiOutlineBook className="totalCard-icon" />}
       />

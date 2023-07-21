@@ -1,8 +1,12 @@
 import { Routes, Route } from "react-router-dom";
+import "react-quill/dist/quill.snow.css";
 
 // protected route
 import ProtectedAdminRoute from "./routes/ProtectedAdminRoute";
 import ProtectedUserRoute from "./routes/ProtectedUserRoute";
+
+// components
+import BlogPost from "./components/blog/BlogPost";
 
 // pages
 import Login from "./pages/Login";
@@ -15,6 +19,8 @@ import Homepage from "./pages/Homepage";
 // admin pages
 import AdminPage from "./pages/admin/AdminPage";
 import ManageUsers from "./pages/admin/ManageUsers";
+import Blog from "./pages/blog/Blog";
+import CreateBlog from "./pages/blog/CreateBlog";
 
 function App() {
   return (
@@ -44,6 +50,38 @@ function App() {
           element={
             <ProtectedUserRoute>
               <Homepage />
+            </ProtectedUserRoute>
+          }
+        />
+        <Route
+          path="/blogs"
+          element={
+            <ProtectedUserRoute>
+              <Blog />
+            </ProtectedUserRoute>
+          }
+        />
+        <Route
+          path="/blog/:slug"
+          element={
+            <ProtectedUserRoute>
+              <BlogPost />
+            </ProtectedUserRoute>
+          }
+        />
+        <Route
+          path="/blogs"
+          element={
+            <ProtectedUserRoute>
+              <Blog />
+            </ProtectedUserRoute>
+          }
+        />
+        <Route
+          path="/editor"
+          element={
+            <ProtectedUserRoute>
+              <CreateBlog />
             </ProtectedUserRoute>
           }
         />

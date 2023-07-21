@@ -1,0 +1,68 @@
+/* edittor */
+.ql-snow .ql-editor h1 {
+  @apply text-[2.5rem];
+}
+
+.ql-snow .ql-editor h2 {
+  @apply text-3xl;
+}
+
+.ql-snow .ql-editor h3 {
+  @apply text-xl;
+}
+
+.ql-snow .ql-editor p {
+  @apply text-base;
+}
+
+/* post contents */
+.content {
+  @apply tracking-normal leading-relaxed;
+}
+
+.content h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.content h2 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.content h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.content p {
+  font-size: 1.15rem;
+}
+
+.content a {
+  color: #3b49ef !important;
+}
+
+.content a {
+  @apply underline hover:opacity-80;
+}
+
+.content ul {
+  margin-left: 2.2rem;
+  list-style: disc;
+}
+
+.content ol {
+  list-style-type: decimal;
+}
+
+.content li {
+  margin-bottom: 0.5rem;
+  margin-left: 2rem;
+}
+
+.content blockquote {
+  border-left: 4px solid #ccc;
+  margin: 5px 2rem;
+  padding-left: 0.8rem;
+}

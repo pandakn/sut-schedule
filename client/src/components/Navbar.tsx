@@ -58,6 +58,18 @@ const Navbar = () => {
                     )}
                     <Link
                       className="text-gray-600 capitalize hover:text-gray-800"
+                      to="/blogs"
+                    >
+                      Blogs
+                    </Link>
+                    <Link
+                      className="text-gray-600 capitalize hover:text-gray-800"
+                      to="/editor"
+                    >
+                      Write
+                    </Link>
+                    <Link
+                      className="text-gray-600 capitalize hover:text-gray-800"
                       to="/search-course"
                     >
                       Search Course
@@ -141,7 +153,19 @@ const Navbar = () => {
                   {payload.name}
                 </motion.div>
                 <motion.div variants={childrenVariants}>
-                  <div>
+                  <div className="flex flex-col gap-y-1">
+                    <Link
+                      className="text-gray-600 capitalize hover:text-gray-800"
+                      to="/blogs"
+                    >
+                      Blogs
+                    </Link>
+                    <Link
+                      className="text-gray-600 capitalize hover:text-gray-800"
+                      to="/editor"
+                    >
+                      Write
+                    </Link>
                     <Link
                       className="text-gray-600 capitalize hover:text-gray-800"
                       to="search-course"
