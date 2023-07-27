@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useAuth, useStudyPlan } from "../hooks";
 
 // Support strict mode
@@ -10,15 +9,13 @@ import {
   DropResult,
 } from "@hello-pangea/dnd";
 
-// component
-import Alert from "./Alert";
-
 // icons
-import { AiOutlineCheckCircle, AiOutlineCopy } from "react-icons/ai";
+import { AiOutlineCopy } from "react-icons/ai";
 
 // model
 import { CourseDataInterface } from "../models/course.interface";
 import { reOrderOfCourseInStudyPlan } from "../services/httpClient";
+import toast from "react-hot-toast";
 
 const headerOfTable: string[] = [
   "",
@@ -35,8 +32,6 @@ type TableScheduleProp = {
 };
 
 const TableSchedule = ({ courseInPlanner }: TableScheduleProp) => {
-  const [showAlert, setShowAlert] = useState(false);
-  const [showMsg, setShowMsg] = useState("");
   const { selectedPlan, setCourseInPlanner } = useStudyPlan();
   const { accessToken } = useAuth();
 
@@ -44,16 +39,10 @@ const TableSchedule = ({ courseInPlanner }: TableScheduleProp) => {
     navigator.clipboard
       .writeText(courseCode)
       .then(() => {
-        setShowAlert(true);
-        setShowMsg(`copied to clipboard: ${courseCode}`);
+        toast.success(`copied to clipboard: ${courseCode}`, { duration: 1000 });
       })
       .catch((error) => {
         console.error("Failed to copy course code:", error);
-      })
-      .finally(() => {
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 1000);
       });
   };
 
@@ -79,17 +68,6 @@ const TableSchedule = ({ courseInPlanner }: TableScheduleProp) => {
 
   return (
     <div className="mb-16">
-      {/* Alert */}
-      {showAlert && (
-        <Alert
-          textColor="#166534"
-          bgColor="#f0fdf4"
-          icon={<AiOutlineCheckCircle className="text-xl" />}
-        >
-          {showMsg}
-        </Alert>
-      )}
-
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="container mx-auto">
           <div className="relative overflow-x-auto">

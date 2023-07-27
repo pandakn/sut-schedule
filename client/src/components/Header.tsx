@@ -16,7 +16,6 @@ const Header = ({ studyPlanName }: HeaderProps) => {
     handleAddStudyPlan,
     handleEditStudyPlan,
     handleDeleteStudyPlan,
-    showAlert,
   } = useStudyPlan();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -47,7 +46,6 @@ const Header = ({ studyPlanName }: HeaderProps) => {
           handleAddStudyPlan={handleAddStudyPlan}
           handleEditStudyPlan={handleEditStudyPlan}
           handleDeleteStudyPlan={handleDeleteStudyPlan}
-          showAlert={showAlert}
         />
       </Modal>
     </>

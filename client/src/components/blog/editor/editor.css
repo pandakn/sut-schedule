@@ -66,3 +66,7 @@
   margin: 5px 2rem;
   padding-left: 0.8rem;
 }
+
+.quill > .ql-container > .ql-editor.ql-blank::before {
+  @apply text-sm text-gray-400;
+}

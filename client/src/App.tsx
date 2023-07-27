@@ -6,7 +6,7 @@ import ProtectedAdminRoute from "./routes/ProtectedAdminRoute";
 import ProtectedUserRoute from "./routes/ProtectedUserRoute";
 
 // components
-import BlogPost from "./components/blog/BlogPost";
+import BlogPost from "./pages/blog/BlogPost";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 

@@ -9,6 +9,7 @@ import React, {
 import { useNavigate } from "react-router-dom";
 import { login, logout, register } from "../services/authHttpClient";
 import { getUserById } from "../services/httpClient";
+import toast from "react-hot-toast";
 
 interface AuthMsg {
   message: string | undefined;
@@ -35,7 +36,6 @@ type AuthContextType = {
   setPayload: Dispatch<SetStateAction<AccessTokenPayload>>;
   loggedIn: AuthMsg;
   registered: AuthMsg;
-  showAlert: boolean;
 };
 
 const initialAuthContext: AuthContextType = {
@@ -55,7 +55,6 @@ const initialAuthContext: AuthContextType = {
   },
   loggedIn: { message: "", error: false },
   registered: { message: "", error: false },
-  showAlert: false,
 };
 
 interface AuthProviderProps {
@@ -83,7 +82,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     message: "",
     error: false,
   });
-  const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (
@@ -98,17 +96,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
     if (err) {
       setRegistered({ message: data.message, error: err });
+      toast.error(data.message, { duration: 1500 });
     } else {
       setRegistered({ message: data.message, error: false });
+      toast.success(data.message, { duration: 1500 });
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     }
-
-    setShowAlert(true);
-
-    setTimeout(() => {
-      setShowAlert(false);
-      setRegistered({ message: "", error: false });
-      navigate("/login");
-    }, 1500);
   };
 
   const handleLogin = async (username: string, password: string) => {
@@ -117,14 +112,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const data = res?.data;
     const err = res?.error;
 
+    if (!data?.message) return;
+
     if (err) {
       setLoggedIn({ message: data?.message, error: err });
+      toast.error(data.message, { duration: 1500 });
     } else {
       const result = data?.result;
 
       if (result && result.accessToken && result.accessPayload) {
         const { accessToken, accessPayload } = result;
         setLoggedIn({ message: data?.message, error: false });
+        toast.success(data.message, { duration: 1500 });
         localStorage.setItem("accessToken", accessToken);
 
         setTimeout(() => {
@@ -133,10 +132,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         }, 1500);
       }
     }
-    setShowAlert(true);
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 1500);
   };
 
   const handleLogout = async () => {
@@ -185,7 +180,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setPayload,
     loggedIn,
     registered,
-    showAlert,
   };
 
   return (

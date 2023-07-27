@@ -7,9 +7,7 @@ import Editor from "../../components/blog/editor/Editor";
 
 import { getBlogById, updateBlog } from "../../services/blog";
 import { useAuth } from "../../hooks";
-import Alert from "../../components/Alert";
-import { AiOutlineCheckCircle } from "react-icons/ai";
-import { VscError } from "react-icons/vsc";
+import toast from "react-hot-toast";
 
 const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 
@@ -23,8 +21,6 @@ const UpdateBlog = () => {
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [fileOld, setFileOld] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [showAlert, setShowAlert] = useState(false);
-  const [error, setError] = useState("");
   const [redirect, setRedirect] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,18 +72,20 @@ const UpdateBlog = () => {
   const submitPost = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setShowAlert(true);
-    setError("");
-
     // Validate the form
-    // if (!title || content.length > 11 || !selectedImage || tags.length === 0) {
-    //   setError("Please fill in all the required fields.");
-    //   setShowAlert(true);
-    //   setTimeout(() => {
-    //     setShowAlert(false);
-    //   }, 2500);
-    //   return;
-    // }
+    if (!title || !selectedImage || tags.length === 0) {
+      toast.error("Please fill in all the required fields.", {
+        duration: 2500,
+      });
+      return;
+    }
+
+    if (content.length < 20) {
+      toast.error("Content must be at least 20 characters", {
+        duration: 2500,
+      });
+      return;
+    }
 
     if (accessToken) {
       const formData = new FormData();
@@ -109,8 +107,9 @@ const UpdateBlog = () => {
 
           if (!res?.status) return;
 
+          toast.success("Update successfully", { duration: 1500 });
+
           setTimeout(() => {
-            setShowAlert(false);
             setRedirect(true);
           }, 1500);
         }
@@ -128,27 +127,6 @@ const UpdateBlog = () => {
   }
   return (
     <>
-      {/* Alert */}
-      {!error && showAlert && (
-        <Alert
-          textColor="#166534"
-          bgColor="#f0fdf4"
-          icon={<AiOutlineCheckCircle className="text-xl" />}
-        >
-          Update successfully
-        </Alert>
-      )}
-
-      {error && showAlert && (
-        <Alert
-          textColor="#991b1b"
-          bgColor="#fef2f2"
-          icon={<VscError className="text-xl" />}
-        >
-          {error}
-        </Alert>
-      )}
-
       <div className="max-w-2xl px-5 mx-auto my-10">
         <div>
           <div className="flex flex-col gap-5">

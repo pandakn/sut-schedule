@@ -1,13 +1,10 @@
 import React, { useRef, useState } from "react";
 
-import Alert from "./Alert";
 import Modal from "./Modal";
 
 import { CourseDataInterface } from "../models/course.interface";
-import { IAlert } from "../contexts/StudyPlanContext";
 
 import {
-  AiOutlineCheckCircle,
   AiOutlineDelete,
   AiOutlineSelect,
   AiOutlineSave,
@@ -33,7 +30,6 @@ type StudyPlanProps = {
   handleAddStudyPlan: (name: string) => Promise<string>;
   handleEditStudyPlan: (id: string, name: string) => Promise<void>;
   handleDeleteStudyPlan: (id: string) => Promise<void>;
-  showAlert: IAlert;
 };
 
 const StudyPlan = ({
@@ -42,7 +38,6 @@ const StudyPlan = ({
   handleAddStudyPlan,
   handleEditStudyPlan,
   handleDeleteStudyPlan,
-  showAlert,
 }: StudyPlanProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [studyPlanName, setStudyPlanName] = useState("");
@@ -50,7 +45,6 @@ const StudyPlan = ({
   const [showInputField, setShowInputField] = useState(false);
   const [chooseStudyPlan, setChooseStudyPlan] = useState("");
   const [studyPlanNewName, setStudyPlanNewName] = useState("");
-  const [errorAddStudyPlan, setErrorAddStudyPlan] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,8 +66,7 @@ const StudyPlan = ({
     if (inputRef.current) {
       inputRef.current.value = "";
     }
-    const res = await handleAddStudyPlan(studyPlanName);
-    setErrorAddStudyPlan(res);
+    await handleAddStudyPlan(studyPlanName);
   };
 
   const toggleModal = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -86,47 +79,6 @@ const StudyPlan = ({
 
   return (
     <>
-      {/* Alert */}
-      {showAlert.isShow && errorAddStudyPlan && (
-        <Alert
-          textColor="#991b1b"
-          bgColor="#fef2f2"
-          icon={<AiOutlineCheckCircle className="text-xl" />}
-        >
-          {errorAddStudyPlan}
-        </Alert>
-      )}
-
-      {showAlert.isShow && showAlert.type === "add" && !errorAddStudyPlan && (
-        <Alert
-          textColor="#166534"
-          bgColor="#f0fdf4"
-          icon={<AiOutlineCheckCircle className="text-xl" />}
-        >
-          Study Plan added successfully
-        </Alert>
-      )}
-
-      {showAlert.isShow && showAlert.type === "update" && (
-        <Alert
-          textColor="#166534"
-          bgColor="#f0fdf4"
-          icon={<AiOutlineCheckCircle className="text-xl" />}
-        >
-          Study Plan updated successfully
-        </Alert>
-      )}
-
-      {showAlert.isShow && showAlert.type === "delete" && (
-        <Alert
-          textColor="#991b1b"
-          bgColor="#fef2f2"
-          icon={<AiOutlineDelete className="text-xl" />}
-        >
-          Study Plan deleted successfully
-        </Alert>
-      )}
-
       <div className="relative flex-auto p-6">
         {studyPlan.map((sp) => {
           return (

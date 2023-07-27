@@ -1,31 +1,31 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../hooks";
+import { toast } from "react-hot-toast";
 import { Link, Navigate, useParams } from "react-router-dom";
 
 // services
 import { getBlogById, deleteBlog } from "../../services/blog";
+import { createComment, getCommentByBlogId } from "../../services/comment";
 
-// page
-import { IBlog } from "../../pages/blog/Blog";
+// types
+import { IBlog } from "./Blog";
+import { IComment } from "../../components/blog/comment/@types";
 
 // utils
 import { formatDate } from "../../utils/formatDate";
 
 // component
-import Button from "../Button";
-import Alert from "../Alert";
-import Modal from "../Modal";
+import Button from "../../components/Button";
+import Modal from "../../components/Modal";
+import CommentCard from "../../components/blog/comment/CommentCard";
 
 // style
-import "./editor/editor.css";
+import "../../components/blog/editor/editor.css";
 
 // icons
 import { FiTrash2 } from "react-icons/fi";
-import {
-  AiOutlineCheckCircle,
-  AiOutlineEdit,
-  AiOutlineDelete,
-} from "react-icons/ai";
+import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import Comment from "../../components/blog/comment/Comment";
 
 const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 
@@ -33,27 +33,35 @@ const BlogPost = () => {
   const { accessToken, payload } = useAuth();
   const { slug } = useParams();
   const [post, setPost] = useState<Partial<IBlog>>({});
+  const [comments, setComments] = useState<IComment[]>([]);
+  const [contentComment, setContentComment] = useState("");
   const [showBtn, setShowBtn] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
 
   const handleDeleteBlog = async () => {
-    setShowAlert(true);
-
     if (slug && accessToken) {
       await deleteBlog(slug, accessToken);
 
+      toast.success("Delete successfully", { duration: 1500 });
+
       setTimeout(() => {
-        setShowAlert(false);
         setRedirect(true);
       }, 1500);
     }
   };
+
+  const fetchCommentsByBlogId = useCallback(async () => {
+    if (slug) {
+      const res = await getCommentByBlogId(slug);
+
+      setComments(res?.data.result);
+    }
+  }, [slug]);
 
   const fetchBlogById = useCallback(async () => {
     const res = await getBlogById(slug);
@@ -63,7 +71,8 @@ const BlogPost = () => {
 
   useEffect(() => {
     fetchBlogById();
-  }, [fetchBlogById]);
+    fetchCommentsByBlogId();
+  }, [fetchBlogById, fetchCommentsByBlogId]);
 
   useEffect(() => {
     if (payload.id === post.author?._id || payload.role === "admin") {
@@ -71,23 +80,26 @@ const BlogPost = () => {
     }
   }, [payload, post.author?._id]);
 
+  const submitComment = async () => {
+    setContentComment("");
+    if (accessToken) {
+      const data = { author: payload.id, blog: slug, body: contentComment };
+      const res = await createComment(data, accessToken);
+      if (res) {
+        setComments((prev) => {
+          return [...prev, res?.data.result];
+        });
+        toast.success("created comment");
+      }
+    }
+  };
+
   if (redirect) {
     return <Navigate to={"/posts"} />;
   }
 
   return (
     <>
-      {/* Alert */}
-      {showAlert && (
-        <Alert
-          textColor="#166534"
-          bgColor="#f0fdf4"
-          icon={<AiOutlineCheckCircle className="text-xl" />}
-        >
-          Delete successfully
-        </Alert>
-      )}
-
       <div className="max-w-2xl px-5 mx-auto my-10">
         <div className="break-words">
           <header className="text-center">
@@ -143,6 +155,23 @@ const BlogPost = () => {
             </Button>
           </div>
         )}
+        <div className="my-5">
+          <Comment
+            content={contentComment}
+            setContent={setContentComment}
+            submitComment={submitComment}
+          />
+          <div className="flex flex-col my-5 gap-y-4">
+            {comments.map((comment) => (
+              <CommentCard
+                key={comment._id}
+                author={comment.author.name}
+                content={comment.body}
+                created={formatDate(comment.createdAt?.toString())}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
       <Modal isOpenModal={isModalOpen}>

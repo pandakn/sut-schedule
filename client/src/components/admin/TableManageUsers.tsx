@@ -18,6 +18,7 @@ import {
 } from "react-icons/ai";
 import { deleteUserById } from "../../services/httpClient";
 import AddUser from "./AddUser";
+import toast from "react-hot-toast";
 
 const tableHeader = ["name", "role", "max. plans", "action"];
 
@@ -44,7 +45,6 @@ const TableManageUsers = ({
   const [isModalEditUser, setIsModalEditUser] = useState(false);
   const [isModalDeleteOpen, setIsModelDeleteOpen] = useState(false);
   const [isModalAddUser, setIsModalAddUser] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
 
   const handleEditUser = (
     userId: string,
@@ -70,9 +70,8 @@ const TableManageUsers = ({
     if (accessToken) {
       const res = await deleteUserById(editUser.id, accessToken);
       if (res) {
-        setShowAlert(true);
+        toast.success("Deleted successfully", { duration: 1000 });
         setTimeout(() => {
-          setShowAlert(false);
           setIsModelDeleteOpen(false);
           window.location.reload();
         }, 1000);
@@ -210,7 +209,6 @@ const TableManageUsers = ({
         isModalDeleteOpen={isModalDeleteOpen}
         toggleModelDelete={toggleModelDelete}
         handleDelete={handleDeleteUser}
-        showAlert={showAlert}
       />
     </>
   );

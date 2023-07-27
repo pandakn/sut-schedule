@@ -1,7 +1,5 @@
 import { useCourse } from "../hooks";
-import Alert from "./Alert";
 import { MdDelete } from "react-icons/md";
-import { AiOutlineDelete } from "react-icons/ai";
 import { CourseDataInterface } from "../models/course.interface";
 import { colorOfDays } from "../utils/colors";
 
@@ -15,19 +13,10 @@ type Props = {
 };
 
 const HorizontalCard = ({ color, courseInPlanner }: Props) => {
-  const { removeCourse, showAlert } = useCourse();
+  const { removeCourse } = useCourse();
 
   return (
     <div className="mb-20">
-      {showAlert && (
-        <Alert
-          textColor="#991b1b"
-          bgColor="#fef2f2"
-          icon={<AiOutlineDelete className="text-xl" />}
-        >
-          Course deleted successfully
-        </Alert>
-      )}
       {courseInPlanner.map((cs) => {
         return (
           <div

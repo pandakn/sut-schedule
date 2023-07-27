@@ -9,6 +9,7 @@ import {
   getCoursesData,
 } from "../services/httpClient";
 import { useAuth, useStudyPlan } from "../hooks";
+import toast from "react-hot-toast";
 
 interface CourseContextType {
   courses: CourseInterface;
@@ -110,10 +111,7 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
       setAddCourseError({ isError: true, message: errorMsg });
       setTimeout(() => setShowAlert(false), 2000);
     } else {
-      setAddCourseError({
-        isError: false,
-        message: "Course added successfully",
-      });
+      toast.success("Course added successfully");
     }
 
     setShowAlert(true);
@@ -121,8 +119,6 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
   };
 
   const removeCourse = async (courseId: string) => {
-    setShowAlert(true);
-
     // Remove the course from the class schedule state
     setCourseInPlanner((prevSchedule) =>
       prevSchedule.filter((course) => course.id !== courseId)
@@ -135,7 +131,7 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
       accessToken
     );
 
-    setTimeout(() => setShowAlert(false), 1500);
+    toast.success("Course deleted successfully");
   };
 
   return (

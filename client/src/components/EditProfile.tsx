@@ -2,13 +2,11 @@ import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { useAuth } from "../hooks";
 
 // components
-import Alert from "./Alert";
 import FormContainer from "./FormContainer";
 
 // services
 import { getUserById, updateUserProfile } from "../services/httpClient";
-import { VscError } from "react-icons/vsc";
-import { AiOutlineCheckCircle } from "react-icons/ai";
+import toast from "react-hot-toast";
 
 interface IEditProfile {
   name: string;
@@ -31,7 +29,6 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
     confirmPassword: "",
   });
   const [error, setError] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
 
   const fetchUserProfile = useCallback(async () => {
     if (accessToken) {
@@ -55,14 +52,13 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
 
   const submitEditProfile = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    setShowAlert(true);
+    setError("");
 
     if (userProfile.password !== userProfile.confirmPassword) {
       setError("Password and confirm password do not match");
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 1500);
+      toast.error("Password and confirm password do not match", {
+        duration: 1500,
+      });
       return;
     }
 
@@ -87,8 +83,9 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
       });
     }
 
+    toast.success("Updated successfully");
+
     setTimeout(() => {
-      setShowAlert(false);
       setIsModalOpen(false);
       window.location.reload();
     }, 1500);
@@ -99,121 +96,95 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
   }, [fetchUserProfile]);
 
   return (
-    <>
-      {/* Alert */}
-      {!error && showAlert && (
-        <Alert
-          textColor="#166534"
-          bgColor="#f0fdf4"
-          icon={<AiOutlineCheckCircle className="text-xl" />}
-        >
-          Updated successfully
-        </Alert>
-      )}
-
-      {error && showAlert && (
-        <Alert
-          textColor="#991b1b"
-          bgColor="#fef2f2"
-          icon={<VscError className="text-xl" />}
-        >
-          {error}
-        </Alert>
-      )}
-
-      <FormContainer header="Edit Profile">
-        {/* <div className="w-[300px] p-6"> */}
-        <form className="w-full space-y-6" onSubmit={submitEditProfile}>
-          <div>
-            <label
-              htmlFor="name"
-              className="block mb-2 font-bold text-gray-800"
-            >
-              Name
-            </label>
-            <input
-              onChange={handleInputChange}
-              value={userProfile.name}
-              required
-              type="text"
-              id="name"
-              name="name"
-              className="w-full p-2 border border-gray-300 rounded-lg"
-              placeholder="Enter your name"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="username"
-              className="block mb-2 font-bold text-gray-800"
-            >
-              Username
-            </label>
-            <input
-              onChange={handleInputChange}
-              value={userProfile.username}
-              required
-              type="text"
-              id="username"
-              name="username"
-              className="w-full p-2 border border-gray-300 rounded-lg"
-              placeholder="Enter your username"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block mb-2 font-bold text-gray-800"
-            >
-              Password
-            </label>
-            <input
-              onChange={handleInputChange}
-              required
-              type="password"
-              id="password"
-              name="password"
-              className="w-full p-2 border border-gray-300 rounded-lg"
-              placeholder="password"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block mb-2 font-bold text-gray-800"
-            >
-              Confirm Password
-            </label>
-            <input
-              onChange={handleInputChange}
-              required
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              className="w-full p-2 border border-gray-300 rounded-lg"
-              placeholder="confirm password"
-            />
-            {error && <p className="mt-1 text-red-500">{error}</p>}
-          </div>
-          <div className="flex justify-end gap-3">
-            <button
-              onSubmit={submitEditProfile}
-              type="submit"
-              className="px-6 py-2 text-lg font-medium text-white uppercase bg-gray-900 rounded-3xl hover:bg-gray-900/75"
-            >
-              Save
-            </button>
-            <p
-              onClick={toggleModal}
-              className="px-4 py-2 text-lg font-medium text-gray-900 uppercase border border-gray-800 rounded-3xl hover:text-gray-600 hover:cursor-pointer"
-            >
-              Cancel
-            </p>
-          </div>
-        </form>
-        {/* </div> */}
-      </FormContainer>
-    </>
+    <FormContainer header="Edit Profile">
+      {/* <div className="w-[300px] p-6"> */}
+      <form className="w-full space-y-6" onSubmit={submitEditProfile}>
+        <div>
+          <label htmlFor="name" className="block mb-2 font-bold text-gray-800">
+            Name
+          </label>
+          <input
+            onChange={handleInputChange}
+            value={userProfile.name}
+            required
+            type="text"
+            id="name"
+            name="name"
+            className="w-full p-2 border border-gray-300 rounded-lg"
+            placeholder="Enter your name"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="username"
+            className="block mb-2 font-bold text-gray-800"
+          >
+            Username
+          </label>
+          <input
+            onChange={handleInputChange}
+            value={userProfile.username}
+            required
+            type="text"
+            id="username"
+            name="username"
+            className="w-full p-2 border border-gray-300 rounded-lg"
+            placeholder="Enter your username"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="password"
+            className="block mb-2 font-bold text-gray-800"
+          >
+            Password
+          </label>
+          <input
+            onChange={handleInputChange}
+            required
+            type="password"
+            id="password"
+            name="password"
+            className="w-full p-2 border border-gray-300 rounded-lg"
+            placeholder="password"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="password"
+            className="block mb-2 font-bold text-gray-800"
+          >
+            Confirm Password
+          </label>
+          <input
+            onChange={handleInputChange}
+            required
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            className="w-full p-2 border border-gray-300 rounded-lg"
+            placeholder="confirm password"
+          />
+          {error && <p className="mt-1 text-red-500">{error}</p>}
+        </div>
+        <div className="flex justify-end gap-3">
+          <button
+            onSubmit={submitEditProfile}
+            type="submit"
+            className="px-6 py-2 text-lg font-medium text-white uppercase bg-gray-900 rounded-3xl hover:bg-gray-900/75"
+          >
+            Save
+          </button>
+          <p
+            onClick={toggleModal}
+            className="px-4 py-2 text-lg font-medium text-gray-900 uppercase border border-gray-800 rounded-3xl hover:text-gray-600 hover:cursor-pointer"
+          >
+            Cancel
+          </p>
+        </div>
+      </form>
+      {/* </div> */}
+    </FormContainer>
   );
 };
 

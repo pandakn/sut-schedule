@@ -10,6 +10,8 @@ import {
   getSelectStudyPlan,
   editStudyPlan,
 } from "../services/httpClient";
+import toast from "react-hot-toast";
+import { AiOutlineDelete } from "react-icons/ai";
 
 export interface IStudyPlanOfUser {
   _id: string;
@@ -24,11 +26,6 @@ export interface IStudyPlanOfUser {
 interface ISelectedPlan {
   id: string;
   name: string;
-}
-
-export interface IAlert {
-  type: "add" | "delete" | "update" | "";
-  isShow: boolean;
 }
 
 interface StudyPlanProviderProps {
@@ -50,7 +47,6 @@ export type StudyPlanContextType = {
   handleEditStudyPlan: (id: string, name: string) => Promise<void>;
   handleDeleteStudyPlan: (id: string) => Promise<void>;
   selectedPlan: ISelectedPlan;
-  showAlert: IAlert;
 };
 
 export const StudyPlanContext = createContext<StudyPlanContextType>({
@@ -75,7 +71,6 @@ export const StudyPlanContext = createContext<StudyPlanContextType>({
     throw new Error("handleDeleteStudyPlan is not implemented");
   },
   selectedPlan: { id: "", name: "" },
-  showAlert: { type: "", isShow: false },
 });
 
 export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
@@ -88,10 +83,6 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
   const [selectedPlan, setSelectedPlan] = useState<ISelectedPlan>({
     id: "",
     name: "",
-  });
-  const [showAlert, setShowAlert] = useState<IAlert>({
-    type: "",
-    isShow: false,
   });
 
   const { accessToken, payload } = useAuth();
@@ -147,10 +138,11 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
 
   const handleAddStudyPlan = async (name: string) => {
     if (name && studyPlanOfUser) {
-      setShowAlert({ type: "add", isShow: true });
+      toast.success("Study Plan added successfully", {
+        duration: 1500,
+      });
       const res = await addStudyPlan(payload.id, name, accessToken);
 
-      setTimeout(() => setShowAlert({ type: "", isShow: false }), 1500);
       if (res?.status) {
         setStudyPlanOfUser((prev) => {
           return [...prev, res.data.result];
@@ -162,7 +154,7 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
   };
 
   const handleEditStudyPlan = async (studyPlanID: string, name: string) => {
-    setShowAlert({ type: "update", isShow: true });
+    toast.success("Study Plan updated successfully", { duration: 1000 });
 
     if (accessToken) {
       const res = await editStudyPlan(studyPlanID, name, accessToken);
@@ -177,18 +169,20 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
         });
       }
     }
-
-    setTimeout(() => setShowAlert({ type: "", isShow: false }), 1000);
   };
 
   const handleDeleteStudyPlan = async (studyPlanID: string) => {
-    setShowAlert({ type: "delete", isShow: true });
+    const duration = 1500;
+    toast.success(" Study Plan deleted successfully", {
+      duration,
+      icon: (
+        <AiOutlineDelete className="text-[#991b1b] text-2xl bg-[#fef2f2]" />
+      ),
+    });
     accessToken &&
       (await deleteStudyPlan(payload.id, studyPlanID, accessToken));
 
-    window.location.reload();
-
-    setTimeout(() => setShowAlert({ type: "", isShow: false }), 1500);
+    setTimeout(() => window.location.reload(), duration);
   };
 
   const fetchSelectStudyPlanOfUser = useCallback(async () => {
@@ -236,7 +230,6 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
         handleAddStudyPlan,
         handleEditStudyPlan,
         handleDeleteStudyPlan,
-        showAlert,
       }}
     >
       {children}

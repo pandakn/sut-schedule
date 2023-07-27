@@ -1,19 +1,17 @@
 import { useCourse, useStudyPlan } from "../hooks";
 
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
 // interfaces
 import { IGroupedCourse } from "../models/course.interface";
-import Alert from "./Alert";
 
 import { colorOfDays } from "../utils/colors";
 
 // icons
-import {
-  AiOutlineCheckCircle,
-  AiOutlineInfoCircle,
-  AiOutlinePlusCircle,
-} from "react-icons/ai";
-import { VscError } from "react-icons/vsc";
+import { AiOutlineInfoCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import SkeletonCourseTable from "./SkeletonCourseTable";
+import { useCallback, useEffect } from "react";
 
 type Props = {
   data: IGroupedCourse[];
@@ -82,30 +80,33 @@ const GroupCourseTable = ({ data }: Props) => {
     useCourse();
 
   const { selectedPlan } = useStudyPlan();
+  const MySwal = withReactContent(Swal);
+
+  const sweetAlert = useCallback(() => {
+    const text = addCourseError.message.split("\n");
+    const errorMsg = text[1].split(",");
+
+    MySwal.fire({
+      title: "The class schedule conflicts",
+      icon: "error",
+      html: (
+        <div className="space-y-2">
+          {errorMsg.map((msg, i) => (
+            <p key={i} className="font-semibold text-red-600">
+              {msg}
+            </p>
+          ))}
+        </div>
+      ),
+    });
+  }, [MySwal, addCourseError.message]);
+
+  useEffect(() => {
+    addCourseError.isError && showAlert && sweetAlert();
+  }, [addCourseError.isError, showAlert, sweetAlert]);
 
   return (
     <div className="container mx-auto mt-5 mb-28">
-      {/* Alert */}
-      {!addCourseError.isError && showAlert && (
-        <Alert
-          textColor="#166534"
-          bgColor="#f0fdf4"
-          icon={<AiOutlineCheckCircle className="text-xl" />}
-        >
-          {addCourseError.message}
-        </Alert>
-      )}
-
-      {addCourseError.isError && showAlert && (
-        <Alert
-          textColor="#991b1b"
-          bgColor="#fef2f2"
-          icon={<VscError className="text-xl" />}
-        >
-          {addCourseError.message}
-        </Alert>
-      )}
-
       {!loading ? (
         <>
           {data.map((course) => {

@@ -8,6 +8,7 @@ import { CourseProvider } from "./contexts/CourseContext.tsx";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
 import { StudyPlanProvider } from "./contexts/StudyPlanContext.tsx";
 import { UserProvider } from "./contexts/UserContext.tsx";
+import ToasterContext from "./contexts/ToastContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <UserProvider>
           <StudyPlanProvider>
             <CourseProvider>
+              <ToasterContext />
               <App />
             </CourseProvider>
           </StudyPlanProvider>
