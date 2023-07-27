@@ -1,11 +1,13 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, ObjectId } from "mongoose";
+import { IComment } from "./comment";
 
 export interface IBlog extends Document {
-  author: string;
+  author: ObjectId;
   cover: string;
   title: string;
   body: string;
   tags: string[];
+  comments: IComment[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -32,6 +34,7 @@ const blogSchema: Schema = new mongoose.Schema(
       type: [String],
       required: true,
     },
+    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   },
   { timestamps: true }
 );

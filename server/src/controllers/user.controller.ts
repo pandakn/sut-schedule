@@ -137,7 +137,7 @@ export const addCourseToStudyPlan = async (req: Request, res: Response) => {
       if (conflictingCourses.length > 0) {
         const courseConflicts = conflictingCourses.map((c) => c.courseNameEN);
 
-        const errorMsg = `The class schedule conflicts with ${courseConflicts}`;
+        const errorMsg = `The class schedule conflicts with\n${courseConflicts}`;
 
         res.status(404).json({ message: errorMsg });
         return;

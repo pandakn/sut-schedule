@@ -8,10 +8,9 @@ export const getAllBlogs = async (
   res: Response
 ): Promise<void> => {
   try {
-    const blogs: IBlog[] = await Blog.find().populate(
-      "author",
-      "_id name username"
-    );
+    const blogs: IBlog[] = await Blog.find()
+      .populate("author", "_id name username")
+      .populate("comments");
 
     if (blogs.length < 1) {
       res.status(404).json({ message: "No posts yet." });
@@ -30,10 +29,9 @@ export const getBlogOfUser = async (
 ): Promise<void> => {
   const { userId } = req.params;
   try {
-    const blogs: IBlog[] | null = await Blog.find({ author: userId }).populate(
-      "author",
-      "_id name username"
-    );
+    const blogs: IBlog[] | null = await Blog.find({ author: userId })
+      .populate("author", "_id name username")
+      .populate("comments");
 
     if (blogs.length < 1) {
       res.status(404).json({ message: "No posts yet." });
@@ -52,10 +50,10 @@ export const getBlogById = async (
 ): Promise<void> => {
   const { id } = req.params;
   try {
-    const blog: IBlog | null = await Blog.findById(id).populate(
-      "author",
-      "_id name username"
-    );
+    const blog: IBlog | null = await Blog.findById(id)
+      .populate("author", "_id name username")
+      .populate("comments");
+
     if (!blog) {
       res.status(404).json({ message: "Blog not found" });
     }
