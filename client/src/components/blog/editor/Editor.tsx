@@ -3,7 +3,7 @@ import ReactQuill from "react-quill";
 import { EDITOR_TOOLS } from "./tools";
 
 type EditorProps = {
-  value: string;
+  value?: string;
   onChange: React.Dispatch<SetStateAction<string>>;
 };
 

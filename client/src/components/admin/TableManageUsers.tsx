@@ -51,8 +51,6 @@ const TableManageUsers = ({
     role: "admin" | "user",
     maximumStudyPlans: number
   ) => {
-    console.log(role);
-
     setEditUser({ id: userId, role, maximumStudyPlans });
   };
 

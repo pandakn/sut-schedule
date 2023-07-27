@@ -93,8 +93,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   ) => {
     const res = await register(name, username, password);
 
-    console.log(res);
-
     const data = res?.data;
     const err = res?.error;
 

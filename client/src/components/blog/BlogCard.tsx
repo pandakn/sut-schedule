@@ -8,6 +8,7 @@ type BlogCardProps = {
   body: string;
   tags: string[];
   created: string | undefined;
+  handleFilterTags: (tag: string) => void;
 };
 
 const BlogCard = ({
@@ -18,7 +19,13 @@ const BlogCard = ({
   body,
   tags,
   created,
+  handleFilterTags,
 }: BlogCardProps) => {
+  const cleanBody = body.replace(
+    /<br\s?\/?>|<u\s?\/?>|<strong\s?\/?>|<em\s?\/?>/g,
+    ""
+  );
+
   return (
     <div className="max-w-md mx-auto overflow-hidden bg-white shadow-md rounded-xl md:max-w-2xl">
       <div className="md:min-h-fit md:flex">
@@ -41,17 +48,16 @@ const BlogCard = ({
           >
             {title}
           </Link>
-          <p
-            dangerouslySetInnerHTML={{ __html: body }}
-            className="mt-2 text-gray-500 line-clamp-2"
-          >
-            {/* <div className=""  /> */}
-          </p>
+          <div
+            dangerouslySetInnerHTML={{ __html: cleanBody }}
+            className="mt-2 text-gray-500 line-clamp-3"
+          ></div>
           <section className="flex gap-2 mt-2">
             {tags.map((t, idx) => (
               <p
+                onClick={() => handleFilterTags(t)}
                 key={idx}
-                className="px-2 py-1 text-gray-500 rounded bg-gray-50"
+                className="px-2 py-1 text-gray-500 rounded bg-gray-50 hover:cursor-pointer hover:opacity-70"
               >
                 #{t}
               </p>

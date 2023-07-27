@@ -7,24 +7,32 @@ import ProtectedUserRoute from "./routes/ProtectedUserRoute";
 
 // components
 import BlogPost from "./components/blog/BlogPost";
+import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
 
 // pages
 import Login from "./pages/Login";
 import RegisterForm from "./components/auth/RegisterForm";
+import PostsOfUser from "./pages/blog/PostsOfUser";
 
 // user pages
 import SearchCourse from "./pages/SearchCourse";
-import Homepage from "./pages/Homepage";
+import SchedulePage from "./pages/SchedulePage";
+import UpdateBlog from "./pages/blog/UpdateBlog";
+
+// guest
+import Blog from "./pages/blog/Blog";
 
 // admin pages
 import AdminPage from "./pages/admin/AdminPage";
 import ManageUsers from "./pages/admin/ManageUsers";
-import Blog from "./pages/blog/Blog";
+import ManageBlogs from "./pages/admin/ManageBlogs";
 import CreateBlog from "./pages/blog/CreateBlog";
 
 function App() {
   return (
     <>
+      <Navbar />
       <Routes>
         {/* admin */}
         <Route
@@ -43,40 +51,47 @@ function App() {
             </ProtectedAdminRoute>
           }
         />
+        <Route
+          path="/admin/manage-blogs"
+          element={
+            <ProtectedAdminRoute>
+              <ManageBlogs />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/manage-users"
+          element={
+            <ProtectedAdminRoute>
+              <ManageUsers />
+            </ProtectedAdminRoute>
+          }
+        />
 
         {/* user */}
+
+        {/* guest */}
+        <Route path="/" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+
         <Route
-          path="/"
+          path="/posts"
           element={
             <ProtectedUserRoute>
-              <Homepage />
+              <PostsOfUser />
             </ProtectedUserRoute>
           }
         />
+
         <Route
-          path="/blogs"
+          path="/schedule"
           element={
             <ProtectedUserRoute>
-              <Blog />
+              <SchedulePage />
             </ProtectedUserRoute>
           }
         />
-        <Route
-          path="/blog/:slug"
-          element={
-            <ProtectedUserRoute>
-              <BlogPost />
-            </ProtectedUserRoute>
-          }
-        />
-        <Route
-          path="/blogs"
-          element={
-            <ProtectedUserRoute>
-              <Blog />
-            </ProtectedUserRoute>
-          }
-        />
+
         <Route
           path="/editor"
           element={
@@ -85,6 +100,16 @@ function App() {
             </ProtectedUserRoute>
           }
         />
+
+        <Route
+          path="/edit-post/:slug"
+          element={
+            <ProtectedUserRoute>
+              <UpdateBlog />
+            </ProtectedUserRoute>
+          }
+        />
+
         <Route
           path="/search-course"
           element={
@@ -93,9 +118,12 @@ function App() {
             </ProtectedUserRoute>
           }
         />
+
+        {/* auth */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterForm />} />
       </Routes>
+      <Footer />
     </>
   );
 }

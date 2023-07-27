@@ -21,8 +21,8 @@ const AdminPage = () => {
 
   const fetchAllBlogs = useCallback(async () => {
     if (accessToken) {
-      const res = await getBlogs(accessToken);
-      const countBlogs = res.result.length;
+      const res = await getBlogs();
+      const countBlogs = res?.data.result.length;
       setTotalBlogs(countBlogs);
     }
   }, [accessToken]);

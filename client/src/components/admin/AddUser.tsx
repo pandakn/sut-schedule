@@ -36,8 +36,6 @@ const AddUser = ({ toggleModal, setIsModalOpen }: AddUserProps) => {
     }, 1000);
   };
 
-  console.log(inputForm);
-
   return (
     <>
       {/* Alert */}

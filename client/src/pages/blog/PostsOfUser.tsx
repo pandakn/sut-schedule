@@ -1,28 +1,22 @@
 import { useCallback, useEffect, useState } from "react";
 
 // services
-import { getBlogs } from "../../services/blog";
+import { getBlogsOfUser } from "../../services/blog";
 
 // component
 import BlogCard from "../../components/blog/BlogCard";
 
+// type
+import { IBlog } from "./Blog";
+
 // utils
 import { formatDate } from "../../utils/formatDate";
-
-export interface IBlog {
-  _id: string;
-  author: { _id: string; username: string; name: string };
-  cover: string;
-  title: string;
-  body: string;
-  tags: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
+import { useAuth } from "../../hooks";
+import { Link } from "react-router-dom";
 const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 
-const Blog = () => {
+const PostsOfUser = () => {
+  const { accessToken, payload } = useAuth();
   const [blogs, setBlogs] = useState<IBlog[]>([]);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
@@ -37,16 +31,18 @@ const Blog = () => {
     : blogs;
 
   const fetchAllBlogs = useCallback(async () => {
-    const res = await getBlogs();
+    if (accessToken) {
+      const res = await getBlogsOfUser(payload.id, accessToken);
 
-    if (!res?.status) {
-      const msg = res?.data.message;
-      setErrorMsg(msg);
-      return;
+      if (!res?.status) {
+        const msg = res?.data.message;
+        setErrorMsg(msg);
+        return;
+      }
+
+      setBlogs(res?.data.result);
     }
-
-    setBlogs(res?.data.result);
-  }, []);
+  }, [accessToken, payload.id]);
 
   useEffect(() => {
     fetchAllBlogs();
@@ -57,9 +53,16 @@ const Blog = () => {
       {errorMsg && (
         <div className="absolute space-y-6 text-center transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
           <h3 className="text-3xl md:text-5xl">{errorMsg}</h3>
+          <p className="">
+            Start the post{" "}
+            <Link className="text-blue-600 hover:underline" to="/editor">
+              write now
+            </Link>
+          </p>
         </div>
       )}
       <div className="container px-5 mx-auto">
+        <h3 className="mt-6 text-4xl lg:px-5">Your Posts</h3>
         {selectedTag && (
           <div className="flex items-center mt-10 ml-8 gap-x-2">
             <p className="px-2 py-1 text-2xl text-gray-500 rounded bg-gray-200/60">
@@ -95,4 +98,4 @@ const Blog = () => {
   );
 };
 
-export default Blog;
+export default PostsOfUser;

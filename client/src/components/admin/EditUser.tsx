@@ -62,8 +62,6 @@ const EditUser = ({ user, toggleModal, setIsModalOpen }: EditUserProps) => {
   };
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(event.target.value);
-
     setUserProfile({
       ...userProfile,
       [event.target.name]: event.target.value,

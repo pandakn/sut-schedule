@@ -1,23 +1,27 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 // component
 import Editor from "../../components/blog/editor/Editor";
 
-import { createBlog } from "../../services/blog";
+import { getBlogById, updateBlog } from "../../services/blog";
 import { useAuth } from "../../hooks";
 import Alert from "../../components/Alert";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { VscError } from "react-icons/vsc";
 
-const CreateBlog = () => {
+const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
+
+const UpdateBlog = () => {
+  const { slug } = useParams();
   const { accessToken, payload } = useAuth();
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [content, setContent] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [fileOld, setFileOld] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(false);
   const [error, setError] = useState("");
@@ -54,6 +58,21 @@ const CreateBlog = () => {
     }
   };
 
+  const fetchBlogById = useCallback(async () => {
+    const res = await getBlogById(slug);
+    const data = res.result;
+
+    setTitle(data.title);
+    setTags(data.tags);
+    setContent(data.body);
+    setSelectedImage(`${IMAGE_URL}/${data.cover}`); // Set the cover image URL
+    setFileOld(data.cover);
+  }, [slug]);
+
+  useEffect(() => {
+    fetchBlogById();
+  }, [fetchBlogById]);
+
   const submitPost = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -61,20 +80,21 @@ const CreateBlog = () => {
     setError("");
 
     // Validate the form
-    if (!title || !content || !coverImage || tags.length === 0) {
-      setError("Please fill in all the required fields.");
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 2500);
-      return;
-    }
+    // if (!title || content.length > 11 || !selectedImage || tags.length === 0) {
+    //   setError("Please fill in all the required fields.");
+    //   setShowAlert(true);
+    //   setTimeout(() => {
+    //     setShowAlert(false);
+    //   }, 2500);
+    //   return;
+    // }
 
     if (accessToken) {
       const formData = new FormData();
 
       formData.append("title", title);
       formData.append("body", content);
+      formData.append("fileOld", fileOld);
       if (coverImage) {
         formData.append("cover", coverImage);
       }
@@ -84,14 +104,16 @@ const CreateBlog = () => {
       });
 
       try {
-        const res = await createBlog(payload.id, formData, accessToken);
+        if (slug) {
+          const res = await updateBlog(slug, formData, accessToken);
 
-        if (!res?.status) return;
+          if (!res?.status) return;
 
-        setTimeout(() => {
-          setShowAlert(false);
-          setRedirect(true);
-        }, 1500);
+          setTimeout(() => {
+            setShowAlert(false);
+            setRedirect(true);
+          }, 1500);
+        }
       } catch (error) {
         console.error("Error creating blog:", error);
       }
@@ -99,7 +121,10 @@ const CreateBlog = () => {
   };
 
   if (redirect) {
-    return <Navigate to={"/"} />;
+    const role = payload.role;
+    const href = role === "admin" ? "/admin/manage-blogs" : "/";
+
+    return <Navigate to={href} />;
   }
   return (
     <>
@@ -110,7 +135,7 @@ const CreateBlog = () => {
           bgColor="#f0fdf4"
           icon={<AiOutlineCheckCircle className="text-xl" />}
         >
-          Create successfully
+          Update successfully
         </Alert>
       )}
 
@@ -221,7 +246,7 @@ const CreateBlog = () => {
             onClick={submitPost}
             className="px-6 py-2 mt-5 font-medium text-white uppercase bg-gray-900 rounded-2xl hover:bg-gray-900/75"
           >
-            Create post
+            Update post
           </button>
         </div>
       </div>
@@ -229,4 +254,4 @@ const CreateBlog = () => {
   );
 };
 
-export default CreateBlog;
+export default UpdateBlog;

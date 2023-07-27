@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 // icons
-import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
+import { AiOutlineBook, AiOutlineHome, AiOutlineUser } from "react-icons/ai";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import Logo from "../Logo";
 import { Link } from "react-router-dom";
@@ -62,6 +62,15 @@ const Sidebar = () => {
                 <AiOutlineUser className="w-5 h-5" />
               </span>
               <span className="ml-1 text-sm tracking-wide truncate">Users</span>
+            </Link>
+            <Link
+              to="/admin/manage-blogs"
+              className="flex items-center py-2 text-gray-600 hover:text-gray-800"
+            >
+              <span className="mr-2">
+                <AiOutlineBook className="w-5 h-5" />
+              </span>
+              <span className="ml-1 text-sm tracking-wide truncate">Blogs</span>
             </Link>
           </li>
           {/* Add more sidebar items */}

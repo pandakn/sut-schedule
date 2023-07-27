@@ -24,7 +24,7 @@ interface IBgColor {
   [key: string]: string;
 }
 
-const Homepage = () => {
+const SchedulePage = () => {
   const [courseInSchedule, setCourseInSchedule] = useState<{
     [key: string]: ICourseInSchedule[];
   }>({});
@@ -124,4 +124,4 @@ const Homepage = () => {
   );
 };
 
-export default Homepage;
+export default SchedulePage;
