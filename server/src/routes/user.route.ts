@@ -11,7 +11,7 @@ import {
   createStudyPlan,
   deleteStudyPlan,
 } from "../controllers/user.controller";
-import { createBlog } from "../controllers/blog.controller";
+import { createBlog, getBlogOfUser } from "../controllers/blog.controller";
 import { adminCheck, authenticateToken } from "../middleware/auth.middleware";
 import upload from "../middleware/upload";
 
@@ -57,4 +57,6 @@ export default (router: express.Router) => {
     upload.single("cover"),
     createBlog
   );
+
+  router.get("/users/:userId/blogs", authenticateToken, getBlogOfUser);
 };

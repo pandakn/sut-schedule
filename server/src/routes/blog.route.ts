@@ -6,10 +6,16 @@ import {
   getBlogById,
   updateBlog,
 } from "../controllers/blog.controller";
+import upload from "../middleware/upload";
 
 export default (router: express.Router) => {
   router.get("/blogs", getAllBlogs);
-  router.get("/blogs/:id", authenticateToken, getBlogById);
-  router.put("/blogs/:id", authenticateToken, updateBlog);
+  router.get("/blogs/:id", getBlogById);
+  router.put(
+    "/blogs/:id",
+    authenticateToken,
+    upload.single("cover"),
+    updateBlog
+  );
   router.delete("/blogs/:id", authenticateToken, deleteBlog);
 };
