@@ -8,6 +8,7 @@ import Editor from "../../components/blog/editor/Editor";
 import { getBlogById, updateBlog } from "../../services/blog";
 import { useAuth } from "../../hooks";
 import toast from "react-hot-toast";
+import { hasEnoughContent } from "../../utils/checkTextInHtmlTag";
 
 const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 
@@ -80,7 +81,9 @@ const UpdateBlog = () => {
       return;
     }
 
-    if (content.length < 20) {
+    const enoughContent = hasEnoughContent(content, 20);
+
+    if (enoughContent) {
       toast.error("Content must be at least 20 characters", {
         duration: 2500,
       });

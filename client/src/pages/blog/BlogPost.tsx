@@ -5,7 +5,11 @@ import { Link, Navigate, useParams } from "react-router-dom";
 
 // services
 import { getBlogById, deleteBlog } from "../../services/blog";
-import { createComment, getCommentByBlogId } from "../../services/comment";
+import {
+  createComment,
+  deleteComment,
+  getCommentByBlogId,
+} from "../../services/comment";
 
 // types
 import { IBlog } from "./Blog";
@@ -80,6 +84,19 @@ const BlogPost = () => {
     }
   }, [payload, post.author?._id]);
 
+  const handleDeleteComment = async (id: string) => {
+    if (accessToken) {
+      const res = await deleteComment(id, accessToken);
+
+      setComments((prev) => {
+        const filter = prev.filter((cm) => cm._id !== id);
+        return filter;
+      });
+
+      res && toast.success("Deleted comment");
+    }
+  };
+
   const submitComment = async () => {
     setContentComment("");
     if (accessToken) {
@@ -89,7 +106,7 @@ const BlogPost = () => {
         setComments((prev) => {
           return [...prev, res?.data.result];
         });
-        toast.success("created comment");
+        toast.success("Created comment");
       }
     }
   };
@@ -110,6 +127,26 @@ const BlogPost = () => {
             <p className="text-gray-500">
               Published on {formatDate(post.createdAt?.toString())}
             </p>
+            {showBtn && (
+              <div className="flex justify-center mt-4 space-x-2">
+                <Button className="font-bold text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+                  <Link
+                    className="flex items-center gap-x-2"
+                    to={`/edit-post/${slug}`}
+                  >
+                    <AiOutlineEdit className="w-5 h-5" />
+                    Edit
+                  </Link>
+                </Button>
+                <Button
+                  className="flex font-bold text-white bg-red-500 rounded-lg gap-x-2 hover:bg-red-600"
+                  onClick={toggleModal}
+                >
+                  <AiOutlineDelete className="w-5 h-5" />
+                  Delete
+                </Button>
+              </div>
+            )}
           </header>
           <img
             src={`${IMAGE_URL}/${post.cover}`}
@@ -135,27 +172,9 @@ const BlogPost = () => {
             ))}
           </section>
         </div>
-        {showBtn && (
-          <div className="flex justify-end mt-4 space-x-2">
-            <Button className="font-bold text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-              <Link
-                className="flex items-center gap-x-2"
-                to={`/edit-post/${slug}`}
-              >
-                <AiOutlineEdit className="w-5 h-5" />
-                Edit
-              </Link>
-            </Button>
-            <Button
-              className="flex font-bold text-white bg-red-500 rounded-lg gap-x-2 hover:bg-red-600"
-              onClick={toggleModal}
-            >
-              <AiOutlineDelete className="w-5 h-5" />
-              Delete
-            </Button>
-          </div>
-        )}
-        <div className="my-5">
+
+        {/* comment */}
+        <div className="my-6">
           <Comment
             content={contentComment}
             setContent={setContentComment}
@@ -165,9 +184,12 @@ const BlogPost = () => {
             {comments.map((comment) => (
               <CommentCard
                 key={comment._id}
-                author={comment.author.name}
+                id={comment._id}
+                author={comment.author}
                 content={comment.body}
                 created={formatDate(comment.createdAt?.toString())}
+                handleDeleteComment={handleDeleteComment}
+                setComments={setComments}
               />
             ))}
           </div>

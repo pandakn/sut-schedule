@@ -127,7 +127,10 @@ export const deleteComment = async (req: Request, res: Response) => {
     // Save the updated blog to the database
     await blog.save();
 
-    res.status(200).json({ message: "Comment deleted successfully" });
+    res.status(200).json({
+      message: "Comment deleted successfully",
+      result: deletedComment,
+    });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }

@@ -4,6 +4,7 @@ import { SetStateAction } from "react";
 import { TOOLS_COMMENT } from "../../../pages/blog/constant";
 
 import Editor from "../editor/Editor";
+import { hasEnoughContent } from "../../../utils/checkTextInHtmlTag";
 
 type CommentProps = {
   content: string;
@@ -22,7 +23,7 @@ const Comment = ({ content, setContent, submitComment }: CommentProps) => {
       />
       <button
         onClick={submitComment}
-        disabled={!content}
+        disabled={!hasEnoughContent(content, 0)}
         className="px-4 py-2 mt-5 text-white capitalize bg-gray-900 disabled:opacity-30 rounded-xl hover:bg-gray-900/75"
       >
         Respond

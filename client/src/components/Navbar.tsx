@@ -25,20 +25,20 @@ const childrenVariants = {
 const Navbar = () => {
   const { accessToken, payload, handleLogout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isShowEditProfile, setIsShowEditProfile] = useState(false);
+  const [isShowMenu, setIsShowMenu] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const location = useLocation();
 
   // hide Navbar when current path is admin/*
   const hideNavbar = /^\/admin(\/|$)/.test(location.pathname);
 
-  const toggleProfile = () => setIsShowEditProfile(!isShowEditProfile);
+  const toggleMenu = () => setIsShowMenu(!isShowMenu);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const toggleMenu = () => {
+  const toggleMenuNav = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
@@ -84,17 +84,17 @@ const Navbar = () => {
                         <div className="relative">
                           <h3
                             className="hover:cursor-pointer hover:opacity-60 "
-                            onClick={toggleProfile}
+                            onClick={toggleMenu}
                           >
                             <span className="mr-1 text-orange-500">Hey,</span>
                             {payload.name}
                           </h3>
-                          {isShowEditProfile && (
+                          {isShowMenu && (
                             <motion.div
                               initial={{ opacity: 0, y: -5 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ duration: 0.25 }}
-                              onClick={toggleProfile}
+                              onClick={toggleMenu}
                               className="absolute p-1 px-2 bg-white border rounded-md w-28 -left-2 top-8"
                             >
                               <div className="flex flex-col gap-y-2">
@@ -140,7 +140,7 @@ const Navbar = () => {
               </div>
               <div className="flex -mr-2 md:hidden">
                 <button
-                  onClick={toggleMenu}
+                  onClick={toggleMenuNav}
                   type="button"
                   className="inline-flex items-center justify-center p-2 text-orange-400 bg-gray-100 rounded-md hover:text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-orange-800 focus:ring-white"
                 >

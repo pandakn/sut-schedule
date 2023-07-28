@@ -33,14 +33,14 @@ export const createComment = async (
 };
 
 export const updateComment = async (
-  id: string,
-  data: { body: string },
+  commentId: string,
+  body: string,
   token: string
 ) => {
   try {
     const response = await api.put(
-      `/api/comments/${id}`,
-      { ...data },
+      `/api/comments/${commentId}`,
+      { body },
       {
         headers: {
           Authorization: `Bearer ${token}`,
