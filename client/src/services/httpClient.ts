@@ -390,3 +390,43 @@ export const reOrderOfCourseInStudyPlan = async (
     console.error(error);
   }
 };
+
+// logo
+export const createConfigLogo = async (data: FormData, token: string) => {
+  try {
+    const response = await api.post(`/api/config-logo`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (response.status === 200) {
+      return { status: true, data: response.data };
+    }
+  } catch (error) {
+    if (
+      error instanceof AxiosError &&
+      error.response &&
+      error.response.status === 404
+    ) {
+      return { status: false, data: error.response.data };
+    } else {
+      console.error(error);
+    }
+  }
+};
+
+export const getConfigLogo = async () => {
+  try {
+    const response = await api.get(`/api/config-logo`);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error(response.data);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};

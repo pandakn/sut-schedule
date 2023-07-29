@@ -16,13 +16,13 @@ const Sidebar = () => {
   return (
     // {/* Sidebar */}
     <div
-      className={`fixed z-30 lg:relative h-screen w-64 bg-white border-r overflow-y-auto transition duration-300 ease-in-out ${
+      className={`fixed z-30 lg:relative min-h-screen w-64 bg-white border-r overflow-y-auto transition duration-300 ease-in-out ${
         isOpen ? "translate-x-0" : "-translate-x-52"
       } lg:translate-x-0`}
     >
       {/* Sidebar content */}
       <div className="flex items-center justify-between p-4">
-        <div className="text-xl">
+        <div className="w-40">
           <Logo />
         </div>
         <button

@@ -12,7 +12,7 @@ const ProtectedAdminRoute = ({ children }: { children: JSX.Element }) => {
   }
 
   return accessToken ? (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen">
       <Sidebar />
       <main className="w-full p-6 ml-14 lg:ml-2">{children}</main>
     </div>

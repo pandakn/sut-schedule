@@ -7,6 +7,7 @@ import courses from "./course.route";
 import studyPlan from "./studyPlan.route";
 import blog from "./blog.route";
 import comment from "./comment.route";
+import configLogo from "./configLogo.route";
 
 const router = Router();
 
@@ -17,6 +18,7 @@ export default (): express.Router => {
   studyPlan(router);
   blog(router);
   comment(router);
+  configLogo(router);
 
   return router;
 };

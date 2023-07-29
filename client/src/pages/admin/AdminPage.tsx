@@ -12,6 +12,7 @@ import {
   AiOutlineBook,
   AiOutlineSchedule,
 } from "react-icons/ai";
+import ManageLogo from "../../components/admin/ManageLogo";
 
 const AdminPage = () => {
   const { accessToken } = useAuth();
@@ -40,26 +41,31 @@ const AdminPage = () => {
   }, [fetchAllStudyPlans, fetchAllBlogs]);
 
   return (
-    <div className="flex flex-col justify-around gap-6 md:flex-row">
-      <TotalCard
-        title="Total Users"
-        total={totalUser}
-        color="#FAAB78"
-        icon={<AiOutlineUser className="totalCard-icon" />}
-      />
-      <TotalCard
-        title="Total Blogs"
-        total={totalBlogs}
-        color="#8294C4"
-        icon={<AiOutlineBook className="totalCard-icon" />}
-      />
-      <TotalCard
-        title="Total Study plans"
-        total={totalStudyPlans}
-        color="#A4BC92"
-        icon={<AiOutlineSchedule className="totalCard-icon" />}
-      />
-    </div>
+    <>
+      <div className="flex flex-col justify-around gap-6 md:flex-row">
+        <TotalCard
+          title="Total Users"
+          total={totalUser}
+          color="#FAAB78"
+          icon={<AiOutlineUser className="totalCard-icon" />}
+        />
+        <TotalCard
+          title="Total Blogs"
+          total={totalBlogs}
+          color="#8294C4"
+          icon={<AiOutlineBook className="totalCard-icon" />}
+        />
+        <TotalCard
+          title="Total Study plans"
+          total={totalStudyPlans}
+          color="#A4BC92"
+          icon={<AiOutlineSchedule className="totalCard-icon" />}
+        />
+      </div>
+      <div className="mt-10">
+        <ManageLogo />
+      </div>
+    </>
   );
 };
 

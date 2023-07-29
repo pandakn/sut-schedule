@@ -48,8 +48,10 @@ const Navbar = () => {
         <motion.nav className="bg-white shadow-lg sticky-navbar">
           <div className="container px-5 mx-auto">
             <div className="flex items-center justify-between h-20">
-              <div className="flex items-center justify-between w-full ">
-                <Logo />
+              <div className="flex items-center justify-between w-full h-full">
+                <div className="w-40">
+                  <Logo />
+                </div>
                 <div className="hidden md:block">
                   <div className="flex items-center gap-6">
                     {accessToken ? (

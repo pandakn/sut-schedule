@@ -7,7 +7,7 @@ import Filter from "./Filter";
 // icons
 import { VscSettings } from "react-icons/vsc";
 import { AiOutlineFileSearch } from "react-icons/ai";
-import { useSearch } from "../../hooks/useSearch";
+import { useSearch } from "../../hooks/index";
 
 // acadyear
 const currentYear = new Date().getFullYear() + 543;
