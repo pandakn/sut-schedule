@@ -10,7 +10,7 @@ import upload from "../middleware/upload";
 
 export default (router: express.Router) => {
   router.get("/blogs", getAllBlogs);
-  router.get("/blogs/:id", getBlogById);
+  router.get("/blogs/:slug", getBlogById);
   router.put(
     "/blogs/:id",
     authenticateToken,

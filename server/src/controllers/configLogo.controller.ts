@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import fs from "fs";
 import ConfigLogo, { IConfigLogo } from "../models/configLogo";
 
 export const createConfigLogo = async (req: Request, res: Response) => {
@@ -20,6 +21,8 @@ export const createConfigLogo = async (req: Request, res: Response) => {
       });
     } else {
       // If a document exists, update its fields
+      const imagePath = `public/images/${configLogo.logo}`;
+      fs.unlinkSync(imagePath);
       configLogo.href = href;
       configLogo.logo = logo;
     }

@@ -6,8 +6,9 @@ export interface IBlog extends Document {
   cover: string;
   title: string;
   body: string;
-  tags: string[];
+  tags: ObjectId[];
   comments: IComment[];
+  slug: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,16 +26,18 @@ const blogSchema: Schema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
+      unique: true,
     },
     body: {
       type: String,
       required: true,
     },
-    tags: {
-      type: [String],
+    tags: [{ type: Schema.Types.ObjectId, ref: "Tag", required: true }],
+    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+    slug: {
+      type: String,
       required: true,
     },
-    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   },
   { timestamps: true }
 );
