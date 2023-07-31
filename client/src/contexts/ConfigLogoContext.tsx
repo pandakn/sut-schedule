@@ -54,7 +54,10 @@ interface ConfigLogoProviderProps {
 
 export const ConfigLogoProvider = ({ children }: ConfigLogoProviderProps) => {
   const { accessToken } = useAuth();
-  const [configLogo, setConfigLogo] = useState<ILogo>({ href: "/", logo: "" });
+  const [configLogo, setConfigLogo] = useState<ILogo>({
+    href: "/",
+    logo: "",
+  });
   const [href, setHref] = useState("");
   const [logo, setLogo] = useState<File | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);

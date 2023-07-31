@@ -36,6 +36,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 const BlogPost = () => {
   const { accessToken, payload } = useAuth();
   const { slug } = useParams();
+  const [id, setId] = useState("");
   const [post, setPost] = useState<Partial<IBlog>>({});
   const [comments, setComments] = useState<IComment[]>([]);
   const [contentComment, setContentComment] = useState("");
@@ -48,8 +49,8 @@ const BlogPost = () => {
   };
 
   const handleDeleteBlog = async () => {
-    if (slug && accessToken) {
-      await deleteBlog(slug, accessToken);
+    if (id && accessToken) {
+      await deleteBlog(id, accessToken);
 
       toast.success("Delete successfully", { duration: 1500 });
 
@@ -60,23 +61,23 @@ const BlogPost = () => {
   };
 
   const fetchCommentsByBlogId = useCallback(async () => {
-    if (slug) {
-      const res = await getCommentByBlogId(slug);
+    if (id) {
+      const res = await getCommentByBlogId(id);
 
       setComments(res?.data.result);
     }
-  }, [slug]);
+  }, [id]);
 
-  const fetchBlogById = useCallback(async () => {
+  const fetchBlogBySlug = useCallback(async () => {
     const res = await getBlogById(slug);
 
     setPost(res.result);
   }, [slug]);
 
   useEffect(() => {
-    fetchBlogById();
+    fetchBlogBySlug();
     fetchCommentsByBlogId();
-  }, [fetchBlogById, fetchCommentsByBlogId]);
+  }, [fetchBlogBySlug, fetchCommentsByBlogId]);
 
   useEffect(() => {
     if (payload.id === post.author?._id || payload.role === "admin") {
@@ -100,7 +101,7 @@ const BlogPost = () => {
   const submitComment = async () => {
     setContentComment("");
     if (accessToken) {
-      const data = { author: payload.id, blog: slug, body: contentComment };
+      const data = { author: payload.id, blog: id, body: contentComment };
       const res = await createComment(data, accessToken);
       if (res) {
         setComments((prev) => {
@@ -110,6 +111,14 @@ const BlogPost = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const extractId = slug?.split("-");
+    if (extractId) {
+      const id = extractId[extractId?.length - 1];
+      setId(id);
+    }
+  }, [slug]);
 
   if (redirect) {
     return <Navigate to={"/posts"} />;
@@ -161,38 +170,38 @@ const BlogPost = () => {
               />
             )}
           </div>
-          <section className="flex justify-start gap-2 mt-4">
+          <section className="flex justify-start gap-2 mt-8 mb-10">
             {post.tags?.map((t, idx) => (
               <p
                 key={idx}
                 className="px-2 py-1 text-gray-500 rounded bg-gray-50"
               >
-                #{t}
+                #{t.name}
               </p>
             ))}
           </section>
         </div>
 
+        <hr className="my-8" />
+
         {/* comment */}
-        <div className="my-6">
-          <Comment
-            content={contentComment}
-            setContent={setContentComment}
-            submitComment={submitComment}
-          />
-          <div className="flex flex-col my-5 gap-y-4">
-            {comments.map((comment) => (
-              <CommentCard
-                key={comment._id}
-                id={comment._id}
-                author={comment.author}
-                content={comment.body}
-                created={formatDate(comment.createdAt?.toString())}
-                handleDeleteComment={handleDeleteComment}
-                setComments={setComments}
-              />
-            ))}
-          </div>
+        <Comment
+          content={contentComment}
+          setContent={setContentComment}
+          submitComment={submitComment}
+        />
+        <div className="flex flex-col my-5 gap-y-4">
+          {comments?.map((comment) => (
+            <CommentCard
+              key={comment._id}
+              id={comment._id}
+              author={comment.author}
+              content={comment.body}
+              created={formatDate(comment.createdAt?.toString())}
+              handleDeleteComment={handleDeleteComment}
+              setComments={setComments}
+            />
+          ))}
         </div>
       </div>
 

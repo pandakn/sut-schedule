@@ -10,6 +10,7 @@ import {
 } from "../services/httpClient";
 import { useAuth, useStudyPlan } from "../hooks";
 import toast from "react-hot-toast";
+import { AiOutlineDelete } from "react-icons/ai";
 
 interface CourseContextType {
   courses: CourseInterface;
@@ -131,7 +132,10 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
       accessToken
     );
 
-    toast.success("Course deleted successfully");
+    toast.success("Course deleted successfully", {
+      duration: 1500,
+      icon: <AiOutlineDelete className="text-[#991b1b] text-2xl w-6 h-6" />,
+    });
   };
 
   return (

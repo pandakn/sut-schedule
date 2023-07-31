@@ -7,7 +7,7 @@ import { getBlogsOfUser } from "../../services/blog";
 import BlogCard from "../../components/blog/BlogCard";
 
 // type
-import { IBlog } from "./Blog";
+import { IBlog, ITag } from "./Blog";
 
 // utils
 import { formatDate } from "../../utils/formatDate";
@@ -18,16 +18,16 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 const PostsOfUser = () => {
   const { accessToken, payload } = useAuth();
   const [blogs, setBlogs] = useState<IBlog[]>([]);
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedTag, setSelectedTag] = useState<ITag | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const handleFilterTags = (tag: string) => {
+  const handleFilterTags = (tag: ITag) => {
     setSelectedTag(tag);
   };
 
   // Filter the blog posts by the selected tag
   const filteredPosts = selectedTag
-    ? blogs.filter((post) => post.tags.includes(selectedTag))
+    ? blogs.filter((post) => post.tags.find((t) => t.name === selectedTag.name))
     : blogs;
 
   const fetchAllBlogs = useCallback(async () => {
@@ -66,7 +66,7 @@ const PostsOfUser = () => {
         {selectedTag && (
           <div className="flex items-center mt-10 ml-8 gap-x-2">
             <p className="px-2 py-1 text-2xl text-gray-500 rounded bg-gray-200/60">
-              #{selectedTag}
+              #{selectedTag.name}
             </p>
             <button
               className="text-xl text-red-500"
@@ -81,7 +81,7 @@ const PostsOfUser = () => {
             return (
               <BlogCard
                 key={idx}
-                id={blog._id}
+                slug={blog.slug}
                 author={blog.author.name}
                 title={blog.title}
                 body={blog.body}

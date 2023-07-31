@@ -173,7 +173,7 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
 
   const handleDeleteStudyPlan = async (studyPlanID: string) => {
     const duration = 1500;
-    toast.success(" Study Plan deleted successfully", {
+    toast.success("Study Plan deleted successfully", {
       duration,
       icon: (
         <AiOutlineDelete className="text-[#991b1b] text-2xl bg-[#fef2f2]" />

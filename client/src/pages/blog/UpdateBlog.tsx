@@ -9,14 +9,16 @@ import { getBlogById, updateBlog } from "../../services/blog";
 import { useAuth } from "../../hooks";
 import toast from "react-hot-toast";
 import { hasEnoughContent } from "../../utils/checkTextInHtmlTag";
+import { ITag } from "./Blog";
 
 const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 
 const UpdateBlog = () => {
   const { slug } = useParams();
   const { accessToken, payload } = useAuth();
+  const [id, setId] = useState("");
   const [title, setTitle] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<ITag[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [content, setContent] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
@@ -30,9 +32,8 @@ const UpdateBlog = () => {
 
   const handleInputKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && inputValue.trim()) {
-      setTags((prev) => {
-        return [...prev, inputValue.trim()];
-      });
+      const newTag: ITag = { name: inputValue.trim() };
+      setTags((prev) => [...prev, newTag]); // Add the new tag to the tags state
       setInputValue("");
     }
   };
@@ -58,7 +59,9 @@ const UpdateBlog = () => {
   const fetchBlogById = useCallback(async () => {
     const res = await getBlogById(slug);
     const data = res.result;
+    console.log(data);
 
+    setId(data._id);
     setTitle(data.title);
     setTags(data.tags);
     setContent(data.body);
@@ -83,7 +86,7 @@ const UpdateBlog = () => {
 
     const enoughContent = hasEnoughContent(content, 20);
 
-    if (enoughContent) {
+    if (!enoughContent) {
       toast.error("Content must be at least 20 characters", {
         duration: 2500,
       });
@@ -101,21 +104,19 @@ const UpdateBlog = () => {
       }
 
       tags.forEach((tag) => {
-        formData.append("tags[]", tag); // Append tags as an array in the form data
+        formData.append("tags[]", tag.name); // Append tags as an array in the form data
       });
 
       try {
-        if (slug) {
-          const res = await updateBlog(slug, formData, accessToken);
+        const res = await updateBlog(id, formData, accessToken);
 
-          if (!res?.status) return;
+        if (!res?.status) return;
 
-          toast.success("Update successfully", { duration: 1500 });
+        toast.success("Update successfully", { duration: 1500 });
 
-          setTimeout(() => {
-            setRedirect(true);
-          }, 1500);
-        }
+        setTimeout(() => {
+          setRedirect(true);
+        }, 1500);
       } catch (error) {
         console.error("Error creating blog:", error);
       }
@@ -194,7 +195,7 @@ const UpdateBlog = () => {
                       key={index}
                       className="flex items-center px-3 py-1 font-light text-gray-700 rounded-full bg-gray-200/60"
                     >
-                      {tag}
+                      {tag.name}
                       <button
                         className="ml-2 text-gray-600"
                         onClick={() => handleTagDelete(index)}

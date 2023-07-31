@@ -28,7 +28,7 @@ const EditComment = ({
       <div className="flex justify-end">
         <button
           onClick={() => handleEditComment(content)}
-          disabled={!hasEnoughContent(body, 0)}
+          disabled={!hasEnoughContent(body, 1)}
           className="px-4 py-2 mt-5 text-white capitalize bg-gray-900 disabled:opacity-30 rounded-xl hover:bg-gray-900/75"
         >
           Submit

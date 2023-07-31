@@ -76,7 +76,7 @@ const CommentCard = ({
       <div className="flex items-center mb-4">
         <div>
           <h3 className="text-lg font-bold">
-            f @{author.name}
+            @{author.name}
             <span className="mx-2 ">·</span>
             <span className="font-medium text-gray-400">{created}</span>
           </h3>

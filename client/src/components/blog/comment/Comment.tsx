@@ -15,6 +15,7 @@ type CommentProps = {
 const Comment = ({ content, setContent, submitComment }: CommentProps) => {
   return (
     <div>
+      <h3 className="mb-4 text-2xl font-bold ">Comments</h3>
       <Editor
         tools={TOOLS_COMMENT}
         placeholder="What are you thoughts?"
@@ -23,10 +24,10 @@ const Comment = ({ content, setContent, submitComment }: CommentProps) => {
       />
       <button
         onClick={submitComment}
-        disabled={!hasEnoughContent(content, 0)}
+        disabled={!hasEnoughContent(content, 1)}
         className="px-4 py-2 mt-5 text-white capitalize bg-gray-900 disabled:opacity-30 rounded-xl hover:bg-gray-900/75"
       >
-        Respond
+        Send
       </button>
     </div>
   );

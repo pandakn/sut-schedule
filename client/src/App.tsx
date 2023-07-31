@@ -20,14 +20,12 @@ import SearchCourse from "./pages/SearchCourse";
 import SchedulePage from "./pages/SchedulePage";
 import UpdateBlog from "./pages/blog/UpdateBlog";
 
-// guest
-import Blog from "./pages/blog/Blog";
-
 // admin pages
 import AdminPage from "./pages/admin/AdminPage";
 import ManageUsers from "./pages/admin/ManageUsers";
 import ManageBlogs from "./pages/admin/ManageBlogs";
 import CreateBlog from "./pages/blog/CreateBlog";
+import Homepage from "./pages/Homepage";
 
 function App() {
   return (
@@ -71,7 +69,7 @@ function App() {
         {/* user */}
 
         {/* guest */}
-        <Route path="/" element={<Blog />} />
+        <Route path="/" element={<Homepage />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
 
         <Route

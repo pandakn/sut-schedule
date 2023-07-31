@@ -39,7 +39,6 @@ export const pastelColor = [
   { textColor: "#fb7185", bgColor: "#fff1f2" }, // Pastel rose
   { textColor: "#867070", bgColor: "#f0dbcc" }, // Pastel brown
   { textColor: "#F0C38E", bgColor: "#FFF3E0" }, // Pastel Yellow
-  // { textColor: "#A2D5F2", bgColor: "#E1F5FE" }, // Pastel Sky Blue
 ];
 
 let remainingColors = [...pastelColor];

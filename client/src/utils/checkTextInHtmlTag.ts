@@ -3,5 +3,6 @@ export const hasEnoughContent = (htmlContent: string, length: number) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlContent, "text/html");
   const textContent = doc.body.textContent || "";
-  return textContent.length > length;
+
+  return textContent.length >= length;
 };

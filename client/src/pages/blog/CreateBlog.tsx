@@ -1,35 +1,74 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 // component
 import Editor from "../../components/blog/editor/Editor";
+import SuggestionTags from "../../components/blog/SuggestionTags";
 
-import { createBlog } from "../../services/blog";
+import { createBlog, getTags } from "../../services/blog";
 import { useAuth } from "../../hooks";
 import toast from "react-hot-toast";
+import { ITag } from "./Blog";
+import { hasEnoughContent } from "../../utils/checkTextInHtmlTag";
 
 const CreateBlog = () => {
   const { accessToken, payload } = useAuth();
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState("");
+  const [inputTagValue, setInputTagValue] = useState("");
   const [content, setContent] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [redirect, setRedirect] = useState(false);
+  const [suggestedTags, setSuggestedTags] = useState<ITag[]>([]);
+  const [filteredSuggestions, setFilteredSuggestions] = useState<ITag[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleInputFocus = () => {
+    setShowSuggestions(true);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    setInputTagValue(e.target.value);
+    setShowSuggestions(true);
   };
 
-  const handleInputKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && inputValue.trim()) {
-      setTags((prev) => {
-        return [...prev, inputValue.trim()];
-      });
-      setInputValue("");
+  // Autocomplete tags
+  useEffect(() => {
+    // Filter the suggested tags based on the input value
+    const filteredTags = suggestedTags.filter((tag) =>
+      tag.name.toLowerCase().includes(inputTagValue.toLowerCase())
+    );
+
+    // Exclude tags that are already in the tags list
+    const uniqueFilteredTags = filteredTags.filter(
+      (tag) => !tags.includes(tag.name)
+    );
+
+    if (uniqueFilteredTags.length < 1 && !tags.includes(inputTagValue)) {
+      setFilteredSuggestions([{ name: inputTagValue }]);
+      return;
     }
-  };
+
+    setFilteredSuggestions(uniqueFilteredTags);
+  }, [inputTagValue, suggestedTags, tags]);
+
+  const handleClickAddTag = useCallback(
+    (name: string) => {
+      if (tags.length >= 4) {
+        toast.error("Only 4 tags allowed");
+        return;
+      }
+
+      setTags((prev) => {
+        return [...prev, name.trim()];
+      });
+      setInputTagValue("");
+    },
+    [tags.length]
+  );
 
   const handleTagDelete = (index: number) => {
     setTags(tags.filter((_, i) => i !== index));
@@ -49,12 +88,31 @@ const CreateBlog = () => {
     }
   };
 
+  const fetchTags = useCallback(async () => {
+    const res = await getTags();
+    const data = res?.data.result;
+    setSuggestedTags(data);
+  }, []);
+
+  useEffect(() => {
+    fetchTags();
+  }, [fetchTags]);
+
   const submitPost = async (event: React.FormEvent) => {
     event.preventDefault();
 
     // Validate the form
-    if (!title || !content || !coverImage || tags.length === 0) {
+    if (!title || !coverImage || tags.length === 0) {
       toast.error("Please fill in all the required fields.", {
+        duration: 2500,
+      });
+      return;
+    }
+
+    const enoughContent = hasEnoughContent(content, 20);
+
+    if (!enoughContent) {
+      toast.error("Content must be at least 20 characters", {
         duration: 2500,
       });
       return;
@@ -76,7 +134,10 @@ const CreateBlog = () => {
       try {
         const res = await createBlog(payload.id, formData, accessToken);
 
-        if (!res?.status) return;
+        if (!res?.status) {
+          toast.error(res?.data.message, { duration: 2500 });
+          return;
+        }
 
         toast.success("Create successfully", { duration: 1500 });
 
@@ -144,44 +205,59 @@ const CreateBlog = () => {
           <input
             className="w-full mt-2 text-4xl border-none lg:text-5xl focus:outline-none placeholder:text-4xl lg:placeholder:text-5xl placeholder:font-bold placeholder:text-gray-400"
             type="title"
-            placeholder="Title"
+            placeholder="Title here.."
             value={title}
             onChange={(ev) => setTitle(ev.target.value)}
           />
+
           {/* tags */}
-          <ul className="flex items-center gap-1 mb-4">
-            <li>
-              <div className="flex gap-2">
-                {tags.map((tag, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center px-3 py-1 font-light text-gray-700 rounded-full bg-gray-200/60"
-                  >
-                    {tag}
-                    <button
-                      className="ml-2 text-gray-600"
-                      onClick={() => handleTagDelete(index)}
+          <section className="relative mb-8">
+            <div ref={containerRef} className="flex items-center gap-x-1">
+              <div>
+                <div className="flex gap-2">
+                  {tags.map((tag, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center px-3 py-1 font-light text-gray-700 rounded-full bg-gray-200/60"
                     >
-                      &times;
-                    </button>
-                  </div>
-                ))}
+                      #<span className="ml-1 text-lg">{tag}</span>
+                      <button
+                        className="ml-4 text-xl font-bold text-gray-600 hover:text-red-600 "
+                        onClick={() => handleTagDelete(index)}
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </li>
-            <li>
-              <input
-                hidden={tags.length >= 4}
-                type="text"
-                value={inputValue}
-                onChange={handleInputChange}
-                onKeyDown={handleInputKeyDown}
-                className="w-full border-none focus:outline-none"
-                placeholder={
-                  tags.length > 0 ? "Add another tag..." : "Add up to 4 tags..."
-                }
-              />
-            </li>
-          </ul>
+              <p>
+                <input
+                  ref={inputRef}
+                  hidden={tags.length >= 4}
+                  type="text"
+                  value={inputTagValue}
+                  onChange={handleInputChange}
+                  // onKeyDown={handleInputKeyDown}
+                  onFocus={handleInputFocus}
+                  className="w-full border-none focus:outline-none"
+                  placeholder={
+                    tags.length > 0
+                      ? "Add another tag..."
+                      : "Add up to 4 tags..."
+                  }
+                />
+              </p>
+            </div>
+            <SuggestionTags
+              suggestions={filteredSuggestions}
+              handleClickAddTag={handleClickAddTag}
+              showSuggestions={showSuggestions}
+              setShowSuggestions={setShowSuggestions}
+              containerRef={containerRef}
+              inputRef={inputRef}
+            />
+          </section>
         </div>
         <Editor value={content} onChange={setContent} />
         <button

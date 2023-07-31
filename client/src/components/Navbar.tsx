@@ -66,15 +66,15 @@ const Navbar = () => {
                         )}
                         <Link
                           className="text-gray-600 capitalize hover:text-gray-800"
-                          to="/schedule"
-                        >
-                          Schedule
-                        </Link>
-                        <Link
-                          className="text-gray-600 capitalize hover:text-gray-800"
                           to="/editor"
                         >
                           Write
+                        </Link>
+                        <Link
+                          className="text-gray-600 capitalize hover:text-gray-800"
+                          to="/schedule"
+                        >
+                          Schedule
                         </Link>
                         <Link
                           className="text-gray-600 capitalize hover:text-gray-800"
@@ -169,24 +169,30 @@ const Navbar = () => {
               >
                 {accessToken ? (
                   <>
-                    <motion.div variants={childrenVariants}>
-                      <span className="mr-1 text-lg text-orange-500">Hey,</span>
-                      {payload.name}
-                    </motion.div>
+                    {payload.role === "admin" && (
+                      <Link
+                        className="text-gray-600 capitalize hover:text-gray-800"
+                        to="/admin"
+                      >
+                        Dashboard
+                      </Link>
+                    )}
+
                     <motion.div variants={childrenVariants}>
                       <div className="flex flex-col gap-y-1">
-                        <Link
-                          className="text-gray-600 capitalize hover:text-gray-800"
-                          to="/schedule"
-                        >
-                          Schedule
-                        </Link>
                         <Link
                           className="text-gray-600 capitalize hover:text-gray-800"
                           to="/editor"
                         >
                           Write
                         </Link>
+                        <Link
+                          className="text-gray-600 capitalize hover:text-gray-800"
+                          to="/schedule"
+                        >
+                          Schedule
+                        </Link>
+
                         <Link
                           className="text-gray-600 capitalize hover:text-gray-800"
                           to="search-course"
@@ -208,6 +214,10 @@ const Navbar = () => {
                       >
                         Posts
                       </Link>
+                    </motion.div>
+                    <motion.div variants={childrenVariants}>
+                      <span className="mr-1 text-lg text-orange-500">Hey,</span>
+                      {payload.name}
                     </motion.div>
                     <motion.div variants={childrenVariants}>
                       <MdLogout
