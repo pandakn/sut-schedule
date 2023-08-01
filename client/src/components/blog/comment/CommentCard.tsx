@@ -7,7 +7,7 @@ import { AiOutlineMore, AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import Modal from "../../Modal";
 import { FiTrash2 } from "react-icons/fi";
 import EditComment from "./EditComment";
-import { updateComment } from "../../../services/comment";
+import { deleteComment, updateComment } from "../../../services/comment";
 import toast from "react-hot-toast";
 import { IComment } from "./@types";
 
@@ -16,7 +16,6 @@ type CommentCardProps = {
   author: { _id: string; username: string; name: string };
   content: string;
   created: string | undefined;
-  handleDeleteComment: (id: string) => Promise<void>;
   setComments: React.Dispatch<SetStateAction<IComment[]>>;
 };
 
@@ -25,7 +24,6 @@ const CommentCard = ({
   author,
   content,
   created,
-  handleDeleteComment,
   setComments,
 }: CommentCardProps) => {
   const { payload, accessToken } = useAuth();
@@ -62,6 +60,19 @@ const CommentCard = ({
       setTimeout(() => {
         setIsModalOpenEdit(false);
       }, 1000);
+    }
+  };
+
+  const handleDeleteComment = async (id: string) => {
+    if (accessToken) {
+      const res = await deleteComment(id, accessToken);
+
+      setComments((prev) => {
+        const filter = prev.filter((cm) => cm._id !== id);
+        return filter;
+      });
+
+      res && toast.success("Deleted comment");
     }
   };
 

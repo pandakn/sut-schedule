@@ -7,7 +7,7 @@ import { getBlogsOfUser } from "../../services/blog";
 import BlogCard from "../../components/blog/BlogCard";
 
 // type
-import { IBlog, ITag } from "./Blog";
+import { IBlog } from "./Blog";
 
 // utils
 import { formatDate } from "../../utils/formatDate";
@@ -18,17 +18,7 @@ const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 const PostsOfUser = () => {
   const { accessToken, payload } = useAuth();
   const [blogs, setBlogs] = useState<IBlog[]>([]);
-  const [selectedTag, setSelectedTag] = useState<ITag | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
-
-  const handleFilterTags = (tag: ITag) => {
-    setSelectedTag(tag);
-  };
-
-  // Filter the blog posts by the selected tag
-  const filteredPosts = selectedTag
-    ? blogs.filter((post) => post.tags.find((t) => t.name === selectedTag.name))
-    : blogs;
 
   const fetchAllBlogs = useCallback(async () => {
     if (accessToken) {
@@ -62,22 +52,9 @@ const PostsOfUser = () => {
         </div>
       )}
       <div className="container px-5 mx-auto">
-        <h3 className="mt-6 text-4xl lg:px-5">Your Posts</h3>
-        {selectedTag && (
-          <div className="flex items-center mt-10 ml-8 gap-x-2">
-            <p className="px-2 py-1 text-2xl text-gray-500 rounded bg-gray-200/60">
-              #{selectedTag.name}
-            </p>
-            <button
-              className="text-xl text-red-500"
-              onClick={() => setSelectedTag(null)}
-            >
-              X
-            </button>
-          </div>
-        )}
-        <div className="flex flex-col flex-wrap gap-6 my-10 md:flex-row">
-          {filteredPosts.map((blog, idx) => {
+        <h3 className="mt-10 text-4xl ">Your Posts</h3>
+        <div className="grid grid-cols-1 gap-6 mt-10 mb-20 md:grid-cols-2 lg:grid-cols-3">
+          {blogs.map((blog, idx) => {
             return (
               <BlogCard
                 key={idx}
@@ -88,7 +65,6 @@ const PostsOfUser = () => {
                 cover={`${IMAGE_URL}/${blog.cover}`}
                 tags={blog.tags}
                 created={formatDate(blog.createdAt?.toString())}
-                handleFilterTags={handleFilterTags}
               />
             );
           })}

@@ -5,10 +5,14 @@ import { getBlogs } from "../../services/blog";
 
 // component
 import BlogCard from "../../components/blog/BlogCard";
+import SortButton from "../../components/blog/SortButton";
+import PopularTags from "../../components/blog/PopularTags";
 
 // utils
 import { formatDate } from "../../utils/formatDate";
-import PopularTags from "../../components/blog/PopularTags";
+
+// icons
+import { AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
 
 export interface ITag {
   name: string;
@@ -26,24 +30,30 @@ export interface IBlog {
   updatedAt: Date;
 }
 
+type BlogProps = {
+  tag?: string;
+};
+
 const IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 
-const Blog = () => {
+const Blog = ({ tag }: BlogProps) => {
   const [blogs, setBlogs] = useState<IBlog[]>([]);
-  const [selectedTag, setSelectedTag] = useState<ITag | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState(-1);
 
-  const handleFilterTags = (tag: ITag) => {
-    setSelectedTag(tag);
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setSelectedFilter(+value);
   };
 
-  // Filter the blog posts by the selected tag
-  const filteredPosts = selectedTag
-    ? blogs.filter((post) => post.tags.find((t) => t.name === selectedTag.name))
-    : blogs;
+  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const searchFieldString = event.target.value.toLocaleLowerCase();
+    setSearchQuery(searchFieldString);
+  };
 
   const fetchAllBlogs = useCallback(async () => {
-    const res = await getBlogs();
+    const res = await getBlogs({ tag, sort: selectedFilter });
 
     if (!res?.status) {
       const msg = res?.data.message;
@@ -51,8 +61,12 @@ const Blog = () => {
       return;
     }
 
-    setBlogs(res?.data.result);
-  }, []);
+    const data = res?.data.result;
+    const filteredData = data.filter((item: IBlog) =>
+      item.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setBlogs(filteredData);
+  }, [searchQuery, selectedFilter, tag]);
 
   useEffect(() => {
     fetchAllBlogs();
@@ -65,24 +79,36 @@ const Blog = () => {
           <h3 className="text-3xl md:text-5xl">{errorMsg}</h3>
         </div>
       )}
-      <div id="blog" className="container px-5 mx-auto">
-        {selectedTag && (
-          <div className="flex items-center ml-5 gap-x-2">
-            <p className="px-2 py-1 text-2xl text-gray-500 rounded bg-gray-200/60">
-              #{selectedTag.name}
-            </p>
-            <button
-              className="text-xl text-red-500"
-              onClick={() => setSelectedTag(null)}
-            >
-              X
-            </button>
+
+      <div className="flex">
+        <PopularTags />
+        <div id="blog" className="container mx-auto mb-20">
+          <div className="flex justify-between">
+            {/* search */}
+            <div className="relative mb-5">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <AiOutlineSearch className="w-6 h-6 text-gray-400" />
+              </div>
+              <input
+                onChange={onSearchChange}
+                type="text"
+                value={searchQuery}
+                className="block px-6 py-3 pl-10 text-sm text-gray-900 bg-gray-100 rounded-xl placeholder:text-gray-400 w-96 focus:border-gray-500 focus:outline-none"
+                placeholder="Search blogs..."
+              />
+              {searchQuery && (
+                <div
+                  onClick={() => setSearchQuery("")}
+                  className="absolute inset-y-0 flex items-center pr-3 left-72 hover:cursor-pointer"
+                >
+                  <AiOutlineClose className="w-4 h-4 text-red-500" />
+                </div>
+              )}
+            </div>
+            <SortButton handleFilterChange={handleFilterChange} />
           </div>
-        )}
-        <div className="flex my-10">
-          <PopularTags />
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredPosts.map((blog, idx) => {
+            {blogs.map((blog, idx) => {
               return (
                 <BlogCard
                   key={idx}
@@ -93,7 +119,6 @@ const Blog = () => {
                   cover={`${IMAGE_URL}/${blog.cover}`}
                   tags={blog.tags}
                   created={formatDate(blog.createdAt?.toString())}
-                  handleFilterTags={handleFilterTags}
                 />
               );
             })}

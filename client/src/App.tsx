@@ -26,6 +26,7 @@ import ManageUsers from "./pages/admin/ManageUsers";
 import ManageBlogs from "./pages/admin/ManageBlogs";
 import CreateBlog from "./pages/blog/CreateBlog";
 import Homepage from "./pages/Homepage";
+import BlogByTag from "./pages/blog/BlogByTag";
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
 
         {/* guest */}
         <Route path="/" element={<Homepage />} />
+        <Route path="/blogs/tag/:name" element={<BlogByTag />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
 
         <Route

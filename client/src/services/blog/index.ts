@@ -55,9 +55,11 @@ export const updateBlog = async (id: string, data: FormData, token: string) => {
   }
 };
 
-export const getBlogs = async () => {
+export const getBlogs = async (param?: { tag?: string; sort?: number }) => {
   try {
-    const response = await api.get(`/api/blogs`);
+    const response = await api.get(
+      `/api/blogs?tag=${param?.tag || ""}&sort=${param?.sort || -1}`
+    );
 
     if (response.status === 200) {
       return { status: true, data: response.data };

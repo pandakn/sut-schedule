@@ -10,7 +10,6 @@ type BlogCardProps = {
   body: string;
   tags: ITag[];
   created: string | undefined;
-  handleFilterTags: (tag: ITag) => void;
 };
 
 const BlogCard = ({
@@ -21,7 +20,6 @@ const BlogCard = ({
   body,
   tags,
   created,
-  handleFilterTags,
 }: BlogCardProps) => {
   const cleanBody = body.replace(
     /<br\s?\/?>|<u\s?\/?>|<strong\s?\/?>|<em\s?\/?>/g,
@@ -45,17 +43,17 @@ const BlogCard = ({
         </Link>
         <div
           dangerouslySetInnerHTML={{ __html: cleanBody }}
-          className="mt-2 text-gray-500 line-clamp-3"
+          className="mt-2 text-gray-500 line-clamp"
         ></div>
         <section className="flex flex-wrap gap-2 mt-2">
           {tags.map((t, idx) => (
-            <p
-              onClick={() => handleFilterTags(t)}
+            <Link
+              to={`/blogs/tag/${t.name}`}
               key={idx}
               className="px-2 py-1 text-gray-500 rounded bg-gray-50 hover:cursor-pointer hover:opacity-70"
             >
               #{t.name}
-            </p>
+            </Link>
           ))}
         </section>
       </div>

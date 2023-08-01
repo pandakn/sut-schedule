@@ -5,11 +5,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 
 // services
 import { getBlogById, deleteBlog } from "../../services/blog";
-import {
-  createComment,
-  deleteComment,
-  getCommentByBlogId,
-} from "../../services/comment";
+import { createComment, getCommentByBlogId } from "../../services/comment";
 
 // types
 import { IBlog } from "./Blog";
@@ -43,6 +39,8 @@ const BlogPost = () => {
   const [showBtn, setShowBtn] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  console.log(comments);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -84,19 +82,6 @@ const BlogPost = () => {
       setShowBtn(true);
     }
   }, [payload, post.author?._id]);
-
-  const handleDeleteComment = async (id: string) => {
-    if (accessToken) {
-      const res = await deleteComment(id, accessToken);
-
-      setComments((prev) => {
-        const filter = prev.filter((cm) => cm._id !== id);
-        return filter;
-      });
-
-      res && toast.success("Deleted comment");
-    }
-  };
 
   const submitComment = async () => {
     setContentComment("");
@@ -172,12 +157,13 @@ const BlogPost = () => {
           </div>
           <section className="flex justify-start gap-2 mt-8 mb-10">
             {post.tags?.map((t, idx) => (
-              <p
+              <Link
+                to={`/blogs/tag/${t.name}`}
                 key={idx}
                 className="px-2 py-1 text-gray-500 rounded bg-gray-50"
               >
                 #{t.name}
-              </p>
+              </Link>
             ))}
           </section>
         </div>
@@ -198,7 +184,6 @@ const BlogPost = () => {
               author={comment.author}
               content={comment.body}
               created={formatDate(comment.createdAt?.toString())}
-              handleDeleteComment={handleDeleteComment}
               setComments={setComments}
             />
           ))}

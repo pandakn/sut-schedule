@@ -6,15 +6,44 @@ import Tag, { ITag } from "../models/tag";
 import { Types } from "mongoose";
 import { titleToSlug } from "../utils/slug";
 
-export const getAllBlogs = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getAllBlogs = async (req: Request, res: Response) => {
   try {
-    const blogs: IBlog[] = await Blog.find()
-      .populate("author", "_id name username")
-      .populate("comments")
-      .populate("tags");
+    const { tag } = req.query;
+    let { sort } = req.query as Record<string, string>;
+
+    // Convert sort to a number (if it is a string representing a number)
+    const sortAsNumber = sort ? parseInt(sort as string, 10) : undefined;
+
+    let blogs: IBlog[];
+
+    if (tag) {
+      // If the 'tag' query parameter is provided, find the tag document by name
+      const tagDocument: ITag | null = await Tag.findOne({ name: tag }).exec();
+
+      if (!tagDocument) {
+        // If the tag document is not found, it means there are no blogs with this tag
+        res.status(404).json({
+          message: "Tag not found or no blogs associated with this tag.",
+        });
+        return;
+      }
+
+      // If the tag document is found, use its 'blogs' field to get the blogs with this tag
+      blogs = await Blog.find({ _id: { $in: tagDocument.blogs } })
+        .populate("author", "_id name username")
+        .populate("comments")
+        .populate("tags")
+        .sort({ createdAt: sortAsNumber === 1 ? 1 : -1 }) // Sorting by createdAt field in ascending or descending order
+        .exec();
+    } else {
+      // If no 'tag' query parameter is provided, get all blogs
+      blogs = await Blog.find()
+        .populate("author", "_id name username")
+        .populate("comments")
+        .populate("tags")
+        .sort({ createdAt: sortAsNumber === 1 ? 1 : -1 }) // Sorting by createdAt field in ascending or descending order
+        .exec();
+    }
 
     if (blogs.length < 1) {
       res.status(404).json({ message: "No posts yet." });
@@ -23,7 +52,8 @@ export const getAllBlogs = async (
 
     res.status(200).json({ result: blogs });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    console.error(error);
+    res.status(500).json({ message: "Internal server error", error });
   }
 };
 
@@ -54,10 +84,8 @@ export const getBlogById = async (
   res: Response
 ): Promise<void> => {
   const { slug } = req.params;
-  console.log(slug);
   const extractId = slug?.split("-");
   const id = extractId[extractId?.length - 1];
-  console.log(id);
 
   try {
     const blog: IBlog | null = await Blog.findOne({ _id: id })

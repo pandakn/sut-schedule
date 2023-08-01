@@ -28,17 +28,17 @@ export const colorOfDays: { [key: string]: IColor } = {
 // };
 
 export const pastelColor = [
-  { textColor: "#F4B183", bgColor: "#FFEFD5" }, // Pastel Orange
-  { textColor: "#F675A8", bgColor: "#FADBD8" }, // Pastel Pink
-  { textColor: "#70AF85", bgColor: "#D1F2EB" }, // Pastel Green
-  { textColor: "#6096B4", bgColor: "#D6EAF8" }, // Pastel Blue
-  { textColor: "#D0B8A8", bgColor: "#faefe8" }, // Pastel beige
-  { textColor: "#BA90C6", bgColor: "#F5EEF8" }, // Pastel Lavender
-  { textColor: "#FA877F", bgColor: "#fcdcdc" }, // Pastel red
-  { textColor: "#555555", bgColor: "#ffffff" }, // Pastel white
-  { textColor: "#fb7185", bgColor: "#fff1f2" }, // Pastel rose
-  { textColor: "#867070", bgColor: "#f0dbcc" }, // Pastel brown
-  { textColor: "#F0C38E", bgColor: "#FFF3E0" }, // Pastel Yellow
+  { textColor: "#5E2A08", bgColor: "#FFEFD6" }, // Pastel Orange
+  { textColor: "#60062A", bgColor: "#FAD9D6" }, // Pastel Pink
+  { textColor: "#213B2A", bgColor: "#CFF2EA" }, // Pastel Green
+  { textColor: "#1F3642", bgColor: "#D8EBF8" }, // Pastel Blue
+  { textColor: "#493527", bgColor: "#FAF0EA" }, // Pastel beige
+  { textColor: "#4B2B54", bgColor: "#F4EDF8" }, // Pastel Lavender
+  { textColor: "#670B04", bgColor: "#FCDEDE" }, // Pastel red
+  { textColor: "#424242", bgColor: "#ffffff" }, // Pastel white
+  { textColor: "#7C0315", bgColor: "#FFF0F1" }, // Pastel rose
+  { textColor: "#352C2C", bgColor: "#F0DBCC" }, // Pastel brown
+  { textColor: "#56330B", bgColor: "#FFF3E0" }, // Pastel Yellow
 ];
 
 let remainingColors = [...pastelColor];

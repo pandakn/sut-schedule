@@ -3,7 +3,7 @@ import HeroSection from "../components/HeroSection";
 
 const Homepage = () => {
   return (
-    <div className="container mx-auto">
+    <div className="container px-5 mx-auto">
       <HeroSection />
       <Blog />
     </div>

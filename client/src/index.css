@@ -6,6 +6,18 @@ html {
   @apply relative min-h-screen font-poppins;
 }
 
+/* safari support */
+/* https://stackoverflow.com/questions/70679732/css-line-clamp-does-not-work-in-safari-on-inner-block-level-elements/70683084#70683084 */
+.line-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  height: 4.5rem;
+}
+
 .btn-logo {
   @apply relative w-full md:w-14 md:pl-2 py-4 md:py-3 text-2xl text-center text-white rounded-sm mt-3 md:mt-0;
 }

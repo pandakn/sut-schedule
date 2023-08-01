@@ -111,6 +111,7 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
       setShowAlert(true);
       setAddCourseError({ isError: true, message: errorMsg });
       setTimeout(() => setShowAlert(false), 2000);
+      return;
     } else {
       toast.success("Course added successfully");
     }
