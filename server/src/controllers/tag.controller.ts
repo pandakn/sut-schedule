@@ -36,7 +36,6 @@ export const getAllTags = async (req: Request, res: Response) => {
 export const getPopularTags = async (req: Request, res: Response) => {
   try {
     const { limit } = req.query;
-    console.log(limit);
 
     // Aggregate pipeline to get popular tags based on the number of blogs associated with each tag
     const popularTags = await Tag.aggregate([

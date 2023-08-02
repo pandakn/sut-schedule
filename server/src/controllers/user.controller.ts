@@ -56,6 +56,21 @@ export const editUser = async (req: Request, res: Response): Promise<void> => {
     user.name = name || user.name;
     user.role = role || user.role;
     user.maximumStudyPlans = maximumStudyPlans || user.maximumStudyPlans;
+
+    if (username.length < 4) {
+      res
+        .status(400)
+        .json({ message: "Username must have at least 4 characters" });
+      return;
+    }
+
+    if (password.length < 6) {
+      res
+        .status(400)
+        .json({ message: "Password must have at least 6 characters" });
+      return;
+    }
+
     if (password) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
@@ -76,12 +91,22 @@ export const editUser = async (req: Request, res: Response): Promise<void> => {
 // Delete a user by ID
 export const deleteUserById = async (req: Request, res: Response) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    // Find the user by ID
+    const user = await User.findById(req.params.id);
     if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
     }
-    res.json({ message: "User deleted successfully", user });
+
+    // Delete the associated study plans (if any)
+    await StudyPlan.deleteMany({ creator: user._id });
+
+    // Delete the user
+    await User.findByIdAndDelete(req.params.id);
+
+    res.json({
+      message: "User and associated study plans deleted successfully",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
@@ -89,7 +114,7 @@ export const deleteUserById = async (req: Request, res: Response) => {
 };
 
 export const addCourseToStudyPlan = async (req: Request, res: Response) => {
-  const { courseSchedule } = req.body;
+  const { courseSchedule } = req.body; // Courses to be added
   const { userID, studyPlanID } = req.params;
 
   try {
@@ -111,7 +136,7 @@ export const addCourseToStudyPlan = async (req: Request, res: Response) => {
 
     const courseInStudyPlan = studyPlan.courseSchedule;
 
-    const isSameSchedule = courseInStudyPlan.some((c) => {
+    const conflictingCourses = courseInStudyPlan.filter((c) => {
       const checkCourseCode = c.courseCode === courseSchedule.courseCode;
 
       const sameSchedule = handleSameSchedule(
@@ -122,26 +147,13 @@ export const addCourseToStudyPlan = async (req: Request, res: Response) => {
       return sameSchedule || checkCourseCode;
     });
 
-    if (isSameSchedule) {
-      const conflictingCourses = courseInStudyPlan.filter((c) => {
-        const checkCourseCode = c.courseCode === courseSchedule.courseCode;
+    if (conflictingCourses.length > 0) {
+      const courseConflicts = conflictingCourses.map((c) => c.courseNameEN);
 
-        const sameSchedule = handleSameSchedule(
-          courseSchedule.classSchedule,
-          c.classSchedule
-        );
+      const errorMsg = `The class schedule conflicts with\n${courseConflicts}`;
 
-        return sameSchedule || checkCourseCode;
-      });
-
-      if (conflictingCourses.length > 0) {
-        const courseConflicts = conflictingCourses.map((c) => c.courseNameEN);
-
-        const errorMsg = `The class schedule conflicts with\n${courseConflicts}`;
-
-        res.status(404).json({ message: errorMsg });
-        return;
-      }
+      res.status(404).json({ message: errorMsg });
+      return;
     }
 
     // Add the class schedule to the existing study plan

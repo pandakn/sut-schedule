@@ -15,11 +15,13 @@ const userSchema: Schema = new mongoose.Schema(
       required: true,
       trim: true,
       unique: true,
+      minlength: 4,
     },
     password: {
       type: String,
       required: true,
       trim: true,
+      minlength: 6,
     },
     selectedStudyPlan: {
       type: Schema.Types.ObjectId,

@@ -28,6 +28,20 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    if (username.length < 4) {
+      res
+        .status(400)
+        .json({ message: "Username must have at least 4 characters" });
+      return;
+    }
+
+    if (password.length < 6) {
+      res
+        .status(400)
+        .json({ message: "Password must have at least 6 characters" });
+      return;
+    }
+
     // Hash the password
     const salt = await bcrypt.genSalt(10);
 

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import connectRedis from "../utils/connect-redis";
 import { scrapeCourseData } from "../scraping/scraper";
 import { scrapeCourseDataTest } from "../scraping/scrapeTest";
+import StudyPlan from "../models/studyPlan";
 
 const redisClient = connectRedis();
 
@@ -103,4 +104,43 @@ export const getCourseDataFromREG = async (req: Request, res: Response) => {
   // expire 3 hr.
   await redisClient.set(cacheKey, JSON.stringify(jsonData), { EX: 3600 * 3 });
   res.json(jsonData);
+};
+
+export const getPopularCourses = async (req: Request, res: Response) => {
+  try {
+    const { limit } = req.query;
+
+    // Use the aggregation pipeline to group and count the courses
+    const popularCourses = await StudyPlan.aggregate([
+      // Unwind the 'courseSchedule' array to create a separate document for each course
+      { $unwind: "$courseSchedule" },
+      // Group the documents by 'coursecode' and 'courseNameEN' and count the occurrences of each course
+      {
+        $group: {
+          _id: {
+            courseCode: "$courseSchedule.courseCode",
+            courseName: "$courseSchedule.courseNameEN",
+          },
+          count: { $sum: 1 },
+        },
+      },
+      // Project the fields to rename the _id field to 'course' and include the count field
+      {
+        $project: {
+          _id: 0, // Exclude the default _id field
+          courseCode: "$_id.courseCode",
+          courseName: "$_id.courseName",
+          count: 1,
+        },
+      },
+      // Sort the courses in descending order based on their count (popularity)
+      { $sort: { count: -1 } },
+      { $limit: +limit || 5 },
+    ]);
+
+    res.status(200).json({ result: popularCourses });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
