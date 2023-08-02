@@ -1,14 +1,13 @@
-import React, { SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import FormContainer from "../FormContainer";
 import { useAuth } from "../../hooks";
 import { IRegisterForm } from "../../models/auth.interface";
 
 type AddUserProps = {
   toggleModal: () => void;
-  setIsModalOpen: React.Dispatch<SetStateAction<boolean>>;
 };
 
-const AddUser = ({ toggleModal, setIsModalOpen }: AddUserProps) => {
+const AddUser = ({ toggleModal }: AddUserProps) => {
   const { handleRegister } = useAuth();
   const [inputForm, setInputForm] = useState<IRegisterForm>({
     name: "",
@@ -23,14 +22,13 @@ const AddUser = ({ toggleModal, setIsModalOpen }: AddUserProps) => {
     });
   };
 
-  const register = (event: React.FormEvent) => {
+  const register = async (event: React.FormEvent) => {
     event.preventDefault();
-    handleRegister(inputForm.name, inputForm.username, inputForm.password);
-
-    setTimeout(() => {
-      setIsModalOpen(false);
-      window.location.reload();
-    }, 1000);
+    await handleRegister(
+      inputForm.name,
+      inputForm.username,
+      inputForm.password
+    );
   };
 
   return (

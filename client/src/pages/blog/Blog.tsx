@@ -16,6 +16,7 @@ import { AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
 
 export interface ITag {
   name: string;
+  blogCount?: number;
 }
 
 export interface IBlog {
@@ -83,7 +84,7 @@ const Blog = ({ tag }: BlogProps) => {
       <div className="flex">
         <PopularTags />
         <div id="blog" className="container mx-auto mb-20">
-          <div className="flex justify-between">
+          <div className="flex flex-wrap justify-between mb-4 md:mb-0">
             {/* search */}
             <div className="relative mb-5">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -93,7 +94,7 @@ const Blog = ({ tag }: BlogProps) => {
                 onChange={onSearchChange}
                 type="text"
                 value={searchQuery}
-                className="block px-6 py-3 pl-10 text-sm text-gray-900 bg-gray-100 rounded-xl placeholder:text-gray-400 w-96 focus:border-gray-500 focus:outline-none"
+                className="block px-6 py-3 pl-10 text-sm text-gray-900 bg-gray-100 w-72 rounded-xl placeholder:text-gray-400 focus:border-gray-500 focus:outline-none"
                 placeholder="Search blogs..."
               />
               {searchQuery && (

@@ -197,10 +197,7 @@ const TableManageUsers = ({
       </Modal>
 
       <Modal isOpenModal={isModalAddUser}>
-        <AddUser
-          toggleModal={toggleModalAddUser}
-          setIsModalOpen={setIsModalAddUser}
-        />
+        <AddUser toggleModal={toggleModalAddUser} />
       </Modal>
 
       {/* Modal delete user */}

@@ -13,12 +13,18 @@ import {
   AiOutlineSchedule,
 } from "react-icons/ai";
 import ManageLogo from "../../components/admin/ManageLogo";
+import BarChartPopularTags from "../../components/admin/BarChartPopularTags";
+import BarChartPopularCourses from "../../components/admin/BarChartPopularCourses";
+import Modal from "../../components/Modal";
 
 const AdminPage = () => {
   const { accessToken } = useAuth();
   const { totalUser } = useUser();
   const [totalStudyPlans, setTotalStudyPlans] = useState(0);
   const [totalBlogs, setTotalBlogs] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
 
   const fetchAllBlogs = useCallback(async () => {
     if (accessToken) {
@@ -62,9 +68,20 @@ const AdminPage = () => {
           icon={<AiOutlineSchedule className="totalCard-icon" />}
         />
       </div>
-      <div className="mt-10">
+      <button
+        onClick={toggleModal}
+        type="submit"
+        className="px-6 py-2 mt-10 font-medium tracking-wide text-white bg-orange-600 rounded-xl hover:bg-orange-400"
+      >
+        Config Logo
+      </button>
+
+      <BarChartPopularCourses />
+      <BarChartPopularTags />
+
+      <Modal isOpenModal={isModalOpen} toggleModal={toggleModal}>
         <ManageLogo />
-      </div>
+      </Modal>
     </>
   );
 };

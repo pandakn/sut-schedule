@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTopTags } from "../../services/blog";
+import { getTopTags } from "../../services/popular";
 import { pastelColor } from "../../utils/colors";
 import { Link } from "react-router-dom";
 

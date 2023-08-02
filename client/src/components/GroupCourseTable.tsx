@@ -21,60 +21,6 @@ type DetailsProp = {
   course: IGroupedCourse;
 };
 
-const RenderDetails = ({ course }: DetailsProp) => {
-  return (
-    <div>
-      <p>status: {course.courseStatus}</p>
-      <section className="flex items-baseline gap-2 my-2">
-        <p>condition:</p>
-        <div className="flex flex-wrap gap-2">
-          {course.courseCondition?.map((condition, i) => {
-            return (
-              <p
-                key={`${course.courseCode}-${course.version}-condition-${i}`}
-                className="px-2 py-1 bg-green-200 rounded-md"
-              >
-                {condition || "-"}
-              </p>
-            );
-          }) || "-"}
-        </div>
-      </section>
-
-      <section className="flex items-baseline gap-2 mb-2">
-        <p>continue:</p>
-        <div className="flex flex-wrap gap-2">
-          {course.continueCourse?.map((con, i) => {
-            return (
-              <p
-                key={`${course.courseCode}-${course.version}-continue-${i}`}
-                className="px-2 py-1 bg-orange-200 rounded-md"
-              >
-                {con}
-              </p>
-            );
-          }) || "-"}
-        </div>
-      </section>
-
-      <section className="flex items-baseline gap-2">
-        <p>equivalent:</p>
-        <div className="flex flex-wrap gap-2">
-          {course.equivalentCourse?.map((e, i) => {
-            return (
-              <div
-                key={`${course.courseCode}-${course.version}-equivalent-${i}`}
-              >
-                <p className="px-2 py-1 rounded-md bg-blue-50">{e}</p>
-              </div>
-            );
-          }) || "-"}
-        </div>
-      </section>
-    </div>
-  );
-};
-
 const GroupCourseTable = ({ data }: Props) => {
   const { addCourseToSchedule, addCourseError, showAlert, loading } =
     useCourse();
@@ -211,6 +157,60 @@ const GroupCourseTable = ({ data }: Props) => {
           <SkeletonCourseTable count={5} />
         </>
       )}
+    </div>
+  );
+};
+
+const RenderDetails = ({ course }: DetailsProp) => {
+  return (
+    <div>
+      <p>status: {course.courseStatus}</p>
+      <section className="flex items-baseline gap-2 my-2">
+        <p>condition:</p>
+        <div className="flex flex-wrap gap-2">
+          {course.courseCondition?.map((condition, i) => {
+            return (
+              <p
+                key={`${course.courseCode}-${course.version}-condition-${i}`}
+                className="px-2 py-1 bg-green-200 rounded-md"
+              >
+                {condition || "-"}
+              </p>
+            );
+          }) || "-"}
+        </div>
+      </section>
+
+      <section className="flex items-baseline gap-2 mb-2">
+        <p>continue:</p>
+        <div className="flex flex-wrap gap-2">
+          {course.continueCourse?.map((con, i) => {
+            return (
+              <p
+                key={`${course.courseCode}-${course.version}-continue-${i}`}
+                className="px-2 py-1 bg-orange-200 rounded-md"
+              >
+                {con}
+              </p>
+            );
+          }) || "-"}
+        </div>
+      </section>
+
+      <section className="flex items-baseline gap-2">
+        <p>equivalent:</p>
+        <div className="flex flex-wrap gap-2">
+          {course.equivalentCourse?.map((e, i) => {
+            return (
+              <div
+                key={`${course.courseCode}-${course.version}-equivalent-${i}`}
+              >
+                <p className="px-2 py-1 rounded-md bg-blue-50">{e}</p>
+              </div>
+            );
+          }) || "-"}
+        </div>
+      </section>
     </div>
   );
 };

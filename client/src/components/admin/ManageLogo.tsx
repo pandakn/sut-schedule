@@ -12,9 +12,9 @@ const ManageLogo = () => {
   } = useLogo();
 
   return (
-    <div className="max-w-sm p-6 mx-auto my-8 border rounded-md shadow-xl">
+    <div className="p-6 my-8 border rounded-lg shadow-xl w-96">
       <h3 className="mb-6 text-2xl text-center ">Config Logo</h3>
-      <form className="flex flex-col justify-center gap-y-6">
+      <div className="flex flex-col justify-center gap-y-6">
         {/* logo */}
         {selectedImage ? (
           <div className="flex flex-col items-center mb-3 gap-y-2">
@@ -74,7 +74,7 @@ const ManageLogo = () => {
         >
           Submit
         </button>
-      </form>
+      </div>
     </div>
   );
 };

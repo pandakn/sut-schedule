@@ -17,15 +17,12 @@ export const register = async (
     if (response.status === 200) {
       // Handle the success response
       return { data: response.data, error: false };
-    } else {
-      // Handle the error response
-      return { data: response.data, error: true };
     }
   } catch (error) {
     if (
       error instanceof AxiosError &&
       error.response &&
-      error.response.status === 400
+      (error.response.status === 400 || error.response.status === 404)
     ) {
       return { error: true, data: error.response.data };
     } else {

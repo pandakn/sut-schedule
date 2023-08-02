@@ -106,17 +106,17 @@ const CourseProvider = ({ children }: CourseProviderProps) => {
     course: CourseDataInterface
   ) => {
     const errorMsg = await handleAddCourseToStudyPlan(studyPlanID, course);
+    setAddCourseError({ isError: false, message: "" });
 
     if (errorMsg) {
       setShowAlert(true);
       setAddCourseError({ isError: true, message: errorMsg });
       setTimeout(() => setShowAlert(false), 2000);
       return;
-    } else {
-      toast.success("Course added successfully");
     }
 
-    setShowAlert(true);
+    toast.success("Course added successfully");
+
     setTimeout(() => setShowAlert(false), 1500);
   };
 

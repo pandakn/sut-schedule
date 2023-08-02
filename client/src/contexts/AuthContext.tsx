@@ -28,7 +28,7 @@ type AuthContextType = {
     name: string,
     username: string,
     password: string
-  ) => Promise<void>;
+  ) => Promise<unknown>;
   handleLogin: (username: string, password: string) => Promise<void>;
   handleLogout: () => Promise<void>;
   accessToken: string | null;
@@ -64,6 +64,7 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextType>(initialAuthContext);
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
+  const redirectAdmin = /^\/admin(\/|$)/.test(location.pathname);
   const [payload, setPayload] = useState<AccessTokenPayload>({
     id: "",
     name: "",
@@ -96,12 +97,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
     if (err) {
       setRegistered({ message: data.message, error: err });
-      toast.error(data.message, { duration: 1500 });
+      toast.error(data.message, { duration: 2500 });
     } else {
       setRegistered({ message: data.message, error: false });
       toast.success(data.message, { duration: 1500 });
       setTimeout(() => {
-        navigate("/login");
+        redirectAdmin ? window.location.reload() : navigate("/login");
       }, 1500);
     }
   };
