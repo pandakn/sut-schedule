@@ -2,11 +2,15 @@ import React from "react";
 
 type Props = {
   children: React.ReactNode;
-  header: string;
+  header?: string;
 };
 
 const FormContainer = ({ children, header }: Props) => {
-  const checkHeader = header === "login" || header === "register";
+  const checkHeader =
+    header === "login" ||
+    header === "register" ||
+    header === "forgot password" ||
+    header === "reset password";
 
   return (
     <div

@@ -7,13 +7,23 @@ import React, {
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { login, logout, register } from "../services/authHttpClient";
+import {
+  forgotPassword,
+  login,
+  logout,
+  register,
+  resetPassword,
+  verifyOTP,
+} from "../services/authHttpClient";
 import { getUserById } from "../services/httpClient";
 import toast from "react-hot-toast";
 
 interface AuthMsg {
   message: string | undefined;
   error: boolean | undefined;
+  email?: string;
+  username?: string;
+  isPending?: boolean;
 }
 
 interface AccessTokenPayload {
@@ -30,12 +40,18 @@ type AuthContextType = {
     password: string
   ) => Promise<unknown>;
   handleLogin: (username: string, password: string) => Promise<void>;
+  handleForgotPassword: (username: string, email: string) => Promise<void>;
+  handleVerifyOTP: (username: string, otp: string) => Promise<void>;
+  handleResetPassword: (username: string, newPassword: string) => Promise<void>;
   handleLogout: () => Promise<void>;
   accessToken: string | null;
   payload: AccessTokenPayload;
   setPayload: Dispatch<SetStateAction<AccessTokenPayload>>;
   loggedIn: AuthMsg;
   registered: AuthMsg;
+  forgotPasswordMsg: AuthMsg;
+  verifiedOtp: AuthMsg;
+  resetPasswordMsg: AuthMsg;
 };
 
 const initialAuthContext: AuthContextType = {
@@ -44,6 +60,15 @@ const initialAuthContext: AuthContextType = {
   },
   handleLogin: () => {
     throw new Error("handleLogin is not implemented");
+  },
+  handleForgotPassword: () => {
+    throw new Error("handleForgotPassword is not implemented");
+  },
+  handleVerifyOTP: () => {
+    throw new Error("handleVerifyOTP is not implemented");
+  },
+  handleResetPassword: () => {
+    throw new Error("handleResetPassword is not implemented");
   },
   handleLogout: () => {
     throw new Error("handleLogout is not implemented");
@@ -55,6 +80,19 @@ const initialAuthContext: AuthContextType = {
   },
   loggedIn: { message: "", error: false },
   registered: { message: "", error: false },
+  forgotPasswordMsg: {
+    message: "",
+    error: false,
+    email: "",
+    username: "",
+    isPending: false,
+  },
+  verifiedOtp: {
+    message: "",
+    error: false,
+    username: "",
+  },
+  resetPasswordMsg: { message: "", error: false },
 };
 
 interface AuthProviderProps {
@@ -80,6 +118,22 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     error: false,
   });
   const [registered, setRegistered] = useState<AuthMsg>({
+    message: "",
+    error: false,
+  });
+  const [forgotPasswordMsg, setForgotPasswordMsg] = useState<AuthMsg>({
+    message: "",
+    username: "",
+    email: "",
+    error: false,
+    isPending: false,
+  });
+  const [verifiedOtp, setVerifiedOtp] = useState<AuthMsg>({
+    message: "",
+    error: false,
+    username: "",
+  });
+  const [resetPasswordMsg, setResetPasswordMsg] = useState<AuthMsg>({
     message: "",
     error: false,
   });
@@ -135,6 +189,93 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const handleForgotPassword = async (username: string, password: string) => {
+    setForgotPasswordMsg({
+      message: "",
+      error: false,
+      isPending: true,
+    });
+    const res = await forgotPassword(username, password);
+    const data = res?.data;
+    const err = res?.error;
+
+    if (!data?.message) return;
+
+    if (err) {
+      setForgotPasswordMsg({
+        message: data?.message,
+        error: err,
+        isPending: false,
+      });
+      toast.error(data.message, { duration: 1500 });
+    } else {
+      setForgotPasswordMsg({
+        message: data?.message,
+        username: username,
+        email: data.result?.sendTo,
+        error: false,
+        isPending: false,
+      });
+      toast.success(data.message, { duration: 1500 });
+      setTimeout(() => navigate("/verify-otp"), 1500);
+    }
+  };
+
+  const handleVerifyOTP = async (username: string, otp: string) => {
+    setVerifiedOtp({
+      message: "",
+      error: false,
+    });
+    const res = await verifyOTP(username, otp);
+    const data = res?.data;
+    const err = res?.error;
+
+    if (!data?.message) return;
+
+    if (err) {
+      setVerifiedOtp({
+        message: data?.message,
+        error: err,
+      });
+      toast.error(data.message, { duration: 1500 });
+    } else {
+      setVerifiedOtp({
+        message: data?.message,
+        username: username,
+        error: false,
+      });
+      toast.success(data.message, { duration: 1500 });
+      setTimeout(() => navigate("/reset-password"), 1500);
+    }
+  };
+
+  const handleResetPassword = async (username: string, newPassword: string) => {
+    setResetPasswordMsg({
+      message: "",
+      error: false,
+    });
+    const res = await resetPassword(username, newPassword);
+    const data = res?.data;
+    const err = res?.error;
+
+    if (!data?.message) return;
+
+    if (err) {
+      setResetPasswordMsg({
+        message: data?.message,
+        error: err,
+      });
+      toast.error(data.message, { duration: 1500 });
+    } else {
+      setResetPasswordMsg({
+        message: data?.message,
+        error: false,
+      });
+      toast.success(data.message, { duration: 1500 });
+      setTimeout(() => navigate("/login"), 1500);
+    }
+  };
+
   const handleLogout = async () => {
     await logout();
     localStorage.clear();
@@ -175,12 +316,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const authContextValue: AuthContextType = {
     handleRegister,
     handleLogin,
+    handleForgotPassword,
+    handleVerifyOTP,
+    handleResetPassword,
     handleLogout,
     accessToken,
     payload,
     setPayload,
     loggedIn,
     registered,
+    forgotPasswordMsg,
+    verifiedOtp,
+    resetPasswordMsg,
   };
 
   return (

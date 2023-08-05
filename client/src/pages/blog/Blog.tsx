@@ -100,7 +100,7 @@ const Blog = ({ tag }: BlogProps) => {
               {searchQuery && (
                 <div
                   onClick={() => setSearchQuery("")}
-                  className="absolute inset-y-0 flex items-center pr-3 left-72 hover:cursor-pointer"
+                  className="absolute inset-y-0 flex items-center pr-3 left-64 hover:cursor-pointer"
                 >
                   <AiOutlineClose className="w-4 h-4 text-red-500" />
                 </div>

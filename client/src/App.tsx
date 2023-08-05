@@ -4,11 +4,15 @@ import "react-quill/dist/quill.snow.css";
 // protected route
 import ProtectedAdminRoute from "./routes/ProtectedAdminRoute";
 import ProtectedUserRoute from "./routes/ProtectedUserRoute";
+import ProtectedAuthRoute from "./routes/ProtectAuthRoute";
 
 // components
 import BlogPost from "./pages/blog/BlogPost";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import OTPInput from "./components/auth/OTPInput";
+import ForgotPassword from "./components/auth/ForgotPassword";
+import ResetPassword from "./components/auth/ResetPassword";
 
 // pages
 import Login from "./pages/Login";
@@ -122,6 +126,23 @@ function App() {
         {/* auth */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterForm />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="/verify-otp"
+          element={
+            <ProtectedAuthRoute>
+              <OTPInput />
+            </ProtectedAuthRoute>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <ProtectedAuthRoute>
+              <ResetPassword />
+            </ProtectedAuthRoute>
+          }
+        />
       </Routes>
       <Footer />
     </>

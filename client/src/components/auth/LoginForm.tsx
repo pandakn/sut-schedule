@@ -66,19 +66,29 @@ const LoginForm = () => {
             name="password"
             onChange={handleInputChange}
             value={inputForm.password}
-            className="w-full p-2 border border-gray-300 rounded-lg"
+            className="w-full p-2 mb-1 border border-gray-300 rounded-lg"
             placeholder="Enter your password"
           />
         </div>
         {/* show msg error */}
         {loggedIn.error && (
-          <span className="text-sm text-red-500">{loggedIn.message}</span>
+          <span className="text-sm text-red-500 ">
+            {loggedIn.message}
+            <br />
+          </span>
         )}
+        <Link
+          to="/forgot-password"
+          className="text-sm text-blue-600 hover:underline"
+        >
+          Forgot Password?
+        </Link>
+
         <div>
           <button
             type="submit"
             onSubmit={login}
-            className="w-full px-6 py-2 text-xl font-medium text-white uppercase bg-black rounded-3xl"
+            className="w-full px-6 py-2 text-xl font-medium text-white uppercase bg-black rounded-xl"
           >
             Login
           </button>

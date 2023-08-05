@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../../hooks";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 // components
 import FormContainer from "../FormContainer";
@@ -15,7 +15,7 @@ const RegisterForm = () => {
     password: "",
   });
 
-  const { handleRegister } = useAuth();
+  const { handleRegister, accessToken } = useAuth();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputForm({
@@ -28,6 +28,10 @@ const RegisterForm = () => {
     event.preventDefault();
     handleRegister(inputForm.name, inputForm.username, inputForm.password);
   };
+
+  if (accessToken) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <FormContainer header="register">
@@ -87,7 +91,7 @@ const RegisterForm = () => {
           <button
             type="submit"
             onSubmit={register}
-            className="w-full px-6 py-2 text-xl font-medium text-white uppercase bg-black rounded-3xl"
+            className="w-full px-6 py-2 text-xl font-medium text-white uppercase bg-black rounded-xl"
           >
             Register
           </button>

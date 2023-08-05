@@ -80,3 +80,75 @@ export const logout = async () => {
     console.error(error);
   }
 };
+
+export const forgotPassword = async (username: string, email: string) => {
+  try {
+    const response = await api.post(`/api/forgot-password`, {
+      username,
+      email,
+    });
+
+    if (response.status === 200) {
+      // Handle the success response
+      return { data: response.data, error: false };
+    }
+  } catch (error) {
+    if (
+      error instanceof AxiosError &&
+      error.response &&
+      (error.response.status === 400 || error.response.status === 404)
+    ) {
+      return { error: true, data: error.response.data };
+    } else {
+      console.error(error);
+    }
+  }
+};
+
+export const verifyOTP = async (username: string, otp: string) => {
+  try {
+    const response = await api.post(`/api/verify-otp`, {
+      username,
+      otp,
+    });
+
+    if (response.status === 200) {
+      // Handle the success response
+      return { data: response.data, error: false };
+    }
+  } catch (error) {
+    if (
+      error instanceof AxiosError &&
+      error.response &&
+      (error.response.status === 400 || error.response.status === 404)
+    ) {
+      return { error: true, data: error.response.data };
+    } else {
+      console.error(error);
+    }
+  }
+};
+
+export const resetPassword = async (username: string, newPassword: string) => {
+  try {
+    const response = await api.post(`/api/reset-password`, {
+      username,
+      newPassword,
+    });
+
+    if (response.status === 200) {
+      // Handle the success response
+      return { data: response.data, error: false };
+    }
+  } catch (error) {
+    if (
+      error instanceof AxiosError &&
+      error.response &&
+      (error.response.status === 400 || error.response.status === 404)
+    ) {
+      return { error: true, data: error.response.data };
+    } else {
+      console.error(error);
+    }
+  }
+};
