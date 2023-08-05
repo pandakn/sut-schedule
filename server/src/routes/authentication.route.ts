@@ -4,6 +4,9 @@ import {
   login,
   jwtRefreshToken,
   logout,
+  forgotPassword,
+  verifyOTP,
+  resetPassword,
 } from "../controllers/authentication.controller";
 
 export default (router: express.Router) => {
@@ -14,4 +17,9 @@ export default (router: express.Router) => {
 
   // current admin
   router.get("/auth/current-admin");
+
+  //forgot password
+  router.post("/forgot-password", forgotPassword);
+  router.post("/verify-otp", verifyOTP);
+  router.post("/reset-password", resetPassword);
 };

@@ -6,6 +6,7 @@ import User from "../models/user";
 import { IUser } from "interfaces/user.interface";
 
 import { createDefaultStudyPlan } from "../utils/defaultStudyPlan";
+import { generateOTP, sendOTPToEmail } from "../utils/sendEmail";
 
 export interface UserPayload {
   id: string;
@@ -177,4 +178,122 @@ export const logout = (req: Request, res: Response) => {
     sameSite: "none",
   });
   res.status(200).json({ message: "Logged out successfully" });
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  try {
+    const { username, email } = req.body;
+
+    // Check if user exists
+    const user: IUser | null = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Generate OTP and set its expiration time (e.g., 3 minutes from now)
+    const otp = generateOTP();
+    const otpExpiration = new Date();
+    otpExpiration.setMinutes(otpExpiration.getMinutes() + 3);
+
+    // // Save OTP and its expiration in the user object
+    // user.otp = otp;
+    // user.otpExpiration = otpExpiration;
+    // await user.save();
+
+    // Store OTP and its expiration in req.app.locals
+    req.app.locals.OTP = otp;
+    req.app.locals.OTPExp = otpExpiration;
+
+    // Send OTP to user's email
+    const resEmail = await sendOTPToEmail(email, otp);
+    const sendTo = resEmail.accepted[0];
+
+    if (!resEmail) return;
+
+    res.status(200).json({ message: "OTP sent to email", result: { sendTo } });
+  } catch (err) {
+    console.error("Error in forgotPassword:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const verifyOTP = async (req: Request, res: Response) => {
+  try {
+    const { username, otp } = req.body;
+
+    const storedOTP = req.app.locals.OTP;
+    const otpExpiration = req.app.locals.OTPExp;
+
+    // Check if user exists
+    const user: IUser | null = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if OTP exists and has not expired
+    if (!storedOTP || !otpExpiration || otpExpiration < new Date()) {
+      return res.status(400).json({ message: "OTP is invalid or expired" });
+    }
+
+    // Check if the provided OTP matches the one in the database
+    if (storedOTP !== otp) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    // If OTP is valid, you can clear the OTP and its expiration from req.app.locals
+    req.app.locals.OTP = undefined;
+    req.app.locals.OTPExp = undefined;
+
+    const resetSession = new Date();
+    resetSession.setMinutes(otpExpiration.getMinutes() + 5);
+    req.app.locals.resetSession = true;
+    req.app.locals.resetSessionExp = resetSession;
+
+    res.status(200).json({ message: "OTP verified successfully" });
+  } catch (err) {
+    console.error("Error in verifyOTP:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { username, newPassword } = req.body;
+    const storedResetSession = req.app.locals.resetSession;
+    const resetSessionExp = req.app.locals.resetSessionExp;
+
+    // Find the user based on the provided username
+    const user: IUser | null = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (
+      !storedResetSession ||
+      !resetSessionExp ||
+      resetSessionExp < new Date()
+    ) {
+      return res.status(404).json({ message: "Session expired!" });
+    }
+
+    if (newPassword.length < 6) {
+      res
+        .status(400)
+        .json({ message: "Password must have at least 6 characters" });
+      return;
+    }
+
+    // Update the user's password with the new password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+    user.password = hashedPassword;
+
+    // Save the updated user object
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (err) {
+    console.error("Error in resetPassword:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
