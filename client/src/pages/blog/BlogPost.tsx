@@ -171,11 +171,14 @@ const BlogPost = () => {
         <hr className="my-8" />
 
         {/* comment */}
-        <Comment
-          content={contentComment}
-          setContent={setContentComment}
-          submitComment={submitComment}
-        />
+        {accessToken && (
+          <Comment
+            content={contentComment}
+            setContent={setContentComment}
+            submitComment={submitComment}
+          />
+        )}
+
         <div className="flex flex-col my-5 gap-y-4">
           {comments?.map((comment) => (
             <CommentCard
