@@ -7,6 +7,7 @@ import HorizontalCard from "../components/HorizontalCard";
 import TotalCredits from "../components/TotalCredits";
 import Header from "../components/Header";
 import Tabs from "../components/Tabs";
+import { Tooltip } from "react-tooltip";
 
 // icon
 import { AiOutlineDownload } from "react-icons/ai";
@@ -24,6 +25,8 @@ interface IBgColor {
   [key: string]: string;
 }
 
+const toolTipContent = "Select card or table format below before downloading";
+
 const SchedulePage = () => {
   const [courseInSchedule, setCourseInSchedule] = useState<{
     [key: string]: ICourseInSchedule[];
@@ -32,6 +35,7 @@ const SchedulePage = () => {
   const [bgColor, setBgColor] = useState<IBgColor>({});
   const { courseInPlanner, selectedPlan } = useStudyPlan();
   const scheduleContainer = useRef(null);
+  const tableScheduleContainer = useRef(null);
 
   const mappedCourses = useCallback(() => {
     if (!Array.isArray(courseInPlanner)) {
@@ -96,6 +100,11 @@ const SchedulePage = () => {
     setCourseInSchedule(res);
   }, [mappedCourses, courseInPlanner]);
 
+  const handleDownloadImage = () => {
+    // Wait for a brief moment for components to render completely
+    downloadImage(scheduleContainer.current, tableScheduleContainer.current);
+  };
+
   return (
     <>
       <Header studyPlanName={selectedPlan.name} />
@@ -104,20 +113,41 @@ const SchedulePage = () => {
         scheduleContainer={scheduleContainer}
       />
       <div className="container flex items-center justify-between px-5 mx-auto mb-5">
-        {/* button download study plan */}
-        <button
-          disabled={courseInPlanner.length <= 0}
-          onClick={() => downloadImage(scheduleContainer.current)}
-          className="flex items-center justify-center px-4 py-2 border border-gray-700 rounded-md gap-x-2 hover:bg-gray-800 hover:text-white disabled:opacity-25"
-        >
-          <AiOutlineDownload className="w-6 h-6" /> PNG
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {/* button download study plan */}
+          <button
+            disabled={courseInPlanner.length <= 0}
+            onClick={handleDownloadImage}
+          >
+            <a
+              id="button-download"
+              className="flex items-center justify-center px-4 py-2 border border-gray-700 rounded-md gap-x-2 hover:bg-gray-800 hover:text-white disabled:opacity-25"
+            >
+              <AiOutlineDownload className="w-6 h-6" /> PNG
+            </a>
+            {/* tooltip */}
+            <Tooltip
+              // variant="info"
+              anchorSelect="#button-download"
+              content={toolTipContent}
+              // style={{ color: "#333" }}
+            />
+          </button>
+        </div>
         <TotalCredits courseInPlanner={courseInPlanner} />
       </div>
+
       <Tabs
         components={[
-          <HorizontalCard color={bgColor} courseInPlanner={courseInPlanner} />,
-          <TableSchedule courseInPlanner={courseInPlanner} />,
+          <HorizontalCard
+            color={bgColor}
+            courseInPlanner={courseInPlanner}
+            containerRef={tableScheduleContainer}
+          />,
+          <TableSchedule
+            courseInPlanner={courseInPlanner}
+            containerRef={tableScheduleContainer}
+          />,
         ]}
       />
     </>

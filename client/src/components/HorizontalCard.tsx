@@ -10,13 +10,14 @@ interface Color {
 type Props = {
   color: Color;
   courseInPlanner: CourseDataInterface[];
+  containerRef: React.MutableRefObject<null>;
 };
 
-const HorizontalCard = ({ color, courseInPlanner }: Props) => {
+const HorizontalCard = ({ color, courseInPlanner, containerRef }: Props) => {
   const { removeCourse } = useCourse();
 
   return (
-    <div className="mb-20">
+    <div className="mb-20" ref={containerRef}>
       {courseInPlanner.map((cs) => {
         return (
           <div

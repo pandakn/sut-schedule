@@ -29,9 +29,13 @@ const headerOfTable: string[] = [
 
 type TableScheduleProp = {
   courseInPlanner: CourseDataInterface[];
+  containerRef: React.MutableRefObject<null>;
 };
 
-const TableSchedule = ({ courseInPlanner }: TableScheduleProp) => {
+const TableSchedule = ({
+  courseInPlanner,
+  containerRef,
+}: TableScheduleProp) => {
   const { selectedPlan, setCourseInPlanner } = useStudyPlan();
   const { accessToken } = useAuth();
 
@@ -67,7 +71,7 @@ const TableSchedule = ({ courseInPlanner }: TableScheduleProp) => {
   };
 
   return (
-    <div className="mb-16">
+    <div className="mb-16" ref={containerRef}>
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="container mx-auto">
           <div className="relative overflow-x-auto">

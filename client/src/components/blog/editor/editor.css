@@ -15,9 +15,21 @@
   @apply text-base;
 }
 
+.ql-snow .ql-editor ul {
+  @apply text-xl pl-0;
+}
+
+.ql-editor .ql-indent-1:not(.ql-direction-rtl) {
+  @apply pl-12;
+}
+
 /* post contents */
 .content {
   @apply tracking-normal leading-relaxed;
+}
+
+.content .ql-indent-1 {
+  @apply pl-12;
 }
 
 .content h1 {
@@ -48,8 +60,12 @@
 }
 
 .content ul {
-  margin-left: 2.2rem;
+  /* margin-left: 2rem; */
   list-style: disc;
+}
+
+.content li {
+  @apply text-2xl;
 }
 
 .content ol {

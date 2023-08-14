@@ -40,8 +40,6 @@ const BlogPost = () => {
   const [redirect, setRedirect] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log(comments);
-
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
