@@ -71,7 +71,7 @@ const TableSchedule = ({
   };
 
   return (
-    <div className="mb-16" ref={containerRef}>
+    <div id="table-schedule" className="mb-16" ref={containerRef}>
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="container mx-auto">
           <div className="relative overflow-x-auto">

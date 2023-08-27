@@ -31,7 +31,7 @@ const HeroSection = () => {
             </Link>
           </button>
         </div>
-        <div className="mt-5 md:w-1/2 md:mt-0">
+        <div className="hidden mt-5 md:w-1/2 md:mt-0 md:block">
           <img
             src={Hero}
             alt="Hero Image"

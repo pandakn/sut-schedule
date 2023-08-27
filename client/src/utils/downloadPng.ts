@@ -54,8 +54,6 @@ export const downloadImage = async (
   dom1: HTMLElement | null,
   dom2: HTMLElement | null
 ) => {
-  console.log("dom2: ", dom2);
-
   if (!dom1 || !dom2) {
     console.error("Invalid element reference");
     return;
@@ -99,7 +97,7 @@ export const downloadImage = async (
     const dataURL = canvas.toDataURL("image/jpeg", 0.9);
     const link = document.createElement("a");
     link.href = dataURL;
-    link.download = "combined_components.jpg";
+    link.download = "sut-schedule.jpg";
     link.click();
     document.body.removeChild(link);
   });

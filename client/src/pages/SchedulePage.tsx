@@ -139,12 +139,12 @@ const SchedulePage = () => {
 
       <Tabs
         components={[
-          <HorizontalCard
-            color={bgColor}
+          <TableSchedule
             courseInPlanner={courseInPlanner}
             containerRef={tableScheduleContainer}
           />,
-          <TableSchedule
+          <HorizontalCard
+            color={bgColor}
             courseInPlanner={courseInPlanner}
             containerRef={tableScheduleContainer}
           />,

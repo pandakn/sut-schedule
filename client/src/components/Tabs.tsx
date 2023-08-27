@@ -22,7 +22,7 @@ const Tabs = ({ components }: TabsProps) => {
           } px-4 py-2 rounded-lg`}
           onClick={() => handleTabClick(1)}
         >
-          Card
+          Table
         </button>
         <button
           className={`${
@@ -32,7 +32,7 @@ const Tabs = ({ components }: TabsProps) => {
           } px-4 py-2 rounded-lg `}
           onClick={() => handleTabClick(2)}
         >
-          Table
+          Card
         </button>
       </div>
       {components.map((component, idx) => {
