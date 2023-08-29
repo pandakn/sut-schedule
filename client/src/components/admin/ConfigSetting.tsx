@@ -1,14 +1,14 @@
 import { useLogo } from "../../hooks";
 
-const ManageLogo = () => {
+const ConfigSetting = () => {
   const {
     selectedImage,
+    configInput,
     handleImageUpload,
     setLogo,
     setSelectedImage,
-    href,
     handleInputChange,
-    submitConfigLogo,
+    submitConfigSetting,
   } = useLogo();
 
   return (
@@ -59,17 +59,44 @@ const ManageLogo = () => {
             </label>
           </div>
         )}
+
+        {/* footer text */}
+        <div className="flex flex-col gap-y-1">
+          <label
+            htmlFor="footer-text"
+            className="text-gray-700 text-sm font-bold"
+          >
+            Footer Text
+          </label>
+          <input
+            type="text"
+            placeholder="type your footer text..."
+            name="footerText"
+            value={configInput.footerText}
+            onChange={handleInputChange}
+            className="px-4 py-2 text-lg text-gray-800 border border-gray-800 rounded-lg focus:outline-gray-900 "
+          />
+        </div>
+
         {/* href */}
-        <input
-          type="text"
-          placeholder="href..."
-          name="href"
-          value={href}
-          onChange={handleInputChange}
-          className="px-4 py-2 text-lg text-gray-800 border border-gray-800 rounded-lg focus:outline-gray-900 "
-        />
+        <div className="flex flex-col gap-y-1">
+          <label
+            htmlFor="footer-href"
+            className=" text-gray-700 text-sm font-bold"
+          >
+            Footer Link
+          </label>
+          <input
+            type="text"
+            placeholder="link..."
+            name="href"
+            value={configInput.href}
+            onChange={handleInputChange}
+            className="px-4 py-2 text-lg text-gray-800 border border-gray-800 rounded-lg focus:outline-gray-900 "
+          />
+        </div>
         <button
-          onClick={submitConfigLogo}
+          onClick={submitConfigSetting}
           className="px-4 py-2 text-white capitalize bg-gray-900 disabled:opacity-30 rounded-xl hover:bg-gray-900/75"
         >
           Submit
@@ -79,4 +106,4 @@ const ManageLogo = () => {
   );
 };
 
-export default ManageLogo;
+export default ConfigSetting;

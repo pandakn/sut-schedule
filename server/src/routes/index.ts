@@ -7,7 +7,7 @@ import courses from "./course.route";
 import studyPlan from "./studyPlan.route";
 import blog from "./blog.route";
 import comment from "./comment.route";
-import configLogo from "./configLogo.route";
+import configSetting from "./configSetting.route";
 import tag from "./tag.route";
 
 const router = Router();
@@ -19,7 +19,7 @@ export default (): express.Router => {
   studyPlan(router);
   blog(router);
   comment(router);
-  configLogo(router);
+  configSetting(router);
   tag(router);
 
   return router;

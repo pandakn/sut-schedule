@@ -1,29 +1,37 @@
 import React, { createContext, useEffect, useState } from "react";
-import { createConfigLogo, getConfigLogo } from "../services/httpClient";
+import {
+  createConfigSetting,
+  getConfigSetting,
+} from "../services/httpClientForAdmin";
 import { useAuth } from "../hooks"; // Assuming you have an AuthContext to get the accessToken
 import toast from "react-hot-toast";
 
-export interface ILogo {
+export interface IConfigInput {
+  footerText: string;
   href: string;
-  logo: string;
 }
 
+type ConfigSetting = {
+  logo: string;
+} & IConfigInput;
+
 export interface ConfigLogoContextType {
-  configLogo: ILogo;
-  setConfigLogo: React.Dispatch<React.SetStateAction<ILogo>>;
+  configSetting: ConfigSetting;
+  configInput: IConfigInput;
+  setConfigSetting: React.Dispatch<React.SetStateAction<ConfigSetting>>;
   setLogo: React.Dispatch<React.SetStateAction<File | null>>;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  submitConfigLogo: (event: React.FormEvent) => Promise<void>;
+  submitConfigSetting: (event: React.FormEvent) => Promise<void>;
   selectedImage: string | null;
   setSelectedImage: React.Dispatch<React.SetStateAction<string | null>>;
-  href: string;
 }
 
 const initialConfigLogoContext: ConfigLogoContextType = {
-  configLogo: { href: "", logo: "" },
-  setConfigLogo: () => {
-    throw new Error("setConfigLogo is not implemented");
+  configInput: { href: "", footerText: "" },
+  configSetting: { logo: "", href: "", footerText: "" },
+  setConfigSetting: () => {
+    throw new Error("setConfigSetting is not implemented");
   },
   setLogo: () => {
     throw new Error("setLogo is not implemented");
@@ -34,14 +42,13 @@ const initialConfigLogoContext: ConfigLogoContextType = {
   handleImageUpload: () => {
     throw new Error("handleImageUpload is not implemented");
   },
-  submitConfigLogo: () => {
-    throw new Error("submitConfigLogo is not implemented");
+  submitConfigSetting: () => {
+    throw new Error("submitConfigSetting is not implemented");
   },
   selectedImage: null,
   setSelectedImage: () => {
     throw new Error("setSelectedImage is not implemented");
   },
-  href: "",
 };
 
 export const ConfigLogoContext = createContext<ConfigLogoContextType>(
@@ -54,16 +61,25 @@ interface ConfigLogoProviderProps {
 
 export const ConfigLogoProvider = ({ children }: ConfigLogoProviderProps) => {
   const { accessToken } = useAuth();
-  const [configLogo, setConfigLogo] = useState<ILogo>({
-    href: "/",
+  const [configSetting, setConfigSetting] = useState<ConfigSetting>({
     logo: "",
+    href: "",
+    footerText: "",
   });
-  const [href, setHref] = useState("");
+  const [configInput, setConfigInput] = useState<IConfigInput>({
+    footerText: "",
+    href: "",
+  });
   const [logo, setLogo] = useState<File | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setHref(event.target.value);
+    const name = event.target.name;
+
+    setConfigInput({
+      ...configInput,
+      [name]: event.target.value,
+    });
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,11 +96,13 @@ export const ConfigLogoProvider = ({ children }: ConfigLogoProviderProps) => {
     }
   };
 
-  const submitConfigLogo = async (event: React.FormEvent) => {
+  const submitConfigSetting = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const { footerText, href } = configInput;
+
     // Validate the form
-    if (!href || !logo) {
+    if (!href || !logo || !footerText) {
       toast.error("Please fill in all the required fields.", {
         duration: 2500,
       });
@@ -94,21 +112,22 @@ export const ConfigLogoProvider = ({ children }: ConfigLogoProviderProps) => {
     if (accessToken) {
       const formData = new FormData();
 
+      formData.append("footerText", footerText);
       formData.append("href", href);
       if (logo) {
         formData.append("logo", logo);
       }
 
       try {
-        const res = await createConfigLogo(formData, accessToken);
+        const res = await createConfigSetting(formData, accessToken);
 
         if (!res?.status) return;
-        setConfigLogo(res.data.result);
+        setConfigSetting(res.data.result);
 
         toast.success("Create successfully", { duration: 1500 });
 
         setTimeout(() => {
-          setHref("");
+          setConfigInput({ footerText: "", href: "" });
           setLogo(null);
           setSelectedImage(null);
         }, 1500);
@@ -119,9 +138,9 @@ export const ConfigLogoProvider = ({ children }: ConfigLogoProviderProps) => {
   };
 
   const fetchLogo = async () => {
-    const res = await getConfigLogo();
+    const res = await getConfigSetting();
 
-    setConfigLogo(res.result);
+    setConfigSetting(res.result);
   };
 
   useEffect(() => {
@@ -131,15 +150,15 @@ export const ConfigLogoProvider = ({ children }: ConfigLogoProviderProps) => {
   return (
     <ConfigLogoContext.Provider
       value={{
-        configLogo,
-        setConfigLogo,
+        configInput,
+        configSetting,
+        setConfigSetting,
         setLogo,
         selectedImage,
         setSelectedImage,
-        submitConfigLogo,
+        submitConfigSetting,
         handleInputChange,
         handleImageUpload,
-        href,
       }}
     >
       {children}

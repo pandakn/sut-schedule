@@ -1,7 +1,9 @@
 import { useLocation } from "react-router-dom";
 import ScrollTopButton from "./ScrollTopButton";
+import { useLogo } from "../hooks";
 
 const Footer = () => {
+  const { configSetting } = useLogo();
   const location = useLocation();
 
   // hide Footer when current path is admin/*
@@ -15,11 +17,11 @@ const Footer = () => {
             <h1 className="tracking-wider text-center text-white md:text-xl text">
               Created by{" "}
               <a
-                href="https://github.com/pandakn"
+                href={configSetting.href}
                 target="_blank"
                 className="hover:underline"
               >
-                Natthawut Klangyod
+                {configSetting.footerText}
               </a>
             </h1>
             <ScrollTopButton />

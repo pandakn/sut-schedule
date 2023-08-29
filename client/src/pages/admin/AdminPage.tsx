@@ -12,7 +12,7 @@ import {
   AiOutlineBook,
   AiOutlineSchedule,
 } from "react-icons/ai";
-import ManageLogo from "../../components/admin/ManageLogo";
+import ConfigSetting from "../../components/admin/ConfigSetting";
 import BarChartPopularTags from "../../components/admin/BarChartPopularTags";
 import BarChartPopularCourses from "../../components/admin/BarChartPopularCourses";
 import Modal from "../../components/Modal";
@@ -80,7 +80,7 @@ const AdminPage = () => {
       <BarChartPopularTags />
 
       <Modal isOpenModal={isModalOpen} toggleModal={toggleModal}>
-        <ManageLogo />
+        <ConfigSetting />
       </Modal>
     </>
   );
