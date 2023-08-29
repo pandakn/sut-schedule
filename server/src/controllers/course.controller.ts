@@ -62,7 +62,7 @@ export const getCourseDataFromREG = async (req: Request, res: Response) => {
     semester,
     coursecode,
     coursename,
-    cmd,
+    cmd = 2,
     weekdays,
     timefrom,
     timeto,

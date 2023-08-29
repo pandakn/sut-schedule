@@ -10,17 +10,17 @@ This project scrapes course data from Reg SUT.
   GET /api/courses
 ```
 
-| Parameter    | Type                          | Description                                                          |
-| :----------- | :---------------------------  | :------------------------------------------------------------------- |
-| `acadyear`   | `string`,  `required`         | The academic year for which you want to retrieve courses (e.g. 2565) |
-| `semester`   | `string`,  `required`         | The semester for which you want to retrieve courses (e.g. 3)         |
-| `coursecode` | `string`                      | The course code pattern to filter courses (e.g. ist30 1105)          |
-| `coursename` | `string`                      | The course name to filter courses (e.g. english\*)                   |
-| `maxrow`     | `string`                      | The maximum number of rows to return in the response (e.g. 50)       |
-| `cmd`        | `string`, `required`          | A command that specifies the filtering method. <b>Use "1" = filter by day and times.</b> <b>Use "2" = no filter</b>          |
-| `weekdays`   | `string`, `required if cmd=1` | The weekdays for which you want to filter courses. For example, "2" represents Monday. Use the format "1 = su, 2 = mo, 3 = tu, 4 = we, 5 = th, 6 = fr, 7 = sa".|
-| `timefrom`   | `string`, `required if cmd=1` | The starting time for filtering courses. The value corresponds to a specific time. See [Time Condition](#time-condition) for details.|
-| `timeto`   | `string`, `required if cmd=1` | The ending time for filtering courses. The value corresponds to a specific time. See [Time Condition](#time-condition) for details.|
+| Parameter    | Type                          | Description                                                                                                                                                     |
+| :----------- | :---------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `acadyear`   | `string`, `required`          | The academic year for which you want to retrieve courses (e.g. 2565)                                                                                            |
+| `semester`   | `string`, `required`          | The semester for which you want to retrieve courses (e.g. 3)                                                                                                    |
+| `coursecode` | `string`                      | The course code pattern to filter courses (e.g. ist30 1105)                                                                                                     |
+| `coursename` | `string`                      | The course name to filter courses (e.g. english\*)                                                                                                              |
+| `maxrow`     | `string`                      | The maximum number of rows to return in the response (e.g. 50)                                                                                                  |
+| `cmd`        | `string`, `Default = 2`       | A command that specifies the filtering method. <b>Use "1" = filter by day and times.</b> <b>Use "2" = no filter</b>                                             |
+| `weekdays`   | `string`, `required if cmd=1` | The weekdays for which you want to filter courses. For example, "2" represents Monday. Use the format "1 = su, 2 = mo, 3 = tu, 4 = we, 5 = th, 6 = fr, 7 = sa". |
+| `timefrom`   | `string`, `required if cmd=1` | The starting time for filtering courses. The value corresponds to a specific time. See [Time Condition](#time-condition) for details.                           |
+| `timeto`     | `string`, `required if cmd=1` | The ending time for filtering courses. The value corresponds to a specific time. See [Time Condition](#time-condition) for details.                             |
 
 ## Time Condition
 
@@ -38,14 +38,18 @@ For example, to represent 12:00 AM, the value is 1. To represent 12:05 AM, the v
 
 ### Examples
 
-#### Retrieve Course Data with *No Filtering*
+#### Retrieve Course Data with _No Filtering_
+
 use the following example:
+
 ```http
 GET /api/courses?acadyear=2565&semester=3&coursecode=ist30 1105&coursename=&maxrow=50
 ```
 
-#### Retrieve Course Data with *Filtering*
+#### Retrieve Course Data with _Filtering_
+
 To retrieve course data based on specific filtering criteria, use the following example:
+
 ```http
 GET /api/courses?acadyear=2566&semester=1&coursecode=523*&coursename=&maxrow=50&cmd=1&weekdays=3&timefrom=109&timeto=145
 ```
