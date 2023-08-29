@@ -24,10 +24,7 @@ services:
     environment:
       - REDIS_HOST=redis
       - NODE_ENV=development
-    command:
-      - npm
-      - run
-      - dev
+    command: npm run dev
 
 volumes:
   redis_volume_data:
