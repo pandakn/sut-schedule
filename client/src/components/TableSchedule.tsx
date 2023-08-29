@@ -16,6 +16,7 @@ import { AiOutlineCopy } from "react-icons/ai";
 import { CourseDataInterface } from "../models/course.interface";
 import { reOrderOfCourseInStudyPlan } from "../services/httpClient";
 import toast from "react-hot-toast";
+import ShowExam from "./ShowExam";
 
 const headerOfTable: string[] = [
   "",
@@ -124,9 +125,13 @@ const TableSchedule = ({
                             </td>
                             <td className="px-6 py-4 font-medium">
                               <div className="leading-relaxed">
-                                <p className="font-semibold">
+                                <a
+                                  href={course.url}
+                                  target="_blank`"
+                                  className="font-semibold hover:underline"
+                                >
                                   {course.courseNameEN}
-                                </p>
+                                </a>
                                 <p className="opacity-60">
                                   credit : {course.credit}
                                 </p>
@@ -152,10 +157,20 @@ const TableSchedule = ({
                               )}
                             </td>
                             <td className="px-6 py-4">
-                              {course.details.midExam?.slice(0, 32) || "-"}
+                              <ShowExam
+                                date={course.details.midExam?.date}
+                                month={course.details.midExam?.month}
+                                times={course.details.midExam?.times}
+                                year={course.details.midExam?.yearStr}
+                              />
                             </td>
                             <td className="px-6 py-4 ">
-                              {course.details.finalExam?.slice(0, 32) || "-"}
+                              <ShowExam
+                                date={course.details.finalExam?.date}
+                                month={course.details.finalExam?.month}
+                                times={course.details.finalExam?.times}
+                                year={course.details.finalExam?.yearStr}
+                              />
                             </td>
                           </tr>
                         )}

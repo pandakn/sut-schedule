@@ -1,6 +1,7 @@
 import cheerio from "cheerio";
 import axios from "axios";
 import iconv from "iconv-lite";
+import { extractExamInfo } from "../utils/extractExamInfo";
 
 const extractCourse = ($: cheerio.Root, selector: string): string[] => {
   const data: string[] = [];
@@ -106,8 +107,8 @@ const scrapeCourseDetails = async (courseCodeUrl: string, sec: number) => {
       courseCondition: checkValueArray(courseCondition),
       continueCourse: checkValueArray(continueCourse),
       equivalentCourse: checkValueArray(equivalentCourse),
-      midExam,
-      finalExam,
+      midExam: extractExamInfo(midExam),
+      finalExam: extractExamInfo(finalExam),
     };
 
     return courseData;

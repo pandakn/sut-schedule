@@ -1,6 +1,14 @@
+export interface ExamInfo {
+  date: string;
+  month: string;
+  times: string;
+  yearStr: string;
+  room: string;
+}
+
 export interface IExam {
-  midterm: string;
-  final: string;
+  midterm: ExamInfo;
+  final: ExamInfo;
 }
 
 export interface ICourseNames {
@@ -25,8 +33,8 @@ export interface ICourseDetails {
   courseCondition: string[] | null;
   continueCourse: string[] | null;
   equivalentCourse: string[] | null;
-  midExam: string | null;
-  finalExam: string | null;
+  midExam: ExamInfo | null;
+  finalExam: ExamInfo | null;
 }
 
 export interface ICourse {

@@ -40,7 +40,7 @@ const CardOfSchedule = ({ courseInSchedule, day }: Props) => {
         return (
           <span
             key={`group-${idx}`}
-            className="flex flex-col p-2 text-xs border rounded text-on-CardOfSchedule gap-y-2 md:text-sm"
+            className="flex flex-col p-2 text-xs border rounded gap-y-2 md:text-sm"
             style={{
               color: `${textColor}`,
               backgroundColor: `${bgColor}`,

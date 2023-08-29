@@ -2,6 +2,8 @@ import { useCourse } from "../hooks";
 import { MdDelete } from "react-icons/md";
 import { CourseDataInterface } from "../models/course.interface";
 import { colorOfDays } from "../utils/colors";
+import ShowExam from "./ShowExam";
+import { useEffect } from "react";
 
 interface Color {
   [key: string]: string;
@@ -34,8 +36,10 @@ const HorizontalCard = ({ color, courseInPlanner, containerRef }: Props) => {
               ></div>
 
               <div className="col-span-1 p-4 px-6 leading-normal sm:col-span-7">
-                <h5 className="mb-2 text-sm font-semibold text-gray-800 tracking- sm:text-base md:text-xl">
-                  {cs.courseCode}-{cs.version} : {cs.courseNameEN}
+                <h5 className="mb-2 text-sm font-semibold text-gray-800 tracking- sm:text-base md:text-xl hover:underline">
+                  <a href={cs.url} target="_blank">
+                    {cs.courseCode}-{cs.version} : {cs.courseNameEN}
+                  </a>
                 </h5>
 
                 <section className="flex gap-2 mb-2 md:gap-1 md:flex-col">
@@ -65,18 +69,26 @@ const HorizontalCard = ({ color, courseInPlanner, containerRef }: Props) => {
                 })}
                 {/* exam */}
                 <section className="flex flex-col gap-2 mt-2 text-gray-600">
-                  <p className="text-base font-semibold">
-                    Mid:
-                    <span className="pl-3 font-light">
-                      {cs.details?.midExam || "-"}
-                    </span>
-                  </p>
-                  <p className="text-base font-semibold">
-                    Final:
-                    <span className="pl-2 font-light">
-                      {cs.details?.finalExam || "-"}
-                    </span>
-                  </p>
+                  <div className="flex">
+                    <p className="font-bold">Mid:</p>
+                    <ShowExam
+                      date={cs.details.midExam?.date}
+                      month={cs.details.midExam?.month}
+                      times={cs.details.midExam?.times}
+                      year={cs.details.midExam?.yearStr}
+                      room={cs.details.midExam?.room}
+                    />
+                  </div>
+                  <div className="flex">
+                    <p className="font-bold">Mid:</p>
+                    <ShowExam
+                      date={cs.details.finalExam?.date}
+                      month={cs.details.finalExam?.month}
+                      times={cs.details.finalExam?.times}
+                      year={cs.details.finalExam?.yearStr}
+                      room={cs.details.finalExam?.room}
+                    />
+                  </div>
                 </section>
               </div>
               <div className="absolute col-span-1 right-2 md:right-5 top-4 sm:col-span-1">

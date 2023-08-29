@@ -11,7 +11,7 @@ import {
 import { useAuth, useStudyPlan } from "../hooks";
 import toast from "react-hot-toast";
 import { AiOutlineDelete } from "react-icons/ai";
-
+import { extractExamInfo } from "../utils/extractExamInfo";
 interface CourseContextType {
   courses: CourseInterface;
   loading: boolean;

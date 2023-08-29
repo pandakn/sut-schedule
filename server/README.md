@@ -81,7 +81,13 @@ This project scrapes course data from Reg SUT.
                     "IST30 1105"
                 ],
                 "midExam": null,
-                "finalExam": "4 ก.ค. 2566 เวลา 09:00 - 12:00 อาคาร B ห้อง N (สอบตามตารางมหาวิทยาลัย)"
+                "finalExam": {
+                    "date": "04",
+                    "month": "Jul",
+                    "times": "09:00-11:00",
+                    "yearStr": "2566",
+                    "room": "อาคาร B ห้อง B1140 (สอบตามตารางมหาวิทยาลัย)  4 ก.ค. 2566"
+                }
             }
         },
     ]

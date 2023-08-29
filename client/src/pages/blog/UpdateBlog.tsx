@@ -59,7 +59,6 @@ const UpdateBlog = () => {
   const fetchBlogById = useCallback(async () => {
     const res = await getBlogById(slug);
     const data = res.result;
-    console.log(data);
 
     setId(data._id);
     setTitle(data.title);
