@@ -121,15 +121,12 @@ const BlogPost = () => {
             </p>
             {showBtn && (
               <div className="flex justify-center mt-4 space-x-2">
-                <Button className="font-bold text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-                  <Link
-                    className="flex items-center gap-x-2"
-                    to={`/edit-post/${slug}`}
-                  >
+                <Link className="" to={`/edit-post/${slug}`}>
+                  <Button className="font-bold text-white flex items-center gap-x-2 bg-blue-500 rounded-lg hover:bg-blue-600">
                     <AiOutlineEdit className="w-5 h-5" />
                     Edit
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
                 <Button
                   className="flex font-bold text-white bg-red-500 rounded-lg gap-x-2 hover:bg-red-600"
                   onClick={toggleModal}
