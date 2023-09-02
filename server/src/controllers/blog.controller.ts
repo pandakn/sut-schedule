@@ -4,7 +4,8 @@ import Blog, { IBlog } from "../models/blog";
 import User, { IUserModel } from "../models/user";
 import Tag, { ITag } from "../models/tag";
 import { Types } from "mongoose";
-import { titleToSlug } from "../utils/slug";
+import { titleToSlug } from "../utils/titleToSlug";
+import slugify from "slugify";
 
 export const getAllBlogs = async (req: Request, res: Response) => {
   try {
@@ -134,7 +135,7 @@ export const createBlog = async (
     // Generate the _id for the new blog
     const newBlogId = new Types.ObjectId().toHexString();
 
-    const slug = `${titleToSlug(title)}-${newBlogId}`;
+    const slug = titleToSlug(title, newBlogId);
 
     // Update the cover image to use the filename from multer
     if (req.file) {
@@ -194,8 +195,7 @@ export const updateBlog = async (
   let { title, body, tags, cover, fileOld } = req.body;
 
   try {
-    // const slug = `${title.trim().toLowerCase().replaceAll(" ", "-")}-${id}`;
-    const slug = `${titleToSlug(title)}-${id}`;
+    const slug = titleToSlug(title, id);
 
     // Check if the new title is unique (excluding the current blog being updated)
     const existingBlog: IBlog | null = await Blog.findOne({
