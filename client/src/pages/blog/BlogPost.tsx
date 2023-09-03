@@ -109,7 +109,7 @@ const BlogPost = () => {
 
   return (
     <>
-      <div className="max-w-2xl px-5 mx-auto my-10">
+      <div className="max-w-4xl px-5 mx-auto my-10">
         <div className="break-words">
           <header className="text-center">
             <h1 className="mb-4 text-4xl font-bold md:text-5xl">

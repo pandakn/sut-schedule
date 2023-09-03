@@ -154,7 +154,7 @@ const CreateBlog = () => {
     return <Navigate to={"/"} />;
   }
   return (
-    <div className="max-w-2xl px-5 mx-auto my-10">
+    <div className="max-w-4xl px-5 mx-auto my-10">
       <div>
         <div className="flex flex-col gap-5">
           {/* cover */}
