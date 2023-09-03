@@ -49,6 +49,11 @@ docker exec -it redis redis-cli
 # Screenshot 📸
 
 ![image](./client/public/screenshots/home.jpeg)
+![image](./client/public/screenshots/schedule.jpeg)
+![image](./client/public/screenshots/search.jpeg)
+![image](./client/public/screenshots/write.jpeg)
+![image](./client/public/screenshots/blog.jpeg)
+![image](./client/public/screenshots/comment.jpeg)
 
 # API
 
