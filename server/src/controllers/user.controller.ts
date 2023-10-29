@@ -38,6 +38,8 @@ export const editUser = async (req: Request, res: Response): Promise<void> => {
   const userId = req.params.id;
   const { name, username, password, role, maximumStudyPlans } = req.body;
 
+  console.log(req.body);
+
   try {
     const user: IUserModel | null = await User.findById(userId);
     if (!user) {
@@ -57,14 +59,14 @@ export const editUser = async (req: Request, res: Response): Promise<void> => {
     user.role = role || user.role;
     user.maximumStudyPlans = maximumStudyPlans || user.maximumStudyPlans;
 
-    if (username.length < 4) {
+    if (username?.length < 4) {
       res
         .status(400)
         .json({ message: "Username must have at least 4 characters" });
       return;
     }
 
-    if (password.length < 6) {
+    if (password?.length < 6) {
       res
         .status(400)
         .json({ message: "Password must have at least 6 characters" });
