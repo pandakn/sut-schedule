@@ -151,7 +151,7 @@ const CreateBlog = () => {
   };
 
   if (redirect) {
-    return <Navigate to={"/"} />;
+    return <Navigate to={"/posts"} />;
   }
   return (
     <div className="max-w-4xl px-5 mx-auto my-10">

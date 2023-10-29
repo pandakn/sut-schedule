@@ -124,7 +124,7 @@ const UpdateBlog = () => {
 
   if (redirect) {
     const role = payload.role;
-    const href = role === "admin" ? "/admin/manage-blogs" : "/";
+    const href = role === "admin" ? "/admin/manage-blogs" : "/posts";
 
     return <Navigate to={href} />;
   }

@@ -54,6 +54,14 @@ const EditProfile = ({ toggleModal, setIsModalOpen }: EditProfileProps) => {
     event.preventDefault();
     setError("");
 
+    if (userProfile.password.length < 6) {
+      setError("Password must have at least 6 characters");
+      toast.error("Password must have at least 6 characters", {
+        duration: 1500,
+      });
+      return;
+    }
+
     if (userProfile.password !== userProfile.confirmPassword) {
       setError("Password and confirm password do not match");
       toast.error("Password and confirm password do not match", {
