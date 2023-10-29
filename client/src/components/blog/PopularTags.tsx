@@ -39,6 +39,7 @@ const PopularTags = () => {
                 <Link
                   to={`/blogs/tag/${tp.name}`}
                   key={i}
+                  onClick={() => window.scrollTo(0, 0)}
                   className="px-4 py-2 text-lg rounded-lg hover:opacity-80"
                   style={{
                     backgroundColor:

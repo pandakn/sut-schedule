@@ -37,6 +37,7 @@ const BlogCard = ({
         </div>
         <Link
           to={`/blog/${slug}`}
+          onClick={() => window.scrollTo(0, 0)}
           className="block mt-1 text-2xl font-medium leading-tight text-black hover:underline"
         >
           {title}
@@ -50,6 +51,7 @@ const BlogCard = ({
             <Link
               to={`/blogs/tag/${t.name}`}
               key={idx}
+              onClick={() => window.scrollTo(0, 0)}
               className="px-2 py-1 text-gray-500 rounded bg-gray-50 hover:cursor-pointer hover:opacity-70"
             >
               #{t.name}
