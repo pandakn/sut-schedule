@@ -43,7 +43,7 @@ export type StudyPlanContextType = {
     studyPlanID: string,
     courseSchedule: CourseDataInterface
   ) => Promise<string>;
-  handleAddStudyPlan: (name: string) => Promise<string>;
+  handleAddStudyPlan: (name: string) => Promise<void>;
   handleEditStudyPlan: (id: string, name: string) => Promise<void>;
   handleDeleteStudyPlan: (id: string) => Promise<void>;
   selectedPlan: ISelectedPlan;
@@ -138,17 +138,20 @@ export const StudyPlanProvider = ({ children }: StudyPlanProviderProps) => {
 
   const handleAddStudyPlan = async (name: string) => {
     if (name && studyPlanOfUser) {
-      toast.success("Study Plan added successfully", {
-        duration: 1500,
-      });
       const res = await addStudyPlan(payload.id, name, accessToken);
 
       if (res?.status) {
+        toast.success("Study Plan added successfully", {
+          duration: 1500,
+        });
         setStudyPlanOfUser((prev) => {
           return [...prev, res.data.result];
         });
       } else {
-        return res?.data.message;
+        toast.error(res?.data.message, {
+          duration: 1500,
+        });
+        return;
       }
     }
   };

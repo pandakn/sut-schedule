@@ -27,7 +27,7 @@ interface IStudyPlan {
 type StudyPlanProps = {
   studyPlan: IStudyPlan[];
   handleSubmit: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  handleAddStudyPlan: (name: string) => Promise<string>;
+  handleAddStudyPlan: (name: string) => Promise<void>;
   handleEditStudyPlan: (id: string, name: string) => Promise<void>;
   handleDeleteStudyPlan: (id: string) => Promise<void>;
 };
