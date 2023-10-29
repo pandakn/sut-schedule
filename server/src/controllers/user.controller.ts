@@ -38,8 +38,6 @@ export const editUser = async (req: Request, res: Response): Promise<void> => {
   const userId = req.params.id;
   const { name, username, password, role, maximumStudyPlans } = req.body;
 
-  console.log(req.body);
-
   try {
     const user: IUserModel | null = await User.findById(userId);
     if (!user) {
