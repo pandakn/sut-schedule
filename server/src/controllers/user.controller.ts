@@ -52,6 +52,10 @@ export const editUser = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    const studyPlansOfUser: IStudyPlanModel[] = await StudyPlan.find({
+      creator: user._id,
+    });
+
     user.username = username || user.username;
     user.name = name || user.name;
     user.role = role || user.role;
@@ -78,6 +82,20 @@ export const editUser = async (req: Request, res: Response): Promise<void> => {
     }
 
     await user.save();
+
+    if (user.maximumStudyPlans < studyPlansOfUser.length) {
+      // Get the number of study plans that need to be deleted.
+      const numStudyPlansToDelete =
+        studyPlansOfUser.length - user.maximumStudyPlans;
+
+      // Delete the extra study plans from the StudyPlans collection.
+      for (let i = 0; i < numStudyPlansToDelete; i++) {
+        await StudyPlan.findOneAndDelete(
+          { creator: user._id },
+          { sort: { createdAt: -1 } }
+        );
+      }
+    }
 
     res
       .status(200)
