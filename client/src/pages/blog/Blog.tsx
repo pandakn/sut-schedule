@@ -73,6 +73,8 @@ const Blog = ({ tag }: BlogProps) => {
     fetchAllBlogs();
   }, [fetchAllBlogs]);
 
+  console.log(blogs);
+
   return (
     <>
       {errorMsg && (
@@ -109,20 +111,21 @@ const Blog = ({ tag }: BlogProps) => {
             <SortButton handleFilterChange={handleFilterChange} />
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {blogs.map((blog, idx) => {
-              return (
-                <BlogCard
-                  key={idx}
-                  slug={blog.slug}
-                  author={blog.author.name}
-                  title={blog.title}
-                  body={blog.body}
-                  cover={`${IMAGE_URL}/${blog.cover}`}
-                  tags={blog.tags}
-                  created={formatDate(blog.createdAt?.toString())}
-                />
-              );
-            })}
+            {blogs &&
+              blogs.map((blog, idx) => {
+                return (
+                  <BlogCard
+                    key={idx}
+                    slug={blog.slug}
+                    author={blog.author.name}
+                    title={blog.title}
+                    body={blog.body}
+                    cover={`${IMAGE_URL}/${blog.cover}`}
+                    tags={blog.tags}
+                    created={formatDate(blog.createdAt?.toString())}
+                  />
+                );
+              })}
           </div>
         </div>
       </div>

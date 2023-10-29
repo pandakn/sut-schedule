@@ -1,10 +1,12 @@
-import { Request, Response } from "express";
 import bcrypt from "bcrypt";
+import { Request, Response } from "express";
 import mongoose from "mongoose";
-import User, { IUserModel } from "../models/user";
+import Blog from "../models/blog";
 import StudyPlan, { IStudyPlanModel } from "../models/studyPlan";
+import User, { IUserModel } from "../models/user";
 import { createDefaultStudyPlan } from "../utils/defaultStudyPlan";
 import { handleSameSchedule } from "../utils/handleSameSchedule";
+import Comment from "../models/comment";
 
 // Get all users
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -116,8 +118,10 @@ export const deleteUserById = async (req: Request, res: Response) => {
       return;
     }
 
-    // Delete the associated study plans (if any)
+    // Delete the associated (if any)
     await StudyPlan.deleteMany({ creator: user._id });
+    await Blog.deleteMany({ author: user._id });
+    await Comment.deleteMany({ author: user._id });
 
     // Delete the user
     await User.findByIdAndDelete(req.params.id);
