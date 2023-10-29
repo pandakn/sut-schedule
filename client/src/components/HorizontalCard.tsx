@@ -1,9 +1,8 @@
-import { useCourse } from "../hooks";
 import { MdDelete } from "react-icons/md";
+import { useCourse } from "../hooks";
 import { CourseDataInterface } from "../models/course.interface";
 import { colorOfDays } from "../utils/colors";
 import ShowExam from "./ShowExam";
-import { useEffect } from "react";
 
 interface Color {
   [key: string]: string;

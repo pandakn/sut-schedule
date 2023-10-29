@@ -1,4 +1,4 @@
-import { useAuth, useStudyPlan } from "../hooks";
+import { useAuth, useCourse, useStudyPlan } from "../hooks";
 
 // Support strict mode
 // ref : https://github.com/atlassian/react-beautiful-dnd/issues/2437
@@ -17,6 +17,7 @@ import { CourseDataInterface } from "../models/course.interface";
 import { reOrderOfCourseInStudyPlan } from "../services/httpClient";
 import toast from "react-hot-toast";
 import ShowExam from "./ShowExam";
+import { MdDelete } from "react-icons/md";
 
 const headerOfTable: string[] = [
   "",
@@ -26,6 +27,7 @@ const headerOfTable: string[] = [
   "Class Schedule",
   "Midterm",
   "Final",
+  "",
 ];
 
 type TableScheduleProp = {
@@ -39,6 +41,7 @@ const TableSchedule = ({
 }: TableScheduleProp) => {
   const { selectedPlan, setCourseInPlanner } = useStudyPlan();
   const { accessToken } = useAuth();
+  const { removeCourse } = useCourse();
 
   const handleCopyCourseCode = (courseCode: string) => {
     navigator.clipboard
@@ -164,7 +167,7 @@ const TableSchedule = ({
                                 year={course.details.midExam?.yearStr}
                               />
                             </td>
-                            <td className="px-6 py-4 ">
+                            <td className="px-6 py-4">
                               <ShowExam
                                 date={course.details.finalExam?.date}
                                 month={course.details.finalExam?.month}
@@ -172,6 +175,16 @@ const TableSchedule = ({
                                 year={course.details.finalExam?.yearStr}
                               />
                             </td>
+                            <div className="px-6 py-4">
+                              <button
+                                name="btnDelete"
+                                aria-label={`remove course: ${course.courseCode}`}
+                                // hidden={!cs.classSchedule && true}
+                                onClick={() => removeCourse(course.id)}
+                              >
+                                <MdDelete className="w-7 h-7 text-red-500 hover:opacity-70" />
+                              </button>
+                            </div>
                           </tr>
                         )}
                       </Draggable>
