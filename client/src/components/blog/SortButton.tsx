@@ -24,7 +24,7 @@ const SortButton = ({ handleFilterChange }: SortButtonProps) => {
       <div className="px-4 py-2 border border-gray-900 rounded-lg">
         <label htmlFor="filter blog">Sort by: </label>
         <select
-          className="capitalize focus:outline-none"
+          className="capitalize focus:outline-none hover:cursor-pointer"
           onChange={handleFilterChange}
         >
           {options.map((option, i) => (
