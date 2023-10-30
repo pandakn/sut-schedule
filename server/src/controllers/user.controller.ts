@@ -340,7 +340,6 @@ export const deleteStudyPlan = async (req: Request, res: Response) => {
       creator: userIDObj,
     }).populate("creator");
 
-    // console.log(studyPlans.length);
     if (studyPlans.length > 0) {
       const selectedStudyPlan = studyPlans[0]._id;
       await User.updateMany(

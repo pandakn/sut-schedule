@@ -73,8 +73,6 @@ const Blog = ({ tag }: BlogProps) => {
     fetchAllBlogs();
   }, [fetchAllBlogs]);
 
-  console.log(blogs);
-
   return (
     <>
       {errorMsg && (
